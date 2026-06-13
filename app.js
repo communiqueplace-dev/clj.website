@@ -20,6 +20,9 @@ function buildHeader(active){
         <button class="ic" aria-label="Search" onclick="openSearch()" title="Search">
           <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/><line x1="15.4" y1="15.4" x2="21" y2="21" stroke="currentColor" stroke-width="1.4"/></svg>
         </button>
+        <button class="ic" aria-label="Book an Appointment" onclick="openAppt(event)" title="Book an Appointment">
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.4"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.4"/></svg>
+        </button>
         <span class="country" title="India · INR">IN · ₹</span>
         <button class="ic" aria-label="Account" onclick="openAuth()" title="Account">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -45,7 +48,6 @@ function buildHeader(active){
     <a class="d-cat" href="index.html#collections">Collections</a>
     <a class="d-cat" href="polki.html?sub=chokers">Bridal</a>
     <a class="d-cat" href="custom.html">Custom Jewellery</a>
-    <a class="d-cat" href="#" onclick="openAppt(event);toggleDrawer(false)">Appointment</a>
     <a class="d-cat" href="media.html">Media</a>
     <a class="d-cat" href="about.html">About Us</a>
     <a class="d-cat" href="location.html">Contact</a>
