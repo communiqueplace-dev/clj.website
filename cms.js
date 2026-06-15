@@ -39,13 +39,22 @@
   .then(function(rows){
     clearTimeout(timer);
     if (!Array.isArray(rows) || !rows.length) return;
-    function cell(u, hidden){
-      var h = hidden ? ' aria-hidden="true" tabindex="-1"' : '';
-      return '<a onclick="openLB(\'' + u + '\')"' + h + '><img loading="lazy" src="' + u + '" alt="Editorial photo"></a>';
+    function makeCell(u, hidden){
+      var a = document.createElement('a');
+      if (hidden){ a.setAttribute('aria-hidden','true'); a.setAttribute('tabindex','-1'); }
+      var img = document.createElement('img');
+      img.setAttribute('loading','lazy');
+      img.src = u;
+      img.alt = 'Editorial photo';
+      a.appendChild(img);
+      a.addEventListener('click', function(){ openLB(u); });
+      return a;
     }
-    var html = rows.map(function(r){ return cell(r.image_url, false); }).join("");
-    var dup  = rows.map(function(r){ return cell(r.image_url, true); }).join("");
-    track.innerHTML = html + dup;
+    var frag = document.createDocumentFragment();
+    rows.forEach(function(r){ frag.appendChild(makeCell(r.image_url, false)); });
+    rows.forEach(function(r){ frag.appendChild(makeCell(r.image_url, true)); });
+    track.innerHTML = '';
+    track.appendChild(frag);
   })
   .catch(function(){ clearTimeout(timer); });
 })();

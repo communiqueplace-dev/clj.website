@@ -6,6 +6,7 @@ const SUBS = {
   polki:  [["chokers","Chokers & Sets"],["harams","Necklaces & Malas"],["earrings","Earrings & Studs"],["more","Bracelets & More"]]
 };
 const CAT_TITLES = {gold:"Gold Jewellery", diamond:"Diamond Jewellery", polki:"Polki Jewellery"};
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 
 
@@ -84,9 +85,9 @@ function runSearch(){
   ).slice(0, 8);
   box.innerHTML = hits.length
     ? hits.map(p => `
-      <a href="product.html?id=${p.img}">
+      <a href="product.html?id=${esc(p.img)}">
         <img src="${imgURL(p)}" alt="">
-        <span><b>${p.name}</b><small>${CAT_TITLES[p.cat]}</small></span>
+        <span><b>${esc(p.name)}</b><small>${esc(CAT_TITLES[p.cat]||'')}</small></span>
       </a>`).join("")
     : `<p class="nores">No pieces found — try "choker", "ring", "polki"…</p>`;
 }
@@ -201,11 +202,11 @@ function imgURL(p){ return (p && p.image_url) ? p.image_url : 'assets/catalog/'+
 /* ---------- product cards / catalogue ---------- */
 function cardHTML(p){
   return `
-  <a class="card rv in" data-s="${p.sub}" href="product.html?id=${p.img}">
-    <div class="ph"><img loading="lazy" src="${imgURL(p)}" alt="${p.name}"></div>
+  <a class="card rv in" data-s="${esc(p.sub)}" href="product.html?id=${esc(p.img)}">
+    <div class="ph"><img loading="lazy" src="${imgURL(p)}" alt="${esc(p.name)}"></div>
     <div class="info">
-      <h3>${p.name}</h3>
-      <p>${p.desc}</p>
+      <h3>${esc(p.name)}</h3>
+      <p>${esc(p.desc)}</p>
       <span class="rfp">View Details</span>
     </div>
   </a>`;
@@ -237,29 +238,30 @@ function renderCatalog(cat){
 function renderProduct(){
   const id = new URLSearchParams(location.search).get("id");
   const p = PRODUCTS.find(x => x.img === id) || PRODUCTS[0];
-  const subLabel = (SUBS[p.cat].find(([k]) => k === p.sub) || ["",""])[1];
-  document.title = p.name + " — C.L Khanna Jewellers";
+  const safeCat = ['gold','diamond','polki'].includes(p.cat) ? p.cat : 'gold';
+  const subLabel = (SUBS[safeCat].find(([k]) => k === p.sub) || ["",""])[1];
+  document.title = esc(p.name) + " — C.L Khanna Jewellers";
   document.getElementById("pd").innerHTML = `
-  <nav class="crumbs"><a href="index.html">Home</a> / <a href="${p.cat}.html">${CAT_TITLES[p.cat]}</a> / <a href="${p.cat}.html?sub=${p.sub}">${subLabel}</a> / <span>${p.name}</span></nav>
+  <nav class="crumbs"><a href="index.html">Home</a> / <a href="${safeCat}.html">${esc(CAT_TITLES[safeCat])}</a> / <a href="${safeCat}.html?sub=${esc(p.sub)}">${esc(subLabel)}</a> / <span>${esc(p.name)}</span></nav>
   <div class="pd-grid">
     <div class="pd-photo" id="zoomBox">
-      <img id="zoomImg" src="${imgURL(p)}" alt="${p.name}">
+      <img id="zoomImg" src="${imgURL(p)}" alt="${esc(p.name)}">
     </div>
     <div class="pd-info">
-      <p class="eyebrow">${CAT_TITLES[p.cat]} · ${subLabel}</p>
-      <h1>${p.name}</h1>
-      <p class="pd-desc">${p.desc}</p>
+      <p class="eyebrow">${esc(CAT_TITLES[safeCat])} · ${esc(subLabel)}</p>
+      <h1>${esc(p.name)}</h1>
+      <p class="pd-desc">${esc(p.desc)}</p>
       <div class="pd-specs">
-        <div><b>Metal</b><span>${p.metal}</span></div>
-        <div><b>Craftsmanship</b><span>${p.work}</span></div>
-        <div><b>Occasion</b><span>${p.occasion}</span></div>
+        <div><b>Metal</b><span>${esc(p.metal)}</span></div>
+        <div><b>Craftsmanship</b><span>${esc(p.work)}</span></div>
+        <div><b>Occasion</b><span>${esc(p.occasion)}</span></div>
         <div><b>Weight &amp; Price</b><span>On request — varies with the day's rate</span></div>
         <div><b>Certification</b><span>BIS hallmarked</span></div>
       </div>
       <div class="cta-row">
-        <a class="btn solid" href="#" onclick="addToCart('${p.img}');return false;">Add to Cart</a>
+        <a class="btn solid" href="#" onclick="addToCart(this.dataset.prod);return false;" data-prod="${esc(p.img)}">Add to Cart</a>
         <a class="btn ghost" target="_blank" rel="noopener"
-           href="https://wa.me/${WA}?text=${encodeURIComponent('Hello C.L Khanna Jewellers, I would like to request the price of the "' + p.name + '" (' + CAT_TITLES[p.cat] + ') from your website.')}">Request Price on WhatsApp</a>
+           href="https://wa.me/${WA}?text=${encodeURIComponent('Hello C.L Khanna Jewellers, I would like to request the price of the "' + p.name + '" (' + CAT_TITLES[safeCat] + ') from your website.')}">Request Price on WhatsApp</a>
         <a class="btn ghost" href="#" onclick="openAppt(event)">See It In Store</a>
       </div>
       <p class="pd-note">Every piece can be customised — sizes, stones and finish. <a href="custom.html">Learn about custom orders →</a></p>
