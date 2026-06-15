@@ -37,11 +37,23 @@
   <h1>Gold Jewellery</h1>
   <p>Hallmarked gold, crafted to be worn daily and kept forever.</p>
 </div>
-<section style="padding-top:48px">
+<section class="cat-section">
   <div class="wrap">
-    <div class="subbar" id="subbar"></div>
-    <div class="count" id="count"></div>
-    <div class="grid" id="grid"></div>
+    <div class="cat-toolbar">
+      <button class="filter-open-btn" onclick="toggleFilterPanel(true)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg> Filter</button>
+    </div>
+    <div class="cat-layout">
+      <div class="fs-veil" id="fs-veil" onclick="toggleFilterPanel(false)"></div>
+      <aside class="filter-sidebar" id="filter-sidebar">
+        <div class="fs-head"><span>Filters</span><button class="fs-close" onclick="toggleFilterPanel(false)">×</button></div>
+        <div id="fs-body"></div>
+      </aside>
+      <div class="cat-main">
+        <div class="subbar" id="subbar"></div>
+        <div class="count" id="count"></div>
+        <div class="grid" id="grid"></div>
+      </div>
+    </div>
   </div>
 </section>
 <footer id="site-footer"><div class="topline"></div><div class="wrap"><div class="cols">

@@ -232,27 +232,96 @@ function cardHTML(p){
     </div>
   </a>`;
 }
+let _catCurrentSub = "all";
+
+function applyCatalogFilter(){
+  const bar = document.getElementById("subbar");
+  const grid = document.getElementById("grid");
+  const count = document.getElementById("count");
+  const fsBody = document.getElementById("fs-body");
+  if (!bar || !grid) return;
+  const checked = fsBody
+    ? Array.from(fsBody.querySelectorAll('.fs-check input[data-sub]:checked')).map(i => i.dataset.sub)
+    : [];
+  bar.querySelectorAll("button").forEach(b =>
+    b.classList.toggle("active", checked.length === 0 && b.dataset.s === _catCurrentSub)
+  );
+  let n = 0;
+  grid.querySelectorAll(".card").forEach(c => {
+    const show = checked.length > 0
+      ? checked.includes(c.dataset.s)
+      : (_catCurrentSub === "all" || c.dataset.s === _catCurrentSub);
+    c.style.display = show ? "" : "none";
+    if (show) n++;
+  });
+  if (count) count.textContent = n + " piece" + (n === 1 ? "" : "s");
+}
+
+function onSidebarChange(){
+  const fsBody = document.getElementById("fs-body");
+  const checked = fsBody ? fsBody.querySelectorAll('.fs-check input[data-sub]:checked') : [];
+  if (checked.length > 0) _catCurrentSub = "all";
+  applyCatalogFilter();
+}
+
+function buildFilterSidebar(cat, catProducts){
+  const fsBody = document.getElementById("fs-body");
+  if (!fsBody) return;
+  const subs = SUBS[cat];
+  const total = catProducts.length;
+  const subCounts = {};
+  catProducts.forEach(p => { subCounts[p.sub] = (subCounts[p.sub] || 0) + 1; });
+  fsBody.innerHTML =
+    `<div class="fs-group">
+      <button class="fs-group-hd" onclick="toggleFsGroup(this)">Product Type <span class="fs-toggle-icon">−</span></button>
+      <div class="fs-group-body">` +
+        subs.map(([k,l]) =>
+          `<label class="fs-check"><input type="checkbox" data-sub="${esc(k)}" onchange="onSidebarChange()"><span>${esc(l)} <span class="fs-cnt">(${subCounts[k]||0})</span></span></label>`
+        ).join("") +
+      `</div>
+    </div>
+    <div class="fs-group">
+      <button class="fs-group-hd" onclick="toggleFsGroup(this)">Shop For <span class="fs-toggle-icon">−</span></button>
+      <div class="fs-group-body">
+        <label class="fs-check"><input type="checkbox" checked disabled><span>Women <span class="fs-cnt">(${total})</span></span></label>
+      </div>
+    </div>`;
+}
+
+function toggleFsGroup(btn){
+  const group = btn.closest(".fs-group");
+  const icon = btn.querySelector(".fs-toggle-icon");
+  group.classList.toggle("collapsed");
+  icon.textContent = group.classList.contains("collapsed") ? "+" : "−";
+}
+
+function toggleFilterPanel(open){
+  const sidebar = document.getElementById("filter-sidebar");
+  const veil = document.getElementById("fs-veil");
+  if (sidebar) sidebar.classList.toggle("open", open);
+  if (veil) veil.classList.toggle("open", open);
+  document.body.style.overflow = open ? "hidden" : "";
+}
+
 function renderCatalog(cat){
   const subs = SUBS[cat];
   const bar = document.getElementById("subbar");
+  const grid = document.getElementById("grid");
+  const catProducts = PRODUCTS.filter(p => p.cat === cat);
+  _catCurrentSub = "all";
   bar.innerHTML = `<button data-s="all" class="active">All</button>` +
     subs.map(([k,l]) => `<button data-s="${k}">${l}</button>`).join("");
-  const grid = document.getElementById("grid");
-  grid.innerHTML = PRODUCTS.filter(p => p.cat === cat).map(cardHTML).join("");
-  const count = document.getElementById("count");
-  function apply(s){
-    bar.querySelectorAll("button").forEach(b => b.classList.toggle("active", b.dataset.s === s));
-    let n = 0;
-    grid.querySelectorAll(".card").forEach(c => {
-      const show = s === "all" || c.dataset.s === s;
-      c.style.display = show ? "" : "none";
-      if (show) n++;
-    });
-    count.textContent = n + " piece" + (n === 1 ? "" : "s");
-  }
-  bar.querySelectorAll("button").forEach(b => b.addEventListener("click", () => apply(b.dataset.s)));
+  grid.innerHTML = catProducts.map(cardHTML).join("");
+  buildFilterSidebar(cat, catProducts);
+  bar.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    const fsBody = document.getElementById("fs-body");
+    if (fsBody) fsBody.querySelectorAll('.fs-check input[data-sub]').forEach(i => { i.checked = false; });
+    _catCurrentSub = b.dataset.s;
+    applyCatalogFilter();
+  }));
   const want = new URLSearchParams(location.search).get("sub");
-  apply(want && subs.some(([k]) => k === want) ? want : "all");
+  _catCurrentSub = (want && subs.some(([k]) => k === want)) ? want : "all";
+  applyCatalogFilter();
 }
 
 /* ---------- product detail ---------- */
