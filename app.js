@@ -232,25 +232,17 @@ function cardHTML(p){
     </div>
   </a>`;
 }
-let _catCurrentSub = "all";
-
 function applyCatalogFilter(){
-  const bar = document.getElementById("subbar");
   const grid = document.getElementById("grid");
   const count = document.getElementById("count");
   const fsBody = document.getElementById("fs-body");
-  if (!bar || !grid) return;
+  if (!grid) return;
   const checked = fsBody
     ? Array.from(fsBody.querySelectorAll('.fs-check input[data-sub]:checked')).map(i => i.dataset.sub)
     : [];
-  bar.querySelectorAll("button").forEach(b =>
-    b.classList.toggle("active", checked.length === 0 && b.dataset.s === _catCurrentSub)
-  );
   let n = 0;
   grid.querySelectorAll(".card").forEach(c => {
-    const show = checked.length > 0
-      ? checked.includes(c.dataset.s)
-      : (_catCurrentSub === "all" || c.dataset.s === _catCurrentSub);
+    const show = checked.length === 0 || checked.includes(c.dataset.s);
     c.style.display = show ? "" : "none";
     if (show) n++;
   });
@@ -258,9 +250,6 @@ function applyCatalogFilter(){
 }
 
 function onSidebarChange(){
-  const fsBody = document.getElementById("fs-body");
-  const checked = fsBody ? fsBody.querySelectorAll('.fs-check input[data-sub]:checked') : [];
-  if (checked.length > 0) _catCurrentSub = "all";
   applyCatalogFilter();
 }
 
@@ -304,35 +293,54 @@ function toggleFilterPanel(open){
 }
 
 function renderCatalog(cat){
-  const subs = SUBS[cat];
-  const bar = document.getElementById("subbar");
   const grid = document.getElementById("grid");
   const catProducts = PRODUCTS.filter(p => p.cat === cat);
-  _catCurrentSub = "all";
-  bar.innerHTML = `<button data-s="all" class="active">All</button>` +
-    subs.map(([k,l]) => `<button data-s="${k}">${l}</button>`).join("");
   grid.innerHTML = catProducts.map(cardHTML).join("");
   buildFilterSidebar(cat, catProducts);
-  bar.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
-    const fsBody = document.getElementById("fs-body");
-    if (fsBody) fsBody.querySelectorAll('.fs-check input[data-sub]').forEach(i => { i.checked = false; });
-    _catCurrentSub = b.dataset.s;
-    applyCatalogFilter();
-  }));
   const want = new URLSearchParams(location.search).get("sub");
-  _catCurrentSub = (want && subs.some(([k]) => k === want)) ? want : "all";
+  if (want && SUBS[cat].some(([k]) => k === want)) {
+    const fsBody = document.getElementById("fs-body");
+    if (fsBody) {
+      const cb = fsBody.querySelector('.fs-check input[data-sub="' + want + '"]');
+      if (cb) { cb.checked = true; applyCatalogFilter(); return; }
+    }
+  }
   applyCatalogFilter();
 }
 
 /* ---------- product detail ---------- */
+let _pdDescFull = "", _pdDescShort = "";
+
+function toggleReadMore(){
+  const el = document.getElementById("pd-desc-txt");
+  const btn = document.getElementById("pd-rm-btn");
+  if (!el || !btn) return;
+  const expanding = btn.textContent.trim() === "Read More";
+  el.textContent = expanding ? _pdDescFull : _pdDescShort;
+  btn.textContent = expanding ? "Read Less" : "Read More";
+}
+
+function checkPinCode(){
+  const val = (document.getElementById("pd-pin-val") || {}).value || "";
+  const res = document.getElementById("pd-pin-result");
+  if (!res) return;
+  if (!val.trim()) { res.textContent = "Please enter a pin code."; res.style.color = "#b87c2a"; return; }
+  res.textContent = "We deliver across India — free insured shipping.";
+  res.style.color = "#3d9c5a";
+}
+
 function renderProduct(){
   const id = new URLSearchParams(location.search).get("id");
   const p = PRODUCTS.find(x => x.img === id) || PRODUCTS[0];
   const safeCat = ['gold','diamond','polki'].includes(p.cat) ? p.cat : 'gold';
   const subLabel = (SUBS[safeCat].find(([k]) => k === p.sub) || ["",""])[1];
   document.title = esc(p.name) + " — C.L Khanna Jewellers";
-  document.getElementById("pd").innerHTML = `
-  <nav class="crumbs"><a href="index.html">Home</a> / <a href="${safeCat}.html">${esc(CAT_TITLES[safeCat])}</a> / <a href="${safeCat}.html?sub=${esc(p.sub)}">${esc(subLabel)}</a> / <span>${esc(p.name)}</span></nav>
+  const TRUNC = 130;
+  _pdDescFull = p.desc;
+  _pdDescShort = p.desc.length > TRUNC ? p.desc.slice(0, TRUNC).replace(/\s+\S*$/, '') + '…' : p.desc;
+  const needRM = p.desc.length > TRUNC;
+  document.getElementById("pd").innerHTML =
+  `<nav class="crumbs"><a href="index.html">Home</a> / <a href="${safeCat}.html">${esc(CAT_TITLES[safeCat])}</a> / <a href="${safeCat}.html?sub=${esc(p.sub)}">${esc(subLabel)}</a> / <span>${esc(p.name)}</span></nav>
   <div class="pd-grid">
     <div class="pd-photo" id="zoomBox">
       <img id="zoomImg" src="${imgURL(p)}" alt="${esc(p.name)}">
@@ -340,13 +348,30 @@ function renderProduct(){
     <div class="pd-info">
       <p class="eyebrow">${esc(CAT_TITLES[safeCat])} · ${esc(subLabel)}</p>
       <h1>${esc(p.name)}</h1>
-      <p class="pd-desc">${esc(p.desc)}</p>
+      <p class="pd-instock"><span class="pd-dot" aria-hidden="true"></span>In Stock &nbsp;·&nbsp; <span class="pd-tax">Taxes inclusive</span> &nbsp;·&nbsp; <a class="pd-viewdet" href="#pd-delivery">View Details</a></p>
+      <p class="pd-desc" id="pd-desc-txt">${esc(needRM ? _pdDescShort : _pdDescFull)}</p>
+      ${needRM ? '<button class="pd-readmore" id="pd-rm-btn" onclick="toggleReadMore()">Read More</button>' : ''}
       <div class="pd-specs">
         <div><b>Metal</b><span>${esc(p.metal)}</span></div>
         <div><b>Craftsmanship</b><span>${esc(p.work)}</span></div>
         <div><b>Occasion</b><span>${esc(p.occasion)}</span></div>
-        <div><b>Weight &amp; Price</b><span>On request — varies with the day's rate</span></div>
+        <div><b>Weight &amp; Price</b><span>On request — varies with the day’s rate</span></div>
         <div><b>Certification</b><span>BIS hallmarked</span></div>
+      </div>
+      <div class="trust-badges">
+        <div class="tb-item"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.56 14.29L7 22l5-3 5 3-1.56-7.72"/></svg><span>100% Certified Jewellery</span></div>
+        <div class="tb-item"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg><span>7-Day Easy Return</span></div>
+        <div class="tb-item"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 4v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><span>Free Shipping Across India</span></div>
+        <div class="tb-item"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg><span>Purity Guaranteed</span></div>
+        <div class="tb-item"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg><span>Lifetime Buyback &amp; Exchange</span></div>
+      </div>
+      <div class="pd-pincode" id="pd-delivery">
+        <p class="pd-pin-label">Enter your pin code to check delivery availability</p>
+        <div class="pd-pin-row">
+          <input class="pd-pin-input" type="text" inputmode="numeric" maxlength="6" placeholder="e.g. 143001" id="pd-pin-val">
+          <button class="pd-pin-btn" onclick="checkPinCode()">Check</button>
+        </div>
+        <p class="pd-pin-result" id="pd-pin-result"></p>
       </div>
       <div class="cta-row">
         <a class="btn solid" href="#" onclick="addToCart(this.dataset.prod);return false;" data-prod="${esc(p.img)}">Add to Cart</a>
@@ -356,6 +381,12 @@ function renderProduct(){
       </div>
       <p class="pd-note">Every piece can be customised — sizes, stones and finish. <a href="custom.html">Learn about custom orders →</a></p>
     </div>
+  </div>
+  <div class="trust-strip">
+    <span class="ts-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 4v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Free insured shipping</span>
+    <span class="ts-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>Free delivery across India</span>
+    <span class="ts-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>100% secured payment</span>
+    <span class="ts-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>100% genuine brand</span>
   </div>`;
   const box = document.getElementById("zoomBox"), img = document.getElementById("zoomImg");
   box.addEventListener("mousemove", e => {
