@@ -455,6 +455,20 @@ async function submitReview(e){
   } catch(err){ btn.disabled = false; btn.textContent = 'Submit Review'; alert('Could not save your review. Please try again.'); }
 }
 
+/* ---- Complete the Look ---- */
+function renderCompleteTheLook(cat, sub, currentId){
+  const grid = document.getElementById('pd-ctl-grid');
+  if (!grid) return;
+  const picks = PRODUCTS.filter(p => p.cat === cat && p.sub === sub && p.img !== currentId)
+    .sort(() => Math.random() - 0.5).slice(0, 2);
+  if (!picks.length){ grid.closest('.pd-ctl').style.display = 'none'; return; }
+  grid.innerHTML = picks.map(p => `
+    <a class="pd-ctl-card" href="product.html?id=${esc(p.img)}">
+      <img src="${imgURL(p)}" alt="${esc(p.name)}">
+      <div><span class="pd-ctl-name">${esc(p.name)}</span><span class="pd-ctl-meta">${esc(p.metal)}</span></div>
+    </a>`).join('');
+}
+
 /* ---- You May Also Like ---- */
 function renderYMAL(cat, currentId){
   const grid = document.getElementById('pd-ymal-grid');
@@ -478,11 +492,17 @@ function renderProduct(){
   document.getElementById("pd").innerHTML =
   `<nav class="crumbs"><a href="index.html">Home</a> / <a href="${safeCat}.html">${esc(CAT_TITLES[safeCat])}</a> / <a href="${safeCat}.html?sub=${esc(p.sub)}">${esc(subLabel)}</a> / <span>${esc(p.name)}</span></nav>
   <div class="pd-grid">
-    <div class="pd-photo" id="zoomBox">
-      <img id="zoomImg" src="${imgURL(p)}" alt="${esc(p.name)}">
-      <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}" onclick="toggleWishlist('${esc(p.img)}',this)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="${wled?'var(--gold)':'none'}" stroke="${wled?'var(--gold)':'currentColor'}" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-      </button>
+    <div class="pd-left">
+      <div class="pd-photo" id="zoomBox">
+        <img id="zoomImg" src="${imgURL(p)}" alt="${esc(p.name)}">
+        <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}" onclick="toggleWishlist('${esc(p.img)}',this)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="${wled?'var(--gold)':'none'}" stroke="${wled?'var(--gold)':'currentColor'}" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="pd-ctl">
+        <p class="pd-ctl-h">Complete the Look</p>
+        <div id="pd-ctl-grid"></div>
+      </div>
     </div>
     <div class="pd-info">
       <p class="eyebrow">${esc(CAT_TITLES[safeCat])} · ${esc(subLabel)}</p>
@@ -567,6 +587,7 @@ function renderProduct(){
   box.addEventListener("mouseleave", () => { img.style.transform = "scale(1)"; });
   loadReviews(p.img);
   renderYMAL(p.cat, p.img);
+  renderCompleteTheLook(p.cat, p.sub, p.img);
 }
 
 /* ---------- hero slider ---------- */
