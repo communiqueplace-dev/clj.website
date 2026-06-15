@@ -139,6 +139,16 @@ async function doAuth(mode){
     : sb.auth.signInWithPassword({ email, password: pass });
   const { data, error } = await fn;
   if (error){ errEl.textContent = error.message; return; }
+  if (mode === "up" && data.user){
+    fetch(SUPABASE_URL + "/functions/v1/send-welcome", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email: data.user.email })
+    }).catch(function(){});
+  }
   if (mode === "up" && data.user && !data.session){
     errEl.textContent = "Check your email to confirm your account, then sign in.";
     return;

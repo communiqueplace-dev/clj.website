@@ -149,7 +149,28 @@ function buildFooter(){
 
 function joinNews(e){
   e.preventDefault();
-  const em = document.getElementById("nl-email").value;
+  const email = (document.getElementById("nl-email") || {}).value || "";
+  if (!email) return false;
+  if (typeof SUPABASE_URL !== "undefined" && SUPABASE_URL){
+    fetch(SUPABASE_URL + "/rest/v1/subscribers", {
+      method: "POST",
+      headers: {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+        "Content-Type": "application/json",
+        "Prefer": "resolution=ignore-duplicates,return=minimal"
+      },
+      body: JSON.stringify({ email: email })
+    }).catch(function(){});
+    fetch(SUPABASE_URL + "/functions/v1/send-welcome", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email: email })
+    }).catch(function(){});
+  }
   e.target.innerHTML = '<p class="nl-thanks">Thank you — you are on the list.</p>';
   return false;
 }
