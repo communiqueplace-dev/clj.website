@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /clkhanna-studio.html
+Disallow: /clkhanna-admin.html
 
 Sitemap: sitemap.xml
