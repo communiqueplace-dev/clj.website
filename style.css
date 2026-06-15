@@ -597,3 +597,114 @@ footer .cols{grid-template-columns:1.1fr 1fr 1.6fr .8fr;gap:32px;text-align:left
 @media(max-width:760px){
   .brand img{height:56px}
 }
+
+
+/* ================= v6 — comprehensive mobile polish ================= */
+
+/* prevent any source of horizontal scrollbar */
+html{overflow-x:hidden}
+
+/* ---- header ----
+   On phones (≤540 px) the logo is centred absolutely, which causes it to
+   overlap the action icons on narrow screens (logo ~174 px wide, right-side
+   icons ~110 px, leaving only ~36 px gap at 360 px). Pull the brand into
+   normal flex flow so the three zones — burger / logo / icons — each take
+   their natural slice of the bar and can never collide.
+   Desktop & tablet keep the centred-logo layout untouched. */
+@media(max-width:540px){
+  .bar .brand{position:static;transform:none;flex:1;display:flex;justify-content:center;align-items:center}
+  .bar{min-height:0;padding:12px 4%}
+  .brand img{height:46px}
+  .actions{gap:10px}
+  .actions .ic,.actions .ic svg{width:19px;height:19px}
+}
+@media(max-width:380px){
+  .brand img{height:40px}
+  .actions{gap:7px}
+}
+
+/* ---- section vertical spacing ---- */
+@media(max-width:760px){
+  section{padding:52px 0}
+  .sec-head{margin-bottom:36px}
+  .pagehead{padding:36px 5% 28px}
+  /* hero slider: slightly shorter, headline fits 2 lines comfortably */
+  .slider{height:58vh;min-height:360px}
+  .slide .txt h2{font-size:1.6rem;line-height:1.22;margin:10px 0 18px}
+  .slide .frame{padding-bottom:56px}
+  .dots{bottom:14px}
+}
+
+/* ---- grids: tighter gaps on phone ---- */
+@media(max-width:760px){
+  .grid{gap:18px}
+  .tiles{gap:14px}
+  .connect-grid{gap:16px}
+}
+
+/* ---- generous gutter on narrow phones ---- */
+@media(max-width:600px){
+  .wrap{padding-left:5%;padding-right:5%}
+}
+
+/* ---- connect / service blocks: less internal padding ---- */
+@media(max-width:760px){
+  .c-block{padding:32px 18px}
+  .c-block svg{width:28px;height:28px;margin-bottom:12px}
+}
+
+/* ---- product page: stack CTA buttons full-width on phone ---- */
+@media(max-width:600px){
+  .cta-row{flex-direction:column;gap:12px}
+  .cta-row .btn{text-align:center;display:block;width:100%}
+  .pd-desc{font-size:1.06rem}
+  .pd-grid{gap:28px}
+}
+
+/* ---- about page stats ---- */
+@media(max-width:600px){
+  .stats{gap:22px;margin-top:26px}
+  .stats b{font-size:1.8rem}
+}
+
+/* ---- catalogue subbar filter pills ---- */
+@media(max-width:600px){
+  .subbar{gap:6px;margin-bottom:28px}
+  .subbar button{padding:8px 13px}
+}
+
+/* ---- testimonial carousel: taller min-height for long quotes ---- */
+@media(max-width:760px){
+  .t-carousel{min-height:360px}
+  .t-slide p{font-size:1.12rem}
+}
+
+/* ---- editorial carousel: narrower edge fades on small phones ---- */
+@media(max-width:480px){
+  .ed-carousel:before,.ed-carousel:after{width:32px}
+}
+
+/* ---- appointment modal ---- */
+@media(max-width:480px){
+  .modal{padding:4vh 3vw}
+  .modal .box{padding:34px 20px 28px}
+  .modal h3{font-size:1.3rem}
+}
+
+/* ---- cart rows: smaller thumbnail on very small phones ---- */
+@media(max-width:440px){
+  .cart-row{grid-template-columns:60px 1fr;gap:10px;padding:12px}
+  .cart-row img{width:60px;height:60px}
+}
+
+/* ---- footer newsletter: snugger padding on phones ---- */
+@media(max-width:540px){
+  footer .news{padding:22px 20px;margin:36px 0 36px}
+}
+
+/* ---- eyebrow: reduce extreme letter-spacing on narrow phones so it
+   doesn't overflow (e.g. "Diamond Jewellery · Bangles & Bracelets") ---- */
+@media(max-width:600px){
+  .eyebrow{letter-spacing:.22em}
+  .crumbs{letter-spacing:.1em;font-size:.64rem}
+}
