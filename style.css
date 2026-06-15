@@ -811,3 +811,63 @@ html{overflow-x:hidden}
   .ts-item{border-right:none;padding:5px 12px}
   .ts-item:not(:last-child)::after{content:"·";margin-left:12px;color:var(--line)}
 }
+
+/* ================= v9 — wishlist heart, two-column section, reviews, YMAL ================= */
+
+/* Wishlist button — on product photo and cards */
+.pd-photo{position:relative}
+.card .ph{position:relative}
+.wl-btn{position:absolute;top:10px;right:10px;z-index:5;background:rgba(255,255,255,.92);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 6px rgba(21,19,14,.13);transition:transform .18s,background .18s;padding:0}
+.wl-btn:hover{background:#fff;transform:scale(1.12)}
+.wl-btn.wl-on svg path{fill:var(--gold);stroke:var(--gold)}
+
+/* Two-column section (Ask + Reviews) */
+.pd-cols{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:56px;padding-top:48px;border-top:1px solid var(--line)}
+.pd-sec-h{font-family:var(--disp);font-weight:400;font-size:1.25rem;color:var(--ink);margin:0 0 22px;letter-spacing:.02em}
+
+/* Shared form styles */
+.pd-form-group{margin-bottom:14px}
+.pd-ask label,.pd-revs label{display:block;font-family:var(--sans);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pd-ask input,.pd-ask textarea,.pd-revs input,.pd-revs textarea{width:100%;border:1px solid var(--line);padding:10px 13px;font-family:var(--sans);font-size:.88rem;background:#fff;outline:none;resize:vertical;box-sizing:border-box;transition:border-color .18s}
+.pd-ask input:focus,.pd-ask textarea:focus,.pd-revs input:focus,.pd-revs textarea:focus{border-color:var(--gold)}
+
+/* Reviews */
+.rv-avg{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.rv-stars{color:var(--gold);font-size:1.15rem;letter-spacing:1px}
+.rv-score{font-family:var(--disp);font-size:1.45rem;color:var(--ink);line-height:1}
+.rv-ct{font-family:var(--sans);font-size:.76rem;color:var(--muted)}
+.rv-item{padding:14px 0;border-bottom:1px solid var(--line)}
+.rv-item:last-child{border-bottom:none}
+.rv-meta{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+.rv-name{font-family:var(--sans);font-size:.8rem;font-weight:500;color:var(--ink)}
+.rv-date{font-family:var(--sans);font-size:.68rem;color:var(--muted)}
+.rv-rating{color:var(--gold);font-size:.9rem;letter-spacing:1px;margin:2px 0 6px}
+.rv-comment{font-family:var(--sans);font-size:.88rem;color:var(--ink);line-height:1.65;margin:0}
+.rv-empty{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:.94rem;margin:0 0 18px}
+.pd-rv-write{margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
+.pd-rv-write h4{font-family:var(--sans);font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);margin:0 0 18px}
+
+/* Star picker */
+.star-pick{display:flex;gap:3px;margin:4px 0 0;cursor:pointer}
+.sps{font-size:1.55rem;color:#d9cdb3;transition:color .12s;user-select:none;line-height:1}
+.sps.on{color:var(--gold)}
+.star-pick:hover .sps{color:var(--gold)}
+.star-pick:hover .sps~.sps{color:#d9cdb3}
+
+/* You May Also Like */
+.pd-ymal{margin-top:60px;padding-top:48px;border-top:1px solid var(--line)}
+.pd-ymal-h{font-family:var(--disp);font-weight:400;font-size:1.35rem;color:var(--ink);margin:0 0 28px;letter-spacing:.02em}
+.pd-ymal .grid{grid-template-columns:repeat(4,1fr)}
+
+/* Responsive */
+@media(max-width:900px){
+  .pd-cols{gap:36px}
+  .pd-ymal .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+  .pd-cols{grid-template-columns:1fr;gap:40px}
+}
+@media(max-width:460px){
+  .pd-ymal .grid{grid-template-columns:repeat(2,1fr)}
+  .wl-btn{width:32px;height:32px}
+}

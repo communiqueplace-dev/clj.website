@@ -222,13 +222,18 @@ function imgURL(p){ return (p && p.image_url) ? p.image_url : 'assets/catalog/'+
 
 /* ---------- product cards / catalogue ---------- */
 function cardHTML(p){
+  const wled = isWishlisted(p.img);
   return `
   <a class="card rv in" data-s="${esc(p.sub)}" href="product.html?id=${esc(p.img)}">
-    <div class="ph"><img loading="lazy" src="${imgURL(p)}" alt="${esc(p.name)}"></div>
+    <div class="ph">
+      <img loading="lazy" src="${imgURL(p)}" alt="${esc(p.name)}">
+      <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}" onclick="event.preventDefault();event.stopPropagation();toggleWishlist('${esc(p.img)}',this)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="${wled?'var(--gold)':'none'}" stroke="${wled?'var(--gold)':'currentColor'}" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+    </div>
     <div class="info">
       <h3>${esc(p.name)}</h3>
       <p>${esc(p.desc)}</p>
-      <span class="rfp">View Details</span>
     </div>
   </a>`;
 }
@@ -329,6 +334,127 @@ function checkPinCode(){
   res.style.color = "#3d9c5a";
 }
 
+/* ---- Wishlist (localStorage) ---- */
+function _wlGet(){ try{ return JSON.parse(localStorage.getItem('clj_wl')||'[]'); }catch(e){ return []; } }
+function _wlSet(a){ try{ localStorage.setItem('clj_wl', JSON.stringify(a)); }catch(e){} }
+function isWishlisted(id){ return _wlGet().includes(id); }
+function _wlSyncBtn(btn, on){
+  if (!btn) return;
+  btn.setAttribute('aria-label', on ? 'Remove from wishlist' : 'Add to wishlist');
+  btn.classList.toggle('wl-on', on);
+  const path = btn.querySelector('path');
+  if (path){ path.setAttribute('fill', on ? 'var(--gold)' : 'none'); path.setAttribute('stroke', on ? 'var(--gold)' : 'currentColor'); }
+}
+function toggleWishlist(id, btn){
+  const a = _wlGet();
+  const i = a.indexOf(id);
+  if (i === -1) a.push(id); else a.splice(i, 1);
+  _wlSet(a);
+  const on = a.includes(id);
+  document.querySelectorAll('.wl-btn[data-wid="'+id+'"]').forEach(b => _wlSyncBtn(b, on));
+}
+
+/* ---- Share ---- */
+function shareProduct(name){
+  const url = location.href;
+  const data = { title: name + ' — C.L Khanna Jewellers', url };
+  if (navigator.share && navigator.canShare && navigator.canShare(data)){
+    navigator.share(data).catch(()=>{});
+  } else {
+    const btn = document.querySelector('.pd-share-btn');
+    if (navigator.clipboard){
+      navigator.clipboard.writeText(url).then(() => {
+        if (btn){ const t = btn.textContent; btn.textContent = 'Link Copied!'; setTimeout(()=>{ btn.textContent = t; }, 2000); }
+      }).catch(() => prompt('Copy this link:', url));
+    } else { prompt('Copy this link:', url); }
+  }
+}
+
+/* ---- Ask → WhatsApp ---- */
+function submitAskWA(e, productName){
+  e.preventDefault();
+  const f = e.target;
+  const name = f.querySelector('[name=ask-name]').value.trim();
+  const phone = f.querySelector('[name=ask-phone]').value.trim();
+  const query = f.querySelector('[name=ask-query]').value.trim();
+  const text = 'Hello C.L Khanna Jewellers,\n\nProduct: ' + productName + '\nName: ' + name + '\nPhone: ' + phone + '\nQuery: ' + query;
+  window.open('https://wa.me/919815605373?text=' + encodeURIComponent(text), '_blank', 'noopener');
+}
+
+/* ---- Star picker ---- */
+function pickStar(e){
+  const star = e.target.closest('.sps');
+  if (!star) return;
+  const val = parseInt(star.dataset.v);
+  const container = star.closest('.star-pick');
+  container.querySelectorAll('.sps').forEach((s,i) => s.classList.toggle('on', i < val));
+  const inp = container.querySelector('input[type=hidden]');
+  if (inp) inp.value = val;
+}
+
+/* ---- Reviews ---- */
+async function loadReviews(productImg){
+  const list = document.getElementById('pd-rv-list');
+  const summary = document.getElementById('pd-rv-summary');
+  if (!list) return;
+  if (typeof SUPABASE_URL === 'undefined' || !SUPABASE_URL){ _renderReviews([]); return; }
+  try {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/reviews?product_img=eq.' + encodeURIComponent(productImg) + '&order=created_at.desc', {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY }
+    });
+    _renderReviews(r.ok ? (await r.json()) : []);
+  } catch(err){ _renderReviews([]); }
+}
+function _renderReviews(rows){
+  const list = document.getElementById('pd-rv-list');
+  const summary = document.getElementById('pd-rv-summary');
+  if (!list) return;
+  const stars = n => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
+  if (!rows.length){
+    if (summary) summary.innerHTML = '';
+    list.innerHTML = '<p class="rv-empty">Be the first to review this item.</p>';
+    return;
+  }
+  const avg = rows.reduce((s,r) => s + (r.rating||0), 0) / rows.length;
+  if (summary) summary.innerHTML = `<div class="rv-avg"><span class="rv-stars">${stars(avg)}</span><span class="rv-score">${avg.toFixed(1)}</span><span class="rv-ct">(${rows.length} review${rows.length>1?'s':''})</span></div>`;
+  const fmt = d => d ? new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '';
+  list.innerHTML = rows.map(r => `<div class="rv-item"><div class="rv-meta"><span class="rv-name">${esc(r.name||'Anonymous')}</span><span class="rv-date">${fmt(r.created_at)}</span></div><div class="rv-rating">${stars(r.rating||0)}</div>${r.comment?'<p class="rv-comment">'+esc(r.comment)+'</p>':''}</div>`).join('');
+}
+async function submitReview(e){
+  e.preventDefault();
+  const form = e.target;
+  const productImg = form.dataset.pid;
+  const name = form.querySelector('[name=rv-name]').value.trim();
+  const rating = parseInt(form.querySelector('[name=rv-rating]').value || '0');
+  const comment = form.querySelector('[name=rv-comment]').value.trim();
+  if (!rating){ alert('Please select a star rating.'); return; }
+  if (typeof SUPABASE_URL === 'undefined' || !SUPABASE_URL){ alert('Reviews service unavailable.'); return; }
+  const btn = form.querySelector('[type=submit]');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/reviews', {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify({ product_img: productImg, name: name||'Anonymous', rating, comment })
+    });
+    btn.disabled = false; btn.textContent = 'Submit Review';
+    if (r.ok || r.status === 201){
+      form.reset();
+      form.querySelectorAll('.sps').forEach(s => s.classList.remove('on'));
+      loadReviews(productImg);
+    } else { alert('Could not save your review. Please try again.'); }
+  } catch(err){ btn.disabled = false; btn.textContent = 'Submit Review'; alert('Could not save your review. Please try again.'); }
+}
+
+/* ---- You May Also Like ---- */
+function renderYMAL(cat, currentId){
+  const grid = document.getElementById('pd-ymal-grid');
+  if (!grid) return;
+  const others = PRODUCTS.filter(p => p.cat === cat && p.img !== currentId);
+  const picks = others.sort(() => Math.random() - 0.5).slice(0, 4);
+  grid.innerHTML = picks.map(cardHTML).join('');
+}
+
 function renderProduct(){
   const id = new URLSearchParams(location.search).get("id");
   const p = PRODUCTS.find(x => x.img === id) || PRODUCTS[0];
@@ -339,23 +465,27 @@ function renderProduct(){
   _pdDescFull = p.desc;
   _pdDescShort = p.desc.length > TRUNC ? p.desc.slice(0, TRUNC).replace(/\s+\S*$/, '') + '…' : p.desc;
   const needRM = p.desc.length > TRUNC;
+  const wled = isWishlisted(p.img);
   document.getElementById("pd").innerHTML =
   `<nav class="crumbs"><a href="index.html">Home</a> / <a href="${safeCat}.html">${esc(CAT_TITLES[safeCat])}</a> / <a href="${safeCat}.html?sub=${esc(p.sub)}">${esc(subLabel)}</a> / <span>${esc(p.name)}</span></nav>
   <div class="pd-grid">
     <div class="pd-photo" id="zoomBox">
       <img id="zoomImg" src="${imgURL(p)}" alt="${esc(p.name)}">
+      <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}" onclick="toggleWishlist('${esc(p.img)}',this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="${wled?'var(--gold)':'none'}" stroke="${wled?'var(--gold)':'currentColor'}" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
     </div>
     <div class="pd-info">
       <p class="eyebrow">${esc(CAT_TITLES[safeCat])} · ${esc(subLabel)}</p>
       <h1>${esc(p.name)}</h1>
-      <p class="pd-instock"><span class="pd-dot" aria-hidden="true"></span>In Stock &nbsp;·&nbsp; <span class="pd-tax">Taxes inclusive</span> &nbsp;·&nbsp; <a class="pd-viewdet" href="#pd-delivery">View Details</a></p>
+      <p class="pd-instock"><span class="pd-dot" aria-hidden="true"></span>In Stock &nbsp;·&nbsp; <span class="pd-tax">Taxes inclusive</span></p>
       <p class="pd-desc" id="pd-desc-txt">${esc(needRM ? _pdDescShort : _pdDescFull)}</p>
       ${needRM ? '<button class="pd-readmore" id="pd-rm-btn" onclick="toggleReadMore()">Read More</button>' : ''}
       <div class="pd-specs">
         <div><b>Metal</b><span>${esc(p.metal)}</span></div>
         <div><b>Craftsmanship</b><span>${esc(p.work)}</span></div>
         <div><b>Occasion</b><span>${esc(p.occasion)}</span></div>
-        <div><b>Weight &amp; Price</b><span>On request — varies with the day’s rate</span></div>
+        <div><b>Weight &amp; Price</b><span>On request — varies with the day's rate</span></div>
         <div><b>Certification</b><span>BIS hallmarked</span></div>
       </div>
       <div class="trust-badges">
@@ -374,21 +504,60 @@ function renderProduct(){
       </div>
       <div class="cta-row">
         <a class="btn solid" href="#" onclick="addToCart(this.dataset.prod);return false;" data-prod="${esc(p.img)}">Add to Cart</a>
-        <a class="btn ghost" target="_blank" rel="noopener"
-           href="https://wa.me/${WA}?text=${encodeURIComponent('Hello C.L Khanna Jewellers, I would like to request the price of the "' + p.name + '" (' + CAT_TITLES[safeCat] + ') from your website.')}">Request Price on WhatsApp</a>
+        <a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/${WA}?text=${encodeURIComponent('Hello C.L Khanna Jewellers, I would like to request the price of the "' + p.name + '" (' + CAT_TITLES[safeCat] + ') from your website.')}">Request Price on WhatsApp</a>
+        <button class="btn ghost pd-share-btn" onclick="shareProduct('${esc(p.name)}')">Share</button>
         <a class="btn ghost" href="#" onclick="openAppt(event)">See It In Store</a>
       </div>
       <p class="pd-note">Every piece can be customised — sizes, stones and finish. <a href="custom.html">Learn about custom orders →</a></p>
     </div>
   </div>
-  `;
+
+  <div class="pd-cols">
+    <div class="pd-ask">
+      <h3 class="pd-sec-h">Have a Question?</h3>
+      <form onsubmit="submitAskWA(event,'${esc(p.name)}')">
+        <div class="pd-form-group"><label>Name</label><input type="text" name="ask-name" placeholder="Your name" required></div>
+        <div class="pd-form-group"><label>Phone</label><input type="tel" name="ask-phone" placeholder="+91 98765 43210" required></div>
+        <div class="pd-form-group"><label>Your Question</label><textarea name="ask-query" rows="4" placeholder="e.g. Is this available in 22k gold?" required></textarea></div>
+        <button type="submit" class="btn solid">Send on WhatsApp</button>
+      </form>
+    </div>
+    <div class="pd-revs">
+      <h3 class="pd-sec-h">Ratings &amp; Reviews</h3>
+      <div id="pd-rv-summary"></div>
+      <div id="pd-rv-list"><p class="rv-empty">Loading…</p></div>
+      <div class="pd-rv-write">
+        <h4>Write a Review</h4>
+        <form data-pid="${esc(p.img)}" onsubmit="submitReview(event)">
+          <div class="pd-form-group"><label>Your Name</label><input type="text" name="rv-name" placeholder="e.g. Priya S." required></div>
+          <div class="pd-form-group"><label>Rating</label>
+            <div class="star-pick" onclick="pickStar(event)">
+              <span class="sps" data-v="1">★</span><span class="sps" data-v="2">★</span><span class="sps" data-v="3">★</span><span class="sps" data-v="4">★</span><span class="sps" data-v="5">★</span>
+              <input type="hidden" name="rv-rating">
+            </div>
+          </div>
+          <div class="pd-form-group"><label>Comment <span style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:.82rem;color:var(--muted)">(optional)</span></label><textarea name="rv-comment" rows="3" placeholder="Share your experience…"></textarea></div>
+          <button type="submit" class="btn solid">Submit Review</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="pd-ymal">
+    <h3 class="pd-ymal-h">You May Also Like</h3>
+    <div class="grid" id="pd-ymal-grid"></div>
+  </div>`;
+
   const box = document.getElementById("zoomBox"), img = document.getElementById("zoomImg");
   box.addEventListener("mousemove", e => {
+    if (e.target.closest('.wl-btn')) return;
     const r = box.getBoundingClientRect();
     img.style.transformOrigin = (((e.clientX - r.left) / r.width) * 100) + "% " + (((e.clientY - r.top) / r.height) * 100) + "%";
     img.style.transform = "scale(2)";
   });
   box.addEventListener("mouseleave", () => { img.style.transform = "scale(1)"; });
+  loadReviews(p.img);
+  renderYMAL(p.cat, p.img);
 }
 
 /* ---------- hero slider ---------- */
