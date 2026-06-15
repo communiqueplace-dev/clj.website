@@ -391,6 +391,15 @@ function pickStar(e){
   const inp = container.querySelector('input[type=hidden]');
   if (inp) inp.value = val;
 }
+function hoverStar(e){
+  const star = e.target.closest('.sps');
+  if (!star) return;
+  const val = parseInt(star.dataset.v);
+  star.closest('.star-pick').querySelectorAll('.sps').forEach((s,i) => s.classList.toggle('hov', i < val));
+}
+function unhoverStar(e){
+  e.currentTarget.querySelectorAll('.sps').forEach(s => s.classList.remove('hov'));
+}
 
 /* ---- Reviews ---- */
 async function loadReviews(productImg){
@@ -531,7 +540,7 @@ function renderProduct(){
         <form data-pid="${esc(p.img)}" onsubmit="submitReview(event)">
           <div class="pd-form-group"><label>Your Name</label><input type="text" name="rv-name" placeholder="e.g. Priya S." required></div>
           <div class="pd-form-group"><label>Rating</label>
-            <div class="star-pick" onclick="pickStar(event)">
+            <div class="star-pick" onclick="pickStar(event)" onmouseover="hoverStar(event)" onmouseout="unhoverStar(event)">
               <span class="sps" data-v="1">★</span><span class="sps" data-v="2">★</span><span class="sps" data-v="3">★</span><span class="sps" data-v="4">★</span><span class="sps" data-v="5">★</span>
               <input type="hidden" name="rv-rating">
             </div>

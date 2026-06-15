@@ -849,10 +849,9 @@ html{overflow-x:hidden}
 
 /* Star picker */
 .star-pick{display:flex;gap:3px;margin:4px 0 0;cursor:pointer}
-.sps{font-size:1.55rem;color:#d9cdb3;transition:color .12s;user-select:none;line-height:1}
+.sps{font-size:1.55rem;color:#d9cdb3;transition:color .12s;user-select:none;line-height:1;cursor:pointer}
 .sps.on{color:var(--gold)}
-.star-pick:hover .sps{color:var(--gold)}
-.star-pick:hover .sps~.sps{color:#d9cdb3}
+.sps.hov{color:var(--gold)}
 
 /* You May Also Like */
 .pd-ymal{margin-top:60px;padding-top:48px;border-top:1px solid var(--line)}
