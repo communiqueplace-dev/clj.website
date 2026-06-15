@@ -37,10 +37,11 @@ const HTML_BODY = `<!DOCTYPE html>
 </head>
 <body>
 <div class="wrap">
+  <div style="text-align:center;margin-bottom:28px"><img src="https://clkhannajewellers.in/assets/logo-main.png" alt="C.L Khanna Jewellers" style="height:60px;width:auto"></div>
   <h1>Welcome to C.L Khanna Jewellers</h1>
   <p>Thank you for joining us — we are delighted to have you.</p>
   <p>At C.L Khanna, every piece is crafted with intention: hand-set polki chokers, BIS hallmarked gold, and diamond jewellery made for real celebrations. Whether you are shopping for a wedding, a gift, or simply yourself, we look forward to helping you find something beautiful.</p>
-  <p>Explore the collection at <a href="https://communiqueplace-dev.github.io/clj.website/">clkhannajewellers.com</a>, or visit us in person at 8 Dilawari Street, Lawrence Road, Amritsar.</p>
+  <p>Explore the collection at <a href="https://clkhannajewellers.in">clkhannajewellers.in</a>, or visit us in person at 8 Dilawari Street, Lawrence Road, Amritsar.</p>
   <p class="sig">With warmth,<br>The C.L Khanna Jewellers family</p>
   <div class="foot">
     C.L Khanna Jewellers &nbsp;·&nbsp; 8 Dilawari Street, Lawrence Road, Amritsar<br>
