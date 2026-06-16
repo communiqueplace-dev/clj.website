@@ -163,9 +163,9 @@
 const SUPABASE_URL = "https://amqmojrqifsfuhnrabdc.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFtcW1vanJxaWZzZnVobnJhYmRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMjE2NjEsImV4cCI6MjA5NjY5NzY2MX0.nIjlTO2uIgiaPKnWA3SYXTCglkmDZ1KbS8kPmm9S0vg";
 const SUBS = {
-  gold:   [["necklaces","Necklaces & Harams"],["bangles","Bangles & Kadas"],["bracelets","Bracelets"],["earrings","Earrings"]],
-  diamond:[["necklaces","Necklaces & Chokers"],["rings","Rings"],["bangles","Bangles & Bracelets"],["earrings","Earrings"]],
-  polki:  [["chokers","Chokers & Sets"],["harams","Necklaces & Malas"],["earrings","Earrings & Studs"],["more","Bracelets & More"]]
+  gold:    [["sets","Chokers, Malas & Sets"],["bangles","Bangles & Kadas"],["bracelets","Bracelets"],["earrings","Earrings & Studs"],["rings","Rings"]],
+  diamond: [["sets","Chokers, Malas & Sets"],["bangles","Bangles & Kadas"],["bracelets","Bracelets"],["earrings","Earrings & Studs"],["rings","Rings"]],
+  polki:   [["sets","Chokers, Malas & Sets"],["bangles","Bangles & Kadas"],["bracelets","Bracelets"],["earrings","Earrings & Studs"],["rings","Rings"]]
 };
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let PRODUCTS = [];
