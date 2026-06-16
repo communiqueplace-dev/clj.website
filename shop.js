@@ -345,12 +345,12 @@ async function doForgotPassword(){
   }
   var btn = document.querySelector('#auth-forgot .btn.solid');
   btn.disabled = true; btn.textContent = 'Sending...';
-  var base       = window.location.href.replace(/[^\/]*(\?[^#]*)?$/, '');
-  var redirectTo = base + 'reset-password.html';
+  var redirectTo = 'https://clkhannajewellers.in/reset-password.html';
   var result = await sb.auth.resetPasswordForEmail(email, { redirectTo: redirectTo });
   btn.disabled = false; btn.textContent = 'Send Reset Link';
   if (result.error){
-    ferr.textContent = result.error.message || 'Could not send reset link. Please try again.';
+    var msg = (result.error.message && result.error.message !== '{}') ? result.error.message : 'Could not send reset link. Please try again.';
+    ferr.textContent = msg;
   } else {
     ferr.style.color = 'var(--gold-deep)';
     ferr.textContent = 'Reset link sent! Check your inbox (and spam folder).';
