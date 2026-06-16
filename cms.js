@@ -40,7 +40,7 @@
   .then(function(r){ return r.ok ? r.json() : null; })
   .then(function(rows){
     clearTimeout(timer);
-    if (!Array.isArray(rows) || !rows.length) { track.innerHTML = staticHTML; return; }
+    if (!Array.isArray(rows) || !rows.length) { track.innerHTML = staticHTML; skelLoaded(track); return; }
     function makeCell(u, hidden){
       var a = document.createElement('a');
       if (hidden){ a.setAttribute('aria-hidden','true'); a.setAttribute('tabindex','-1'); }
@@ -57,6 +57,7 @@
     rows.forEach(function(r){ frag.appendChild(makeCell(r.image_url, true)); });
     track.innerHTML = '';
     track.appendChild(frag);
+    skelLoaded(track);
   })
-  .catch(function(){ clearTimeout(timer); track.innerHTML = staticHTML; });
+  .catch(function(){ clearTimeout(timer); track.innerHTML = staticHTML; skelLoaded(track); });
 })();

@@ -23,6 +23,13 @@ function showReviewSkeletons(container, n){
     '<div class="skel skel-line short"></div></div>'
   ).join('');
 }
+function skelLoaded(container){
+  if(!container) return;
+  container.classList.remove('skel-loaded');
+  void container.offsetWidth;
+  container.classList.add('skel-loaded');
+  container.addEventListener('animationend', function h(){ container.classList.remove('skel-loaded'); container.removeEventListener('animationend',h); }, {once:true});
+}
 
 
 
@@ -317,6 +324,7 @@ function renderCatalog(cat){
   const grid = document.getElementById("grid");
   const catProducts = PRODUCTS.filter(p => p.cat === cat);
   grid.innerHTML = catProducts.map(cardHTML).join("");
+  skelLoaded(grid);
   buildFilterSidebar(cat, catProducts);
   const want = new URLSearchParams(location.search).get("sub");
   if (want && SUBS[cat].some(([k]) => k === want)) {
@@ -441,12 +449,14 @@ function _renderReviews(rows){
   if (!rows.length){
     if (summary) summary.innerHTML = '';
     list.innerHTML = '<p class="rv-empty">Be the first to review this item.</p>';
+    skelLoaded(list);
     return;
   }
   const avg = rows.reduce((s,r) => s + (r.rating||0), 0) / rows.length;
   if (summary) summary.innerHTML = `<div class="rv-avg"><span class="rv-stars">${stars(avg)}</span><span class="rv-score">${avg.toFixed(1)}</span><span class="rv-ct">(${rows.length} review${rows.length>1?'s':''})</span></div>`;
   const fmt = d => d ? new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '';
   list.innerHTML = rows.map(r => `<div class="rv-item"><div class="rv-meta"><span class="rv-name">${esc(r.name||'Anonymous')}</span><span class="rv-date">${fmt(r.created_at)}</span></div><div class="rv-rating">${stars(r.rating||0)}</div>${r.comment?'<p class="rv-comment">'+esc(r.comment)+'</p>':''}</div>`).join('');
+  skelLoaded(list);
 }
 async function submitReview(e){
   e.preventDefault();

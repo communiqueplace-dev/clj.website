@@ -255,19 +255,23 @@ if (IG_FEED_URL) {
   fetch(IG_FEED_URL).then(r => r.json()).then(d => {
     clearTimeout(igTimer);
     const posts = (d.posts || d).slice(0, 6);
-    if (!posts.length) { if (igGrid) igGrid.innerHTML = igStatic; return; }
-    document.querySelector(".ig-grid").innerHTML = posts.map(p => `
+    if (!posts.length) { if (igGrid) { igGrid.innerHTML = igStatic; skelLoaded(igGrid); } return; }
+    const g = document.querySelector(".ig-grid");
+    g.innerHTML = posts.map(p => `
       <a href="${p.permalink}" target="_blank" rel="noopener">
         <img loading="lazy" src="${igImg(p)}" alt="Instagram post">
       </a>`).join("");
-  }).catch(() => { clearTimeout(igTimer); if (igGrid) igGrid.innerHTML = igStatic; });
+    skelLoaded(g);
+  }).catch(() => { clearTimeout(igTimer); if (igGrid) { igGrid.innerHTML = igStatic; skelLoaded(igGrid); } });
 }
 const FEATURED = ["p06","d22","g03","d16","g11","p03","d20","g12"];
 function renderFeatured(){
   var items = FEATURED.map(id => PRODUCTS.find(x => x.img === id)).filter(Boolean);
   var html = items.map(cardHTML).join("");
   var dup  = items.map(p => cardHTML(p).replace("<a ", "<a aria-hidden=\"true\" tabindex=\"-1\" ")).join("");
-  document.getElementById("featured").innerHTML = html + dup;
+  var feat = document.getElementById("featured");
+  feat.innerHTML = html + dup;
+  skelLoaded(feat);
   reveals();
 }
 window.__cmsRender = renderFeatured;
