@@ -8,6 +8,22 @@ const SUBS = {
 const CAT_TITLES = {gold:"Gold Jewellery", diamond:"Diamond Jewellery", polki:"Polki Jewellery"};
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
+function showSkeletons(container, n){
+  if(!container) return;
+  container.innerHTML = Array.from({length:n||6}).map(()=>
+    '<div class="skel-card"><div class="skel skel-img"></div>'+
+    '<div class="skel skel-line"></div><div class="skel skel-line short"></div></div>'
+  ).join('');
+}
+function showReviewSkeletons(container, n){
+  if(!container) return;
+  container.innerHTML = Array.from({length:n||3}).map(()=>
+    '<div class="skel-review"><div class="skel skel-line short"></div>'+
+    '<div class="skel skel-line"></div><div class="skel skel-line"></div>'+
+    '<div class="skel skel-line short"></div></div>'
+  ).join('');
+}
+
 
 
 /* ---------- header: burger left · logo centre · icons right · hairline ---------- */
@@ -406,13 +422,16 @@ async function loadReviews(productImg){
   const list = document.getElementById('pd-rv-list');
   const summary = document.getElementById('pd-rv-summary');
   if (!list) return;
+  showReviewSkeletons(list, 3);
   if (typeof SUPABASE_URL === 'undefined' || !SUPABASE_URL){ _renderReviews([]); return; }
+  const safeTimer = setTimeout(function(){ _renderReviews([]); }, 6000);
   try {
     const r = await fetch(SUPABASE_URL + '/rest/v1/reviews?product_img=eq.' + encodeURIComponent(productImg) + '&order=created_at.desc', {
       headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY }
     });
+    clearTimeout(safeTimer);
     _renderReviews(r.ok ? (await r.json()) : []);
-  } catch(err){ _renderReviews([]); }
+  } catch(err){ clearTimeout(safeTimer); _renderReviews([]); }
 }
 function _renderReviews(rows){
   const list = document.getElementById('pd-rv-list');

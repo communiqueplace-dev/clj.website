@@ -1061,3 +1061,19 @@ html{overflow-x:hidden}
 /* --- Reset password page --- */
 .rp-state{padding:0;}
 
+/* ---- Skeleton loading ---- */
+.skel{position:relative;overflow:hidden;background:#f3ece0}
+.skel::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);
+  animation:shimmer 1.4s infinite}
+@keyframes shimmer{100%{transform:translateX(100%)}}
+@media (prefers-reduced-motion:reduce){.skel::after{animation:none}}
+.skel-card{border:1px solid var(--line);background:#fff}
+.skel-card .skel-img{width:100%;aspect-ratio:1/1}
+.skel-card .skel-line{height:12px;margin:12px 14px;border-radius:2px}
+.skel-card .skel-line.short{width:55%}
+.skel-grid{display:grid;gap:16px}
+.skel-review{border:1px solid var(--line);background:#fff;padding:18px}
+.skel-review .skel-line{height:11px;margin:8px 0;border-radius:2px}
+.skel-review .skel-line.short{width:40%}
+

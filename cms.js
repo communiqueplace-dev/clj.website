@@ -29,8 +29,10 @@
   if (typeof SUPABASE_URL === "undefined" || !SUPABASE_URL || !SUPABASE_ANON_KEY) return;
   var track = document.getElementById("editorial-track");
   if (!track) return;
+  var staticHTML = track.innerHTML;
+  if (typeof showSkeletons === "function") showSkeletons(track, 3);
   var ctrl = new AbortController();
-  var timer = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 6000);
+  var timer = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} track.innerHTML = staticHTML; }, 6000);
   fetch(SUPABASE_URL + "/rest/v1/editorial_images?select=*&order=sort.asc", {
     headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY },
     signal: ctrl.signal
@@ -38,7 +40,7 @@
   .then(function(r){ return r.ok ? r.json() : null; })
   .then(function(rows){
     clearTimeout(timer);
-    if (!Array.isArray(rows) || !rows.length) return;
+    if (!Array.isArray(rows) || !rows.length) { track.innerHTML = staticHTML; return; }
     function makeCell(u, hidden){
       var a = document.createElement('a');
       if (hidden){ a.setAttribute('aria-hidden','true'); a.setAttribute('tabindex','-1'); }
@@ -56,5 +58,5 @@
     track.innerHTML = '';
     track.appendChild(frag);
   })
-  .catch(function(){ clearTimeout(timer); });
+  .catch(function(){ clearTimeout(timer); track.innerHTML = staticHTML; });
 })();
