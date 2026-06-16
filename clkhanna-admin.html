@@ -162,6 +162,7 @@
 <script>
 const SUPABASE_URL = "https://amqmojrqifsfuhnrabdc.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFtcW1vanJxaWZzZnVobnJhYmRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMjE2NjEsImV4cCI6MjA5NjY5NzY2MX0.nIjlTO2uIgiaPKnWA3SYXTCglkmDZ1KbS8kPmm9S0vg";
+const ADMIN_EMAIL = "clkhannajewellers@gmail.com";
 const SUBS = {
   gold:    [["sets","Chokers, Malas & Sets"],["bangles","Bangles & Kadas"],["bracelets","Bracelets"],["earrings","Earrings & Studs"],["rings","Rings"]],
   diamond: [["sets","Chokers, Malas & Sets"],["bangles","Bangles & Kadas"],["bracelets","Bracelets"],["earrings","Earrings & Studs"],["rings","Rings"]],
@@ -172,9 +173,21 @@ let PRODUCTS = [];
 
 function $(id){ return document.getElementById(id); }
 
+function gate(user){
+  if(!user || (user.email||"").toLowerCase() !== ADMIN_EMAIL){
+    sb.auth.signOut();
+    $("loginBox").classList.remove("hidden");
+    $("app").classList.add("hidden");
+    $("who").classList.add("hidden");
+    $("logMsg").textContent = "This account is not authorised.";
+    return;
+  }
+  showApp(user);
+}
+
 async function boot(){
   const { data } = await sb.auth.getSession();
-  if (data && data.session){ showApp(data.session.user); }
+  if (data && data.session){ gate(data.session.user); }
 }
 boot();
 
@@ -183,7 +196,7 @@ async function login(){
   $("logMsg").textContent = "";
   const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
   if (error){ $("logMsg").textContent = error.message; return; }
-  showApp(data.user);
+  gate(data.user);
 }
 async function logout(){ await sb.auth.signOut(); location.reload(); }
 
