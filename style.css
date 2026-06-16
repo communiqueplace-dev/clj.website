@@ -882,6 +882,57 @@ html{overflow-x:hidden}
   .wl-btn{width:32px;height:32px}
 }
 
+/* ================= v11 — mobile layout improvements ================= */
+
+/* logo: noticeably bigger on phones */
+@media(max-width:540px){.brand img{height:68px}}
+@media(max-width:380px){.brand img{height:56px}}
+
+/* 2-col product cards on all phones (override earlier 1-col at ≤480px) */
+@media(max-width:480px){
+  .grid,.cat-main .grid{grid-template-columns:repeat(2,1fr)!important;gap:12px}
+  .card .info{padding:13px 10px 15px}
+  .card .info h3{font-size:.88rem;letter-spacing:.01em}
+  .card .info p{font-size:.78rem;min-height:0;margin:4px 0 7px}
+}
+@media(max-width:360px){
+  .grid,.cat-main .grid{grid-template-columns:1fr!important}
+}
+
+/* 2-col collection tiles on phones */
+@media(max-width:540px){
+  .tiles{grid-template-columns:repeat(2,1fr)}
+  .tile{height:240px}
+  .tile .label h3{font-size:1.05rem;letter-spacing:.08em}
+  .tile .label small{letter-spacing:.22em}
+}
+@media(max-width:360px){
+  .tiles{grid-template-columns:1fr}
+  .tile{height:300px}
+}
+
+/* 2-col footer columns on narrow phones */
+@media(max-width:440px){
+  footer .cols{grid-template-columns:1fr 1fr!important;gap:16px;text-align:left!important}
+  footer .socials{justify-content:flex-start!important}
+}
+@media(max-width:360px){
+  footer .cols{grid-template-columns:1fr!important;text-align:center!important}
+  footer .socials{justify-content:center!important}
+}
+
+/* comfortable section headings on small phones */
+@media(max-width:480px){
+  .sec-head h2{font-size:clamp(1.35rem,5.5vw,1.8rem)}
+  .pagehead h1{font-size:clamp(1.4rem,6vw,1.9rem)}
+  section{padding:44px 0}
+}
+
+/* generous gutter so nothing hugs the screen edge */
+@media(max-width:420px){
+  .wrap{padding-left:5%;padding-right:5%}
+}
+
 /* ===== v10: Cookie Consent + Auth improvements ===== */
 
 /* --- Cookie banner (fixed bottom bar) --- */

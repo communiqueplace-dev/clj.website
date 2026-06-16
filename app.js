@@ -1,9 +1,9 @@
 /* C.L Khanna Jewellers — shared site logic (v4) */
 const WA = "919815605373";
 const SUBS = {
-  gold:   [["necklaces","Necklaces & Harams"],["bangles","Bangles & Kadas"],["bracelets","Bracelets"],["earrings","Earrings"]],
-  diamond:[["necklaces","Necklaces & Chokers"],["rings","Rings"],["bangles","Bangles & Bracelets"],["earrings","Earrings"]],
-  polki:  [["chokers","Chokers & Sets"],["harams","Necklaces & Malas"],["earrings","Earrings & Studs"],["more","Bracelets & More"]]
+  gold:    [["sets","Chokers, Malas & Sets"],["bangles","Bangles & Kadas"],["bracelets","Bracelets"],["earrings","Earrings & Studs"],["rings","Rings"]],
+  diamond: [["sets","Chokers, Malas & Sets"],["bangles","Bangles & Kadas"],["bracelets","Bracelets"],["earrings","Earrings & Studs"],["rings","Rings"]],
+  polki:   [["sets","Chokers, Malas & Sets"],["bangles","Bangles & Kadas"],["bracelets","Bracelets"],["earrings","Earrings & Studs"],["rings","Rings"]]
 };
 const CAT_TITLES = {gold:"Gold Jewellery", diamond:"Diamond Jewellery", polki:"Polki Jewellery"};
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
@@ -43,11 +43,10 @@ function buildHeader(active){
       <a class="d-cat" href="javascript:void(0)" onclick="this.parentNode.classList.toggle('openg')">Shop <i>+</i></a>
       ${["gold","diamond","polki"].map(c => `
         <a class="d-sub d-strong" href="${c}.html">${CAT_TITLES[c]}</a>
-        ${SUBS[c].map(([k,l]) => `<a class="d-sub d-sub2" href="${c}.html?sub=${k}">${l}</a>`).join("")}
       `).join("")}
     </div>
     <a class="d-cat" href="index.html#collections">Collections</a>
-    <a class="d-cat" href="polki.html?sub=chokers">Bridal</a>
+    <a class="d-cat" href="polki.html?sub=sets">Bridal</a>
     <a class="d-cat" href="custom.html">Custom Jewellery</a>
     <a class="d-cat" href="media.html">Media</a>
     <a class="d-cat" href="about.html">About Us</a>
@@ -133,14 +132,14 @@ function buildFooter(){
       <div>
         <h4>Follow Us</h4>
         <div class="socials">
-          <a href="https://www.instagram.com/clkhanna_jewellers/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+          <a href="https://www.instagram.com/clkhannajewellers/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
             <svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/></svg>
           </a>
           <a href="https://wa.me/919815605373" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp">
             <svg width="14" height="14" viewBox="0 0 32 32"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.7 6L4 29l8.2-1.6c1.2.6 2.5.9 3.8.9 6.6 0 12-5.4 12-12S22.6 3 16 3zm6.1 16.9c-.3.8-1.6 1.5-2.2 1.6-.6.1-1.3.1-2.1-.1-.5-.2-1.1-.4-1.9-.7-3.3-1.4-5.5-4.8-5.6-5-.2-.2-1.4-1.8-1.4-3.5 0-1.7.9-2.5 1.2-2.8.3-.3.7-.4.9-.4h.7c.2 0 .5-.1.8.6.3.8 1 2.6 1.1 2.8.1.2.2.4 0 .7-.1.3-.2.4-.4.7-.2.2-.4.5-.6.7-.2.2-.4.4-.2.8.2.4 1 1.7 2.2 2.7 1.5 1.3 2.8 1.7 3.2 1.9.4.2.6.2.9-.1.2-.3 1-1.2 1.3-1.6.3-.4.5-.3.9-.2.4.1 2.2 1 2.6 1.2.4.2.6.3.7.5.1.1.1.8-.1 1.6z" fill="currentColor"/></svg>
           </a>
         </div>
-        <a class="ig-handle" href="https://www.instagram.com/clkhanna_jewellers/" target="_blank" rel="noopener">@clkhanna_jewellers</a>
+        <a class="ig-handle" href="https://www.instagram.com/clkhannajewellers/" target="_blank" rel="noopener">@clkhannajewellers</a>
       </div>
     </div>
     <div class="base">Copyright © <span id="yr"></span> C.L Khanna Jewellers. All rights reserved.</div>
