@@ -121,6 +121,7 @@ function buildFooter(){
         <a href="returns.html">Return Policy</a>
         <a href="shipping.html">Shipping Policy</a>
         <a href="terms.html">Terms &amp; Conditions</a>
+        <a href="#" onclick="if(typeof openCookieSettings==='function')openCookieSettings();return false;" class="ck-footer-link">Cookie Settings</a>
       </div>
       <div class="git">
         <h4>Get In Touch</h4>

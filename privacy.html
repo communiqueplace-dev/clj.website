@@ -22,7 +22,7 @@
 <meta name="twitter:image" content="assets/looks/col-polki.jpg">
 <noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
 
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://amqmojrqifsfuhnrabdc.supabase.co wss://amqmojrqifsfuhnrabdc.supabase.co https://feeds.behold.so; frame-src https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self' https://wa.me;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://amqmojrqifsfuhnrabdc.supabase.co wss://amqmojrqifsfuhnrabdc.supabase.co https://feeds.behold.so https://www.google-analytics.com https://analytics.google.com; frame-src https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self' https://wa.me;">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 </head>
 <body>
@@ -50,6 +50,13 @@
 <p>Enquiries from this website open WhatsApp, which is governed by WhatsApp's own privacy terms. Embedded maps are provided by Google Maps under Google's terms.</p>
 <h2>Your choices</h2>
 <p>You may ask us at any time to delete your contact details from our records by calling or emailing us.</p>
+<h2 id="cookies">Cookie Policy</h2>
+<p>This website uses two kinds of cookies, stored in your browser's localStorage:</p>
+<ul>
+<li><b>Essential cookies</b> — they remember your cart, wishlist and session. Required for the site to work and cannot be disabled.</li>
+<li><b>Analytics cookies</b> — only activated with your consent, via Google Analytics 4. They collect anonymous data (pages visited, time on site) to help us improve the site. No personal information is sent to Google, and your IP address is anonymised before any processing.</li>
+</ul>
+<p>You can change or withdraw your consent at any time using the <a href="#" onclick="if(typeof openCookieSettings==='function')openCookieSettings();return false;" style="color:var(--gold-deep)">Cookie Settings</a> link in the footer, or by clearing your browser's localStorage.</p>
 <p style="margin-top:34px;color:var(--muted)">For any questions about this policy, contact us at <a href="tel:+919815605373" style="color:var(--gold-deep)">+91 98156 05373</a> or <a href="mailto:clkhannajewellers@gmail.com" style="color:var(--gold-deep)">clkhannajewellers@gmail.com</a>.</p>
 </div></div></section>
 <footer id="site-footer"><div class="topline"></div><div class="wrap"><div class="cols">
@@ -61,6 +68,7 @@
 <script src="shop.js"></script>
 <script src="app.js"></script>
 <script src="cms.js"></script>
+<script src="consent.js"></script>
 <script>initPage('');</script>
 </body>
 </html>
