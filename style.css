@@ -612,8 +612,10 @@ html{overflow-x:hidden}
    their natural slice of the bar and can never collide.
    Desktop & tablet keep the centred-logo layout untouched. */
 @media(max-width:540px){
-  .bar .brand{position:static;transform:none;flex:1;display:flex;justify-content:center;align-items:center}
-  .bar{min-height:0;padding:12px 4%}
+  .bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;min-height:0;padding:12px 4%}
+  .bar .brand{position:static;transform:none;grid-column:2;display:flex;justify-content:center;align-items:center}
+  .bar>*:first-child{grid-column:1;justify-self:start}
+  .bar .actions{grid-column:3;justify-self:end}
   .brand img{height:46px}
   .actions{gap:10px}
   .actions .ic,.actions .ic svg{width:19px;height:19px}
