@@ -56,7 +56,7 @@ function renderCartPage(){
   if (!box) return;
   const items = getCart();
   if (!items.length){
-    box.innerHTML = `<p class="cart-empty">Your cart is empty. <a href="index.html#collections">Explore the collections →</a></p>`;
+    box.innerHTML = `<p class="cart-empty">Your cart is empty. <a href="./#collections">Explore the collections →</a></p>`;
     document.getElementById("cart-actions").style.display = "none";
     return;
   }

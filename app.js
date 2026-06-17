@@ -40,7 +40,7 @@ function buildHeader(active){
   <header class="site">
     <div class="bar">
       <button class="burger" aria-label="Menu" onclick="toggleDrawer(true)"><span></span><span></span><span></span></button>
-      <a class="brand" href="index.html"><img src="assets/logo-main.png" alt="C.L Khanna Jewellers"></a>
+      <a class="brand" href="./"><img src="assets/logo-main.png" alt="C.L Khanna Jewellers"></a>
       <div class="actions">
         <button class="ic" aria-label="Search" onclick="openSearch()" title="Search">
           <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/><line x1="15.4" y1="15.4" x2="21" y2="21" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -62,14 +62,14 @@ function buildHeader(active){
   <div class="drawer-veil" id="dveil" onclick="toggleDrawer(false)"></div>
   <aside class="drawer" id="drawer">
     <button class="dx" onclick="toggleDrawer(false)">×</button>
-    <a class="d-home" href="index.html">Home</a>
+    <a class="d-home" href="./">Home</a>
     <div class="d-group">
       <a class="d-cat" href="javascript:void(0)" onclick="this.parentNode.classList.toggle('openg')">Shop <i>+</i></a>
       ${["gold","diamond","polki"].map(c => `
         <a class="d-sub d-strong" href="${c}.html">${CAT_TITLES[c]}</a>
       `).join("")}
     </div>
-    <a class="d-cat" href="index.html#collections">Collections</a>
+    <a class="d-cat" href="./#collections">Collections</a>
     <a class="d-cat" href="polki.html?sub=sets">Bridal</a>
     <a class="d-cat" href="custom.html">Custom Jewellery</a>
     <a class="d-cat" href="media.html">Media</a>
@@ -526,7 +526,7 @@ function renderProduct(){
   const needRM = p.desc.length > TRUNC;
   const wled = isWishlisted(p.img);
   document.getElementById("pd").innerHTML =
-  `<nav class="crumbs"><a href="index.html">Home</a> / <a href="${safeCat}.html">${esc(CAT_TITLES[safeCat])}</a> / <a href="${safeCat}.html?sub=${esc(p.sub)}">${esc(subLabel)}</a> / <span>${esc(p.name)}</span></nav>
+  `<nav class="crumbs"><a href="./">Home</a> / <a href="${safeCat}.html">${esc(CAT_TITLES[safeCat])}</a> / <a href="${safeCat}.html?sub=${esc(p.sub)}">${esc(subLabel)}</a> / <span>${esc(p.name)}</span></nav>
   <div class="pd-grid">
     <div class="pd-left">
       <div class="pd-photo" id="zoomBox">
