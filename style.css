@@ -117,6 +117,7 @@ section{padding:88px 0}
 .card .info p{font-family:var(--serif);font-size:.97rem;color:var(--muted);margin:7px 0 13px;min-height:2.6em}
 .card .rfp{font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-deep);border-bottom:1px solid var(--gold);padding-bottom:3px;transition:.3s}
 .card:hover .rfp{color:var(--ink)}
+.card-price{display:block;font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);margin-top:2px}
 .count{text-align:center;color:var(--muted);font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;margin-bottom:30px}
 
 /* customized banner */
@@ -588,6 +589,9 @@ footer .cols{grid-template-columns:1.1fr 1fr 1.6fr .8fr;gap:32px;text-align:left
 .nojs-nav{display:flex;gap:18px;flex-wrap:wrap;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase}
 .nojs-nav a{color:var(--ink)}
 .nojs-nav a:hover{color:var(--gold-deep)}
+/* nojs-burger: show on mobile, hide on desktop — JS replaces entire header so this only fires pre-JS */
+.nojs-burger{display:none}
+@media(max-width:760px){.nojs-burger{display:flex!important}.nojs-nav{display:none!important}}
 
 /* === FIX: keep the menu button & icons tappable above the centered logo (mobile) === */
 .bar .burger, .bar .actions{position:relative; z-index:5}

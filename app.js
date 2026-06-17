@@ -7,6 +7,7 @@ const SUBS = {
 };
 const CAT_TITLES = {gold:"Gold Jewellery", diamond:"Diamond Jewellery", polki:"Polki Jewellery"};
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function fmtPrice(v){ return v ? 'from ₹' + Number(v).toLocaleString('en-IN') : 'Price on request'; }
 
 function showSkeletons(container, n){
   if(!container) return;
@@ -74,7 +75,7 @@ function buildHeader(active){
     <a class="d-cat" href="media.html">Media</a>
     <a class="d-cat" href="about.html">About Us</a>
     <a class="d-cat" href="location.html">Contact</a>
-    <a class="d-appt" href="#" onclick="openAppt(event);toggleDrawer(false)">Book an Appointment</a>
+    <a class="d-appt" href="https://wa.me/919815605373?text=Hello%20C.L%20Khanna%20Jewellers%2C%20I%20would%20like%20to%20book%20an%20appointment%20to%20visit%20the%20store." onclick="openAppt(event);toggleDrawer(false)">Book an Appointment</a>
   </aside>
   <div class="search-veil" id="sveil">
     <div class="search-box">
@@ -225,7 +226,12 @@ function buildShells(){
   </div>`);
   document.getElementById("lb").addEventListener("click", function(){ this.style.display = "none"; });
 }
-function openAppt(e){ if(e) e.preventDefault(); document.getElementById("appt").classList.add("open"); }
+function openAppt(e){
+  if(e) e.preventDefault();
+  var appt = document.getElementById("appt");
+  if(appt){ appt.classList.add("open"); }
+  else { window.open("https://wa.me/919815605373?text=" + encodeURIComponent("Hello C.L Khanna Jewellers, I would like to book an appointment to visit the store."), "_blank", "noopener"); }
+}
 function sendAppt(){
   const n = document.getElementById("ap-name").value.trim() || "A customer";
   const msg = "Hello C.L Khanna Jewellers, I would like to book an appointment.\nName: " + n +
@@ -257,6 +263,7 @@ function cardHTML(p){
     <div class="info">
       <h3>${esc(p.name)}</h3>
       <p>${esc(p.desc)}</p>
+      <span class="card-price">${fmtPrice(p.price_from)}</span>
     </div>
   </a>`;
 }
@@ -543,7 +550,7 @@ function renderProduct(){
         <div><b>Metal</b><span>${esc(p.metal)}</span></div>
         <div><b>Craftsmanship</b><span>${esc(p.work)}</span></div>
         <div><b>Occasion</b><span>${esc(p.occasion)}</span></div>
-        <div><b>Weight &amp; Price</b><span>On request — varies with the day's rate</span></div>
+        <div><b>Price</b><span>${p.price_from ? ‘from ₹’ + Number(p.price_from).toLocaleString(‘en-IN’) + ‘ · varies with the daily rate’ : ‘Price on request’}</span></div>
         <div><b>Certification</b><span>BIS hallmarked</span></div>
       </div>
       <div class="trust-badges">
