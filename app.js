@@ -131,30 +131,37 @@ function buildFooter(){
       </form>
     </div>
     <div class="cols">
-      <div>
-        <h4>Information</h4>
+      <div class="fcol">
+        <button class="fcol-h" type="button" aria-expanded="false" aria-controls="fcp-info" onclick="toggleFootCol(this)">Information<span class="fcol-ic" aria-hidden="true">+</span></button>
+        <div class="fcol-p" id="fcp-info">
         <a href="about.html">About Us</a>
         <a href="location.html">Contact Us</a>
         <a href="custom.html">Customized Jewellery</a>
         <a href="location.html">Store Location</a>
+        </div>
       </div>
-      <div>
-        <h4>Policies</h4>
+      <div class="fcol">
+        <button class="fcol-h" type="button" aria-expanded="false" aria-controls="fcp-pol" onclick="toggleFootCol(this)">Policies<span class="fcol-ic" aria-hidden="true">+</span></button>
+        <div class="fcol-p" id="fcp-pol">
         <a href="privacy.html">Privacy Policy</a>
         <a href="returns.html">Return Policy</a>
         <a href="shipping.html">Shipping Policy</a>
         <a href="terms.html">Terms &amp; Conditions</a>
         <a href="#" onclick="if(typeof openCookieSettings==='function')openCookieSettings();return false;" class="ck-footer-link">Cookie Settings</a>
+        </div>
       </div>
-      <div class="git">
-        <h4>Get In Touch</h4>
+      <div class="fcol git">
+        <button class="fcol-h" type="button" aria-expanded="false" aria-controls="fcp-git" onclick="toggleFootCol(this)">Get In Touch<span class="fcol-ic" aria-hidden="true">+</span></button>
+        <div class="fcol-p" id="fcp-git">
         <a href="https://www.google.com/maps/search/?api=1&query=C.L.+Khanna+Jewellers+Lawrence+Road+Amritsar" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span>C.L Khanna Jewellers, 8 Dilawari Street,<br>Lawrence Road, Amritsar, Punjab</span></a>
         <a href="tel:+919815605373"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a13 13 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span>+91 98156 05373</span></a>
         <a href="tel:+917717624298"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a13 13 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span>+91 77176 24298</span></a>
         <a href="mailto:clkhannajewellers@gmail.com"><svg width="15" height="15" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 7l9 6 9-6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span>clkhannajewellers@gmail.com</span></a>
+        </div>
       </div>
-      <div>
-        <h4>Follow Us</h4>
+      <div class="fcol">
+        <button class="fcol-h" type="button" aria-expanded="false" aria-controls="fcp-follow" onclick="toggleFootCol(this)">Follow Us<span class="fcol-ic" aria-hidden="true">+</span></button>
+        <div class="fcol-p" id="fcp-follow">
         <div class="socials">
           <a href="https://www.instagram.com/clkhannajewellers/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
             <svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/></svg>
@@ -164,11 +171,20 @@ function buildFooter(){
           </a>
         </div>
         <a class="ig-handle" href="https://www.instagram.com/clkhannajewellers/" target="_blank" rel="noopener">@clkhannajewellers</a>
+        </div>
       </div>
     </div>
     <div class="base">Copyright © <span id="yr"></span> C.L Khanna Jewellers. All rights reserved.</div>
   </div>`;
   document.getElementById("yr").textContent = new Date().getFullYear();
+}
+
+/* footer columns become tap-to-expand accordions on phones (CSS controls visibility) */
+function toggleFootCol(btn){
+  var open = btn.getAttribute("aria-expanded") === "true";
+  btn.setAttribute("aria-expanded", open ? "false" : "true");
+  var ic = btn.querySelector(".fcol-ic");
+  if (ic) ic.textContent = open ? "+" : "–";
 }
 
 function joinNews(e){

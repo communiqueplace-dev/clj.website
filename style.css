@@ -823,7 +823,7 @@ html{overflow-x:hidden}
 /* Wishlist button — on product photo and cards */
 .pd-photo{position:relative}
 .card .ph{position:relative}
-.wl-btn{position:absolute;top:10px;right:10px;z-index:5;background:rgba(255,255,255,.92);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 6px rgba(21,19,14,.13);transition:transform .18s,background .18s;padding:0}
+.wl-btn{position:absolute;top:10px;right:10px;z-index:5;background:rgba(255,255,255,.92);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 6px rgba(21,19,14,.13);transition:transform .18s,background .18s;padding:0;color:var(--ink);-webkit-tap-highlight-color:transparent}
 .wl-btn:hover{background:#fff;transform:scale(1.12)}
 .wl-btn.wl-on svg path{fill:var(--gold);stroke:var(--gold)}
 
@@ -1084,4 +1084,49 @@ html{overflow-x:hidden}
 .skel-review{border:1px solid var(--line);background:#fff;padding:18px}
 .skel-review .skel-line{height:11px;margin:8px 0;border-radius:2px}
 .skel-review .skel-line.short{width:40%}
+
+
+/* ================= footer accordion — phones only ================= */
+/* Desktop/tablet: the heading button looks and sits exactly like the old <h4>,
+   links always shown — no visual change above the mobile breakpoint. */
+footer .fcol-h{display:block;width:auto;margin:0 0 14px;padding:0;background:none;border:0;
+  font-family:var(--disp);font-weight:400;font-size:.8rem;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--gold-deep);line-height:inherit;
+  text-align:inherit;cursor:default;-webkit-tap-highlight-color:transparent}
+footer .fcol-ic{display:none}
+footer .fcol-p{display:block}
+
+@media(max-width:760px){
+  footer .cols{grid-template-columns:1fr!important;gap:0;text-align:left}
+  footer .fcol{border-bottom:1px solid rgba(168,134,47,.22)}
+  footer .fcol-h{display:flex;align-items:center;justify-content:space-between;
+    width:100%;margin:0;padding:16px 2px;cursor:pointer}
+  footer .fcol-ic{display:inline-block;font-size:1.25rem;line-height:1;color:var(--gold-deep)}
+  footer .fcol-p{overflow:hidden;max-height:0;transition:max-height .32s ease}
+  footer .fcol-h[aria-expanded="true"] + .fcol-p{max-height:600px;padding-bottom:12px}
+  footer .socials{justify-content:flex-start}
+}
+
+
+/* ================= ratings & reviews — phones only (spacing/alignment) ================= */
+@media(max-width:700px){
+  .pd-revs{text-align:center}
+  .pd-revs .rv-avg{justify-content:center}
+  .pd-revs .star-pick{justify-content:center}
+  .pd-revs .pd-form-group{text-align:left}
+  .pd-revs .rv-item{text-align:left}
+}
+
+
+/* ================= subtle entrance animation — site-wide, CSS-only ================= */
+/* Mirrors the existing skelFadeIn idiom: self-contained, ends at full opacity,
+   never JS-dependent, and disabled under reduced-motion. */
+/* No fill-mode: the resting state is opacity:1, so content is ALWAYS visible
+   even if the animation never runs (no JS dependency, fail-safe). */
+@keyframes cljRiseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+body{animation:cljRiseIn .55s ease}
+.slide .txt h2,.pagehead h1{animation:cljRiseIn .65s ease}
+@media(prefers-reduced-motion:reduce){
+  body,.slide .txt h2,.pagehead h1{animation:none}
+}
 
