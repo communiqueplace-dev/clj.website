@@ -550,7 +550,7 @@ function renderProduct(){
         <div><b>Metal</b><span>${esc(p.metal)}</span></div>
         <div><b>Craftsmanship</b><span>${esc(p.work)}</span></div>
         <div><b>Occasion</b><span>${esc(p.occasion)}</span></div>
-        <div><b>Price</b><span>${p.price_from ? ‘from ₹’ + Number(p.price_from).toLocaleString(‘en-IN’) + ‘ · varies with the daily rate’ : ‘Price on request’}</span></div>
+        <div><b>Price</b><span>${p.price_from ? 'from ₹' + Number(p.price_from).toLocaleString('en-IN') + ' · varies with the daily rate' : 'Price on request'}</span></div>
         <div><b>Certification</b><span>BIS hallmarked</span></div>
       </div>
       <div class="trust-badges">
