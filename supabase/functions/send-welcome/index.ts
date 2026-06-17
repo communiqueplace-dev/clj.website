@@ -1,24 +1,24 @@
 /* C.L Khanna Jewellers — Edge Function: send-welcome
    Sends a fixed welcome email via Resend to a given address.
-   Recipient is the only variable; the email content is hardcoded here
-   so this function cannot be used to relay arbitrary messages.
+   Guards:
+   1. Email must exist in the subscribers table inserted within the last 2 minutes
+      (verified server-side using SUPABASE_SERVICE_ROLE_KEY — never in the repo).
+      This prevents the endpoint being used to spam arbitrary addresses.
+   2. Email format validated.
+   3. CORS locked to the live domain.
 
-   Required secret (set in Supabase Dashboard → Settings → Edge Functions → Secrets):
-     RESEND_API_KEY  — your Resend API key
-
-   Required Resend setup:
-     FROM_ADDRESS below must match a domain you have verified in Resend.
-     e.g. verify clkhannajewellers.com and set FROM_ADDRESS to
-     "C.L Khanna Jewellers <hello@clkhannajewellers.com>"
+   Required secrets (Supabase Dashboard → Settings → Edge Functions → Secrets):
+     RESEND_API_KEY            — your Resend API key
+     SUPABASE_URL              — auto-injected by Supabase
+     SUPABASE_SERVICE_ROLE_KEY — auto-injected by Supabase
 */
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
+const SUPABASE_URL   = Deno.env.get("SUPABASE_URL")   ?? "";
+const SERVICE_KEY    = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
-// For testing: onboarding@resend.dev works immediately but only sends to your Resend account email.
-// For production: verify a domain in Resend and change this to e.g. "C.L Khanna Jewellers <hello@clkhannajewellers.com>"
 const FROM_ADDRESS = "C.L Khanna Jewellers <hello@mail.clkhannajewellers.in>";
-
-const SUBJECT = "Welcome to C.L Khanna Jewellers";
+const SUBJECT      = "Welcome to C.L Khanna Jewellers";
 
 const HTML_BODY = `<!DOCTYPE html>
 <html lang="en">
@@ -37,7 +37,7 @@ const HTML_BODY = `<!DOCTYPE html>
 </head>
 <body>
 <div class="wrap">
-  <div style="text-align:center;margin-bottom:28px"><img src="https://clkhannajewellers.in/assets/logo-main.png" alt="C.L Khanna Jewellers" style="height:60px;width:auto"></div>
+  <div style="text-align:center;margin-bottom:28px"><img src="https://raw.githubusercontent.com/communiqueplace-dev/clj.website/main/assets/logo-main.png" alt="C.L Khanna Jewellers" style="height:60px;width:auto"></div>
   <h1>Welcome to C.L Khanna Jewellers</h1>
   <p>Thank you for joining us — we are delighted to have you.</p>
   <p>At C.L Khanna, every piece is crafted with intention: hand-set polki chokers, BIS hallmarked gold, and diamond jewellery made for real celebrations. Whether you are shopping for a wedding, a gift, or simply yourself, we look forward to helping you find something beautiful.</p>
@@ -53,9 +53,8 @@ const HTML_BODY = `<!DOCTYPE html>
 </html>`;
 
 const ALLOWED_ORIGIN = "https://clkhannajewellers.in";
-
 const CORS = {
-  "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+  "Access-Control-Allow-Origin":  ALLOWED_ORIGIN,
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Authorization, Content-Type",
 };
@@ -84,6 +83,33 @@ Deno.serve(async (req) => {
       JSON.stringify({ error: "Invalid email" }),
       { status: 400, headers: { ...CORS, "Content-Type": "application/json" } },
     );
+  }
+
+  // Verify this email was genuinely just subscribed (within last 2 minutes).
+  // Uses the service role key — only available server-side, never exposed to clients.
+  // If the check fails we return 200 silently so attackers get no signal.
+  if (SUPABASE_URL && SERVICE_KEY) {
+    try {
+      const since = new Date(Date.now() - 2 * 60 * 1000).toISOString();
+      const check = await fetch(
+        `${SUPABASE_URL}/rest/v1/subscribers?email=eq.${encodeURIComponent(email)}&created_at=gte.${since}&select=email&limit=1`,
+        { headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } },
+      );
+      const rows = check.ok ? await check.json() : [];
+      if (!Array.isArray(rows) || !rows.length) {
+        // Not a fresh subscription — silently succeed without sending
+        return new Response(
+          JSON.stringify({ ok: true }),
+          { headers: { ...CORS, "Content-Type": "application/json" } },
+        );
+      }
+    } catch {
+      // If the check itself errors, fail safe: don't send
+      return new Response(
+        JSON.stringify({ ok: true }),
+        { headers: { ...CORS, "Content-Type": "application/json" } },
+      );
+    }
   }
 
   if (!RESEND_API_KEY) {
