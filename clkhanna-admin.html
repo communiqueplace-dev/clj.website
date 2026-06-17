@@ -225,8 +225,8 @@ async function loadProducts(){
   $("countLbl").textContent = PRODUCTS.length + " products";
   $("plist").innerHTML = PRODUCTS.map(p => {
     const img = p.image_url || ("assets/catalog/"+p.cat+"/"+p.img+".jpg");
-    const meta = [p.cat, p.sub, p.price_from ? "₹"+Number(p.price_from).toLocaleString("en-IN") : null, p.in_stock===false ? "Out of stock" : null].filter(Boolean).join(" · ");
-    return '<div class="pcard"><img src="'+img+'" alt="" onerror="this.style.visibility=\'hidden\'">'+
+    const meta = [escapeHtml(p.cat), escapeHtml(p.sub), p.price_from ? "₹"+Number(p.price_from).toLocaleString("en-IN") : null, p.in_stock===false ? "Out of stock" : null].filter(Boolean).join(" · ");
+    return '<div class="pcard"><img src="'+escapeHtml(img)+'" alt="" onerror="this.style.visibility=\'hidden\'">'+
       '<div class="pi"><h3>'+escapeHtml(p.name)+'</h3><small>'+meta+'</small></div>'+
       '<div class="pacts"><button onclick="editProduct(\''+p.img+'\')">Edit</button>'+
       '<button class="del" onclick="deleteProduct(\''+p.img+'\')">Delete</button></div></div>';
@@ -251,7 +251,7 @@ function openForm(p){
   $("f_instock").checked = p ? (p.in_stock !== false) : true;
   $("f_file").value = "";
   const cur = p && (p.image_url || ("assets/catalog/"+p.cat+"/"+p.img+".jpg"));
-  $("f_preview").innerHTML = cur ? '<img src="'+cur+'" style="width:90px;height:90px;object-fit:contain;background:#faf7f1;border:1px solid #eee">' : "";
+  $("f_preview").innerHTML = cur ? '<img src="'+escapeHtml(cur)+'" style="width:90px;height:90px;object-fit:contain;background:#faf7f1;border:1px solid #eee">' : "";
   $("formMsg").textContent = "";
   $("formBox").scrollIntoView({behavior:"smooth", block:"center"});
 }
@@ -314,8 +314,8 @@ async function loadEditorial(){
   if (error){ box.innerHTML = '<p class="msg err">'+error.message+'</p>'; return; }
   const rows = data || [];
   box.innerHTML = rows.length ? rows.map(r =>
-    '<div class="pcard"><img src="'+r.image_url+'" alt="" onerror="this.style.visibility=\'hidden\'">'+
-    '<div class="pacts"><button class="del" onclick="deleteEditorial(\''+r.id+'\')">Delete</button></div></div>'
+    '<div class="pcard"><img src="'+escapeHtml(r.image_url)+'" alt="" onerror="this.style.visibility=\'hidden\'">'+
+    '<div class="pacts"><button class="del" onclick="deleteEditorial(\''+escapeHtml(String(r.id))+'\')">Delete</button></div></div>'
   ).join("") : '<p style="color:var(--muted);font-family:var(--serif)">No editorial photos yet.</p>';
 }
 async function addEditorial(){

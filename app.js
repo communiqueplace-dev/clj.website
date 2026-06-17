@@ -172,8 +172,8 @@ function buildFooter(){
 
 function joinNews(e){
   e.preventDefault();
-  const email = (document.getElementById("nl-email") || {}).value || "";
-  if (!email) return false;
+  const email = ((document.getElementById("nl-email") || {}).value || "").trim();
+  if (!email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return false;
   if (typeof SUPABASE_URL !== "undefined" && SUPABASE_URL){
     fetch(SUPABASE_URL + "/rest/v1/subscribers", {
       method: "POST",
@@ -462,9 +462,9 @@ async function submitReview(e){
   e.preventDefault();
   const form = e.target;
   const productImg = form.dataset.pid;
-  const name = form.querySelector('[name=rv-name]').value.trim();
+  const name = form.querySelector('[name=rv-name]').value.trim().slice(0, 100);
   const rating = parseInt(form.querySelector('[name=rv-rating]').value || '0');
-  const comment = form.querySelector('[name=rv-comment]').value.trim();
+  const comment = form.querySelector('[name=rv-comment]').value.trim().slice(0, 1000);
   if (!rating){ alert('Please select a star rating.'); return; }
   if (typeof SUPABASE_URL === 'undefined' || !SUPABASE_URL){ alert('Reviews service unavailable.'); return; }
   const btn = form.querySelector('[type=submit]');
