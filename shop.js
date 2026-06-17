@@ -110,13 +110,16 @@ function initSupabase(){
   };
   document.head.appendChild(s);
 }
-function openAuth(){
+function openAuth(msg){
   if (!sbReady()){
     alert("Accounts are launching soon.\nYour cart is already saved on this device — and you can send it to us on WhatsApp any time.");
     return;
   }
   document.getElementById("auth").classList.add("open");
   refreshAuthUI();
+  if (msg){ switchAuthTab('in'); }            // show the sign-in view for a prompt
+  var aErr = document.getElementById('au-err');
+  if (aErr){ aErr.textContent = msg || ''; aErr.style.color = msg ? 'var(--gold-deep)' : ''; }
 }
 function refreshAuthUI(){
   var inBox  = document.getElementById('auth-forms');

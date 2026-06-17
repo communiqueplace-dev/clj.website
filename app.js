@@ -393,6 +393,11 @@ function _wlSyncBtn(btn, on){
   if (path){ path.setAttribute('fill', on ? 'var(--gold)' : 'none'); path.setAttribute('stroke', on ? 'var(--gold)' : 'currentColor'); }
 }
 function toggleWishlist(id, btn){
+  // Saving favourites requires an account — logged-out taps open the sign-in modal and save nothing.
+  if (typeof sbUser === 'undefined' || !sbUser){
+    if (typeof openAuth === 'function') openAuth('Please sign in to save favourites.');
+    return;
+  }
   const a = _wlGet();
   const i = a.indexOf(id);
   if (i === -1) a.push(id); else a.splice(i, 1);
