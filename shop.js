@@ -109,7 +109,7 @@ function cljRenderCaptchas(){
   if (typeof hcaptcha === 'undefined') return;
   document.querySelectorAll('.h-captcha-box').forEach(function(el){
     if (el.dataset.rendered) return;
-    try { el.dataset.widgetId = hcaptcha.render(el, { sitekey: HCAPTCHA_SITE_KEY }); el.dataset.rendered = '1'; } catch(e){}
+    try { el.dataset.widgetId = hcaptcha.render(el, { sitekey: HCAPTCHA_SITE_KEY, size: 'compact' }); el.dataset.rendered = '1'; } catch(e){}
   });
 }
 window.cljRenderCaptchas = cljRenderCaptchas;
