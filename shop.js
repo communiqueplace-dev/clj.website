@@ -202,6 +202,13 @@ async function doAuth(){
     }
     return;
   }
+  // Already-registered email: Supabase returns a user with NO identities (and no error)
+  // to avoid leaking which emails exist. Treat it as "account exists" and send them to sign in.
+  if (_authMode === 'up' && data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0){
+    errEl.textContent = 'An account with this email already exists — taking you to sign in…';
+    setTimeout(function(){ location.href = 'login.html'; }, 1800);
+    return;
+  }
   if (_authMode === 'up' && data.user){
     fetch(SUPABASE_URL + '/functions/v1/send-welcome', {
       method: 'POST',
