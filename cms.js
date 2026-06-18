@@ -25,27 +25,6 @@
   .catch(function(){ clearTimeout(timer); });
 })();
 
-/* ---- Site config: homepage category order + featured products ---- */
-(function(){
-  if (typeof SUPABASE_URL === 'undefined' || !SUPABASE_URL || !SUPABASE_ANON_KEY) return;
-  var ctrl = new AbortController();
-  var timer = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 4000);
-  fetch(SUPABASE_URL + '/rest/v1/site_config?select=key,value', {
-    headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY },
-    signal: ctrl.signal
-  })
-  .then(function(r){ return r.ok ? r.json() : null; })
-  .then(function(rows){
-    clearTimeout(timer);
-    if (!Array.isArray(rows) || !rows.length) return;
-    var cfg = {};
-    rows.forEach(function(r){ cfg[r.key] = r.value; });
-    window.__siteConfig = cfg;
-    if (typeof window.__siteConfigReady === 'function'){ try{ window.__siteConfigReady(cfg); }catch(e){} }
-  })
-  .catch(function(){ clearTimeout(timer); });
-})();
-
 /* ---- Editorial / model photos: load from Supabase if any, else keep built-in ---- */
 (function(){
   if (typeof SUPABASE_URL === "undefined" || !SUPABASE_URL || !SUPABASE_ANON_KEY) return;
