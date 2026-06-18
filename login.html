@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — C.L Khanna Jewellers</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Cormorant+Garamond:ital@0;1&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>@media(max-width:760px){.nojs-nav{display:none!important}.nojs-burger{display:flex!important}}@media(min-width:761px){.nojs-burger{display:none}}</style>
+<link rel="stylesheet" href="style.css">
+<link rel="preload" as="image" href="assets/logo-main.png" fetchpriority="high">
+<meta name="description" content="Sign in to your C.L Khanna Jewellers account to view saved favourites and your profile.">
+<link rel="icon" href="./favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="./favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
+
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://amqmojrqifsfuhnrabdc.supabase.co wss://amqmojrqifsfuhnrabdc.supabase.co https://feeds.behold.so https://www.google-analytics.com https://analytics.google.com; frame-src https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self' https://wa.me;">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+</head>
+<body>
+<noscript><div style="background:#15130e;color:#f8f4ec;text-align:center;padding:12px 16px;font-family:Jost,sans-serif;font-size:14px">C.L Khanna Jewellers · Lawrence Road, Amritsar · <a href="tel:+919815605373" style="color:#cdb36e">+91 98156 05373</a> · <a href="https://www.instagram.com/clkhannajewellers/" style="color:#cdb36e">@clkhannajewellers</a> — please enable JavaScript for the full site.</div></noscript>
+
+<div id="site-header"><header class="site"><div class="bar">
+<button class="burger nojs-burger" aria-label="Menu" onclick="if(typeof toggleDrawer==='function')toggleDrawer(true)"><span></span><span></span><span></span></button>
+<a class="brand" href="./"><img src="assets/logo-main.png" alt="C.L Khanna Jewellers"></a>
+<nav class="nojs-nav"><a href="gold.html">Gold</a><a href="diamond.html">Diamond</a><a href="polki.html">Polki</a><a href="custom.html">Custom</a><a href="about.html">About</a><a href="location.html">Contact</a><a href="cart.html">Cart</a></nav>
+</div></header><div class="hairline"></div></div>
+<div class="pagehead">
+  <p class="eyebrow">Your Account</p>
+  <h1>Sign In</h1>
+  <p>Welcome back — sign in to see your saved favourites.</p>
+</div>
+<section style="padding-top:44px">
+  <div class="wrap" style="max-width:480px">
+    <div id="auth-page">
+
+      <form id="auth-forms" class="acct-form" style="max-width:none" onsubmit="event.preventDefault();doAuth()">
+        <div class="pd-form-group"><label>Email</label><input id="au-email" type="email" placeholder="you@example.com" autocomplete="email" required></div>
+        <div class="pd-form-group"><label>Password</label><input id="au-pass" type="password" placeholder="Password" autocomplete="current-password" required></div>
+        <p id="au-err" class="au-err"></p>
+        <button class="btn solid" id="au-main-btn" type="submit" style="width:100%">Sign In</button>
+        <div class="au-fp-wrap" style="margin-top:12px;text-align:center"><button type="button" class="auth-forgot" onclick="showForgotForm()">Forgot password?</button></div>
+        <p style="text-align:center;margin-top:20px;font-family:var(--serif);color:var(--muted)">New to C.L Khanna? <a href="register.html" style="color:var(--gold-deep)">Create an account</a></p>
+      </form>
+
+      <div id="auth-forgot" class="acct-form" style="display:none;max-width:none">
+        <p class="sub" style="font-family:var(--serif);color:var(--muted);margin-bottom:12px;text-align:center">Enter your email and we'll send a reset link.</p>
+        <div class="pd-form-group"><label>Email</label><input id="au-fe" type="email" placeholder="you@example.com" autocomplete="email"></div>
+        <p id="au-ferr" class="au-err"></p>
+        <div class="auth-btns">
+          <button class="btn solid" onclick="doForgotPassword()">Send Reset Link</button>
+          <button class="btn ghost" onclick="showAuthForms()">&#8592; Back</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<footer id="site-footer"><div class="topline"></div><div class="wrap"><div class="cols">
+<div><h4>Information</h4><a href="about.html">About Us</a><a href="location.html">Contact Us</a><a href="custom.html">Customized Jewellery</a></div>
+<div><h4>Get In Touch</h4><a href="tel:+919815605373">+91 98156 05373</a><a href="tel:+917717624298">+91 77176 24298</a><a href="mailto:clkhannajewellers@gmail.com">clkhannajewellers@gmail.com</a></div>
+<div><h4>Visit</h4><a>8 Dilawari Street, Lawrence Road, Amritsar</a><a href="https://www.instagram.com/clkhannajewellers/">@clkhannajewellers</a></div>
+</div><div class="base">Copyright © C.L Khanna Jewellers. All rights reserved.</div></div></footer>
+<script src="catalog.js"></script>
+<script src="shop.js"></script>
+<script src="app.js"></script>
+<script src="cms.js"></script>
+<script src="consent.js"></script>
+<script>
+initPage('');
+_authMode = 'in';
+
+// Show any prompt carried here from a "please sign in" action.
+(function(){
+  try {
+    var m = sessionStorage.getItem('clj_auth_msg');
+    if (m){ var e = document.getElementById('au-err'); e.style.color = 'var(--gold-deep)'; e.textContent = m; sessionStorage.removeItem('clj_auth_msg'); }
+  } catch(e){}
+})();
+
+// Deep-link to the reset-link form (e.g. from an expired reset page).
+if (/[?&]forgot=1/.test(location.search)){ showForgotForm(); }
+
+// Already signed in? Go straight to the account area.
+function loginGuard(){
+  if (typeof sbUser !== 'undefined' && sbUser){ location.replace('account.html'); }
+}
+window.onAuthReady = loginGuard;
+document.addEventListener('DOMContentLoaded', function(){ setTimeout(loginGuard, 1200); });
+</script>
+</body>
+</html>

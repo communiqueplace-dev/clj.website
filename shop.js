@@ -113,18 +113,20 @@ function initSupabase(){
   };
   document.head.appendChild(s);
 }
+/* Auth lives on dedicated pages now (login.html / register.html / account.html).
+   Already signed in -> the account area; otherwise -> the sign-in page. An optional
+   prompt is carried across the navigation and shown on the login page. */
 function openAuth(msg){
   if (!sbReady()){
     alert("Accounts are launching soon.\nYour cart is already saved on this device — and you can send it to us on WhatsApp any time.");
     return;
   }
-  document.getElementById("auth").classList.add("open");
-  refreshAuthUI();
-  if (msg){ switchAuthTab('in'); }            // show the sign-in view for a prompt
-  var aErr = document.getElementById('au-err');
-  if (aErr){ aErr.textContent = msg || ''; aErr.style.color = msg ? 'var(--gold-deep)' : ''; }
+  if (typeof sbUser !== 'undefined' && sbUser){ location.href = 'account.html'; return; }
+  try { if (msg) sessionStorage.setItem('clj_auth_msg', msg); } catch(e){}
+  location.href = 'login.html';
 }
 function refreshAuthUI(){
+  if (document.getElementById('auth-page')) return;   // dedicated login/register pages manage themselves
   var inBox  = document.getElementById('auth-forms');
   var outBox = document.getElementById('auth-signed');
   var tabs   = document.getElementById('auth-tabs');
@@ -160,13 +162,6 @@ async function doAuth(){
     }
     var pass2 = (document.getElementById('au-pass2') || {}).value || '';
     if (pass2 !== pass){ errEl.textContent = 'Passwords do not match.'; return; }
-    var phoneVal = ((document.getElementById('au-phone') || {}).value || '').trim();
-    if (phoneVal){
-      var digits = phoneVal.replace(/\D/g, '');
-      if (digits.length < 7 || digits.length > 15){
-        errEl.textContent = 'Please enter a valid mobile number, or leave it blank.'; return;
-      }
-    }
   } else {
     if (!pass){ errEl.textContent = 'Please enter your password.'; return; }
   }
@@ -180,10 +175,8 @@ async function doAuth(){
     var meta = {};
     var nm = ((document.getElementById('au-name') || {}).value || '').trim();
     var gd = (document.getElementById('au-gender') || {}).value || '';
-    var ph = ((document.getElementById('au-phone') || {}).value || '').trim();
     if (nm) meta.full_name = nm;
     if (gd) meta.gender = gd;
-    if (ph) meta.phone = ph;
     result = await sb.auth.signUp({ email: email, password: pass, options: { data: meta } });
   } else {
     result = await sb.auth.signInWithPassword({ email: email, password: pass });
@@ -198,8 +191,8 @@ async function doAuth(){
     if (msg.includes('Invalid login credentials') || msg.includes('invalid_grant')){
       errEl.textContent = 'Incorrect email or password. Please try again.';
     } else if (msg.includes('User already registered') || msg.includes('already registered') || msg.includes('already exists')){
-      errEl.textContent = 'An account with this email already exists — please sign in instead.';
-      setTimeout(function(){ switchAuthTab('in'); }, 1800);
+      errEl.textContent = 'An account with this email already exists — taking you to sign in…';
+      setTimeout(function(){ location.href = 'login.html'; }, 1800);
     } else if (msg.includes('Email not confirmed')){
       errEl.textContent = 'Please confirm your email first — check your inbox.';
     } else if (msg.includes('rate limit') || msg.includes('too many')){
@@ -225,6 +218,8 @@ async function doAuth(){
   afterLogin();
   refreshAuthUI();
   toast('Welcome to C.L Khanna');
+  // On the dedicated login/register pages, go straight to the account area.
+  if (document.getElementById('auth-page')){ location.href = 'account.html'; }
 }
 async function doLogout(){
   if (sb) await sb.auth.signOut();
@@ -268,65 +263,6 @@ async function cloudSaveCart(items){
   try {
     await sb.from("carts").upsert({ user_id: sbUser.id, items, updated_at: new Date().toISOString() });
   } catch(e){}
-}
-
-/* auth modal shell — injected on every page */
-function buildAuthShell(){
-  document.body.insertAdjacentHTML('beforeend',
-    '<div class="modal" id="auth">' +
-      '<div class="box">' +
-        '<button class="x" onclick="document.getElementById(\'auth\').classList.remove(\'open\')">&#215;</button>' +
-        '<h3>Your Account</h3>' +
-        '<p class="sub">Save your cart and enquiries across devices.</p>' +
-        '<div class="auth-tabs" id="auth-tabs">' +
-          '<button class="auth-tab auth-tab-on" id="tab-in" onclick="switchAuthTab(\'in\')">Sign In</button>' +
-          '<button class="auth-tab" id="tab-up" onclick="switchAuthTab(\'up\')">Create Account</button>' +
-        '</div>' +
-        '<div id="auth-forms">' +
-          '<div id="au-signup-top" style="display:none">' +
-            '<label>Full Name</label>' +
-            '<input id="au-name" type="text" placeholder="Your name" autocomplete="name">' +
-            '<label>Mobile <span style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:.82rem;color:var(--muted)">(optional)</span></label>' +
-            '<input id="au-phone" type="tel" placeholder="+91 98765 43210" autocomplete="tel">' +
-            '<label>Gender</label>' +
-            '<select id="au-gender"><option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Other</option></select>' +
-          '</div>' +
-          '<label>Email</label>' +
-          '<input id="au-email" type="email" placeholder="you@example.com" autocomplete="email">' +
-          '<label>Password</label>' +
-          '<input id="au-pass" type="password" placeholder="Password" autocomplete="current-password" oninput="onAuthPassInput()">' +
-          '<div class="pw-strength-wrap" id="au-sw" style="display:none">' +
-            '<div class="pw-bar" id="pw-bar"></div>' +
-            '<p class="pw-hint" id="pw-hint"></p>' +
-          '</div>' +
-          '<div id="au-confirm-wrap" style="display:none">' +
-            '<label>Confirm Password</label>' +
-            '<input id="au-pass2" type="password" placeholder="Re-enter password" autocomplete="new-password">' +
-          '</div>' +
-          '<div class="au-fp-wrap" id="au-fp"><button class="auth-forgot" onclick="showForgotForm()">Forgot password?</button></div>' +
-          '<p id="au-err" class="au-err"></p>' +
-          '<button class="btn solid" id="au-main-btn" onclick="doAuth()">Sign In</button>' +
-        '</div>' +
-        '<div id="auth-forgot" style="display:none">' +
-          '<p class="sub" style="margin-bottom:12px">Enter your email and we\'ll send a reset link.</p>' +
-          '<label>Email</label>' +
-          '<input id="au-fe" type="email" placeholder="you@example.com" autocomplete="email">' +
-          '<p id="au-ferr" class="au-err"></p>' +
-          '<div class="auth-btns">' +
-            '<button class="btn solid" onclick="doForgotPassword()">Send Reset Link</button>' +
-            '<button class="btn ghost" onclick="showAuthForms()">&#8592; Back</button>' +
-          '</div>' +
-        '</div>' +
-        '<div id="auth-signed" style="display:none">' +
-          '<p class="signed">Signed in as <b id="auth-email-show"></b></p>' +
-          '<div class="auth-btns">' +
-            '<a class="btn solid" href="account.html">My Account</a>' +
-            '<a class="btn ghost" href="cart.html">View My Cart</a>' +
-            '<button class="btn ghost" onclick="doLogout()">Sign Out</button>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-    '</div>');
 }
 
 function switchAuthTab(mode){
@@ -417,7 +353,6 @@ async function doForgotPassword(){
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  buildAuthShell();
   updateCartBadge();
   initSupabase();
 });

@@ -46,7 +46,6 @@
       <form class="acct-form" onsubmit="saveAccountProfile(event)">
         <div class="pd-form-group"><label>Name</label><input id="ac-name" type="text" placeholder="Your name" autocomplete="name"></div>
         <div class="pd-form-group"><label>Email</label><input id="ac-email" type="email" disabled></div>
-        <div class="pd-form-group"><label>Mobile</label><input id="ac-phone" type="tel" placeholder="+91 98765 43210" autocomplete="tel"></div>
         <div class="pd-form-group"><label>Gender</label><select id="ac-gender"><option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Other</option></select></div>
         <button class="btn solid" type="submit">Save Changes</button>
         <span id="ac-msg" class="au-err" style="display:inline-block;margin-left:12px;min-height:0"></span>
@@ -91,14 +90,14 @@ function acRender(){
   var gate = document.getElementById('ac-gate');
   if (typeof sbUser === 'undefined' || !sbUser){
     loading.style.display = 'none'; main.style.display = 'none'; gate.style.display = '';
-    if (typeof openAuth === 'function') openAuth('Please sign in to view your account.');
+    try { sessionStorage.setItem('clj_auth_msg', 'Please sign in to view your account.'); } catch(e){}
+    location.replace('login.html');
     return;
   }
   gate.style.display = 'none'; loading.style.display = 'none'; main.style.display = '';
   var m = sbUser.user_metadata || {};
   document.getElementById('ac-name').value = m.full_name || '';
   document.getElementById('ac-email').value = sbUser.email || '';
-  document.getElementById('ac-phone').value = m.phone || '';
   document.getElementById('ac-gender').value = m.gender || '';
   if (m.full_name){ document.getElementById('ac-greeting').textContent = 'Welcome back, ' + String(m.full_name).split(' ')[0] + '.'; }
   acRenderWishlist();
@@ -143,15 +142,10 @@ async function saveAccountProfile(e){
   if (!sb || !sbUser) return;
   var msg = document.getElementById('ac-msg'); msg.style.color = ''; msg.textContent = '';
   var name = document.getElementById('ac-name').value.trim();
-  var phone = document.getElementById('ac-phone').value.trim();
   var gender = document.getElementById('ac-gender').value;
-  if (phone){
-    var d = phone.replace(/\D/g, '');
-    if (d.length < 7 || d.length > 15){ msg.textContent = 'Please enter a valid mobile number, or leave it blank.'; return; }
-  }
   var btn = e.target.querySelector('button[type="submit"]'); var bt = btn.textContent;
   btn.disabled = true; btn.textContent = 'Saving…';
-  var r = await sb.auth.updateUser({ data: { full_name: name, phone: phone, gender: gender } });
+  var r = await sb.auth.updateUser({ data: { full_name: name, gender: gender } });
   btn.disabled = false; btn.textContent = bt;
   if (r.error){ msg.textContent = 'Could not save — please try again.'; }
   else { sbUser = r.data.user; msg.style.color = 'var(--gold-deep)'; msg.textContent = 'Saved.'; }
