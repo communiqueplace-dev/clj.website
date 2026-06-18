@@ -125,6 +125,19 @@ async function acRenderWishlist(){
 }
 window.__cmsRender = function(){ if (_acInit && sbUser) acRenderWishlist(); };
 
+// When a favourite is removed via its heart here, drop the card (and show empty state if none left).
+window.onWishlistChange = function(id, on){
+  if (on) return;
+  var box = document.getElementById('ac-wishlist');
+  if (!box) return;
+  var btn = box.querySelector('.wl-btn[data-wid="' + id + '"]');
+  var card = btn ? btn.closest('.card') : null;
+  if (card) card.remove();
+  if (!box.querySelector('.card')){
+    box.innerHTML = '<p class="rv-empty" style="text-align:center">No saved favourites yet. Tap the heart on any piece to save it here.</p>';
+  }
+};
+
 async function saveAccountProfile(e){
   e.preventDefault();
   if (!sb || !sbUser) return;

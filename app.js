@@ -407,6 +407,8 @@ function toggleWishlist(id, btn){
   document.querySelectorAll('.wl-btn[data-wid="'+id+'"]').forEach(b => _wlSyncBtn(b, on));
   // Persist per-user under RLS (instant UI above; DB sync is fire-and-forget).
   if (typeof cloudSaveWishlist === 'function') cloudSaveWishlist(a);
+  // Let the Account wishlist view react (e.g. drop a card that was just un-hearted).
+  if (typeof window.onWishlistChange === 'function') window.onWishlistChange(id, on);
 }
 // Re-sync all heart buttons on the page from stored favourites (used after login merge).
 function refreshHearts(){
