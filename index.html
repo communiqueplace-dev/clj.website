@@ -47,7 +47,7 @@
       <div class="rule"></div>
     </div>
     <div class="ed-carousel rv in">
-      <div class="ed-track ed-tiles">
+      <div class="ed-track ed-tiles" id="cat-tiles">
         <a class="tile" href="diamond.html">
           <img loading="lazy" src="assets/looks/col-diamond.jpg" alt="Certified diamond jewellery collection, C.L Khanna Jewellers Amritsar">
           <div class="veil"></div>
@@ -268,7 +268,7 @@ if (IG_FEED_URL) {
     skelLoaded(g);
   }).catch(() => { clearTimeout(igTimer); if (igGrid) { igGrid.innerHTML = igStatic; skelLoaded(igGrid); } });
 }
-const FEATURED = ["p06","d22","g03","d16","g11","p03","d20","g12"];
+var FEATURED = ["p06","d22","g03","d16","g11","p03","d20","g12"];
 function renderFeatured(){
   var items = FEATURED.map(id => PRODUCTS.find(x => x.img === id)).filter(Boolean);
   var html = items.map(cardHTML).join("");
@@ -281,6 +281,34 @@ function renderFeatured(){
 window.__cmsRender = renderFeatured;
 showSkeletons(document.getElementById("featured"), 6);
 renderFeatured();
+
+/* Category tile re-renderer — called by cms.js when site_config loads */
+var CAT_TILE_DATA = {
+  diamond:{href:'diamond.html',img:'assets/looks/col-diamond.jpg',alt:'Certified diamond jewellery collection, C.L Khanna Jewellers Amritsar',small:'Brilliance, certified',h3:'Diamond Collection'},
+  polki:  {href:'polki.html',  img:'assets/looks/col-polki.jpg',  alt:'Polki &amp; uncut diamond bridal jewellery collection, C.L Khanna Jewellers Amritsar',small:'Heritage uncut',      h3:'Polki Collection'},
+  gold:   {href:'gold.html',   img:'assets/looks/col-gold.jpg',   alt:'BIS hallmarked gold jewellery collection, C.L Khanna Jewellers Amritsar',small:'Everyday heirlooms', h3:'Gold Collection'}
+};
+function renderCategoryTiles(order){
+  var track = document.getElementById('cat-tiles');
+  if (!track || !Array.isArray(order)) return;
+  function tile(cat, hidden){
+    var d = CAT_TILE_DATA[cat]; if (!d) return '';
+    var h = hidden ? ' aria-hidden="true" tabindex="-1"' : '';
+    return '<a class="tile" href="'+d.href+'"'+h+'><img loading="lazy" src="'+d.img+'" alt="'+d.alt+'"><div class="veil"></div><div class="label"><small>'+d.small+'</small><h3>'+d.h3+'</h3><span class="shop">Explore Collection</span></div></a>';
+  }
+  track.innerHTML = order.map(function(c){return tile(c,false);}).join('') + order.map(function(c){return tile(c,true);}).join('');
+}
+window.__siteConfigReady = function(cfg){
+  var order = cfg.homepage_category_order;
+  if (Array.isArray(order) && JSON.stringify(order) !== JSON.stringify(['diamond','polki','gold'])){
+    renderCategoryTiles(order);
+  }
+  var featured = cfg.homepage_featured;
+  if (Array.isArray(featured) && featured.length){
+    FEATURED = featured;
+    renderFeatured();
+  }
+};
 </script>
 </body>
 </html>
