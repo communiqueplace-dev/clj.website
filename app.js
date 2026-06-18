@@ -69,7 +69,7 @@ function buildHeader(active){
         <a class="d-sub d-strong" href="${c}.html">${CAT_TITLES[c]}</a>
       `).join("")}
     </div>
-    <a class="d-cat" href="./#collections">Collections</a>
+    <a class="d-cat" href="./#collections">Categories</a>
     <a class="d-cat" href="polki.html?sub=sets">Bridal</a>
     <a class="d-cat" href="custom.html">Custom Jewellery</a>
     <a class="d-cat" href="media.html">Media</a>
