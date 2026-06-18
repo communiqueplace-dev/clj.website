@@ -30,7 +30,9 @@ function changeQty(id, d){
   const items = getCart();
   const hit = items.find(i => i.id === id);
   if (!hit) return;
-  hit.qty = Math.max(1, hit.qty + d);
+  const next = hit.qty + d;
+  if (next < 1){ removeFromCart(id); return; }   // minus on the last unit removes the item
+  hit.qty = next;
   setCart(items);
   renderCartPage();
 }
