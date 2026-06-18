@@ -104,7 +104,7 @@ var _authMode = 'in';
    TO ACTIVATE: (1) replace HCAPTCHA_SITE_KEY below with your real hCaptcha site key,
    (2) in Supabase -> Auth -> Bot & Abuse Protection, enable hCaptcha and paste the matching
    SECRET key. While Supabase CAPTCHA is OFF, the token is ignored and auth works normally. */
-var HCAPTCHA_SITE_KEY = '10000000-ffff-ffff-ffff-000000000001'; // hCaptcha TEST key — swap for production
+var HCAPTCHA_SITE_KEY = 'c81414a8-918c-4fd0-9022-d3ea7786bca8'; // production hCaptcha site key (public — safe in frontend)
 function cljRenderCaptchas(){
   if (typeof hcaptcha === 'undefined') return;
   document.querySelectorAll('.h-captcha-box').forEach(function(el){
