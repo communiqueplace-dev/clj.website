@@ -107,6 +107,7 @@ function initSupabase(){
     const { data } = await sb.auth.getSession();
     if (data && data.session){ sbUser = data.session.user; afterLogin(); }
     refreshAuthUI();
+    if (typeof window.onAuthReady === 'function') window.onAuthReady();
   };
   document.head.appendChild(s);
 }
@@ -152,8 +153,18 @@ async function doAuth(){
     errEl.textContent = 'Please enter a valid email address.'; return;
   }
   if (_authMode === 'up'){
-    if (pass.length < 8){ errEl.textContent = 'Password must be at least 8 characters.'; return; }
-    if (pwStrength(pass) < 2){ errEl.textContent = 'Please choose a stronger password — try adding numbers or symbols.'; return; }
+    if (pass.length < 8 || !/[A-Za-z]/.test(pass) || !/[0-9]/.test(pass)){
+      errEl.textContent = 'Password must be at least 8 characters and include a letter and a number.'; return;
+    }
+    var pass2 = (document.getElementById('au-pass2') || {}).value || '';
+    if (pass2 !== pass){ errEl.textContent = 'Passwords do not match.'; return; }
+    var phoneVal = ((document.getElementById('au-phone') || {}).value || '').trim();
+    if (phoneVal){
+      var digits = phoneVal.replace(/\D/g, '');
+      if (digits.length < 7 || digits.length > 15){
+        errEl.textContent = 'Please enter a valid mobile number, or leave it blank.'; return;
+      }
+    }
   } else {
     if (!pass){ errEl.textContent = 'Please enter your password.'; return; }
   }
@@ -162,9 +173,19 @@ async function doAuth(){
   btn.disabled = true;
   btn.textContent = _authMode === 'in' ? 'Signing in...' : 'Creating account...';
 
-  var result = _authMode === 'up'
-    ? await sb.auth.signUp({ email: email, password: pass })
-    : await sb.auth.signInWithPassword({ email: email, password: pass });
+  var result;
+  if (_authMode === 'up'){
+    var meta = {};
+    var nm = ((document.getElementById('au-name') || {}).value || '').trim();
+    var gd = (document.getElementById('au-gender') || {}).value || '';
+    var ph = ((document.getElementById('au-phone') || {}).value || '').trim();
+    if (nm) meta.full_name = nm;
+    if (gd) meta.gender = gd;
+    if (ph) meta.phone = ph;
+    result = await sb.auth.signUp({ email: email, password: pass, options: { data: meta } });
+  } else {
+    result = await sb.auth.signInWithPassword({ email: email, password: pass });
+  }
 
   btn.disabled = false;
   btn.textContent = _authMode === 'in' ? 'Sign In' : 'Create Account';
@@ -223,6 +244,22 @@ async function afterLogin(){
     if (document.getElementById("cart-list")) renderCartPage();
     cloudSaveCart(merged);
   } catch(e){}
+  /* merge per-user wishlist (cloud) with local favourites — same items-jsonb pattern as carts */
+  try {
+    const { data } = await sb.from("wishlists").select("items").eq("user_id", sbUser.id).maybeSingle();
+    const cloud = (data && data.items) || [];
+    const local = JSON.parse(localStorage.getItem("clj_wl") || "[]");
+    const merged = Array.from(new Set([...local, ...cloud]));
+    localStorage.setItem("clj_wl", JSON.stringify(merged));
+    cloudSaveWishlist(merged);
+    if (typeof refreshHearts === "function") refreshHearts();
+  } catch(e){}
+}
+async function cloudSaveWishlist(items){
+  if (!sb || !sbUser) return;
+  try {
+    await sb.from("wishlists").upsert({ user_id: sbUser.id, items: items, updated_at: new Date().toISOString() });
+  } catch(e){}
 }
 async function cloudSaveCart(items){
   if (!sb || !sbUser) return;
@@ -244,6 +281,14 @@ function buildAuthShell(){
           '<button class="auth-tab" id="tab-up" onclick="switchAuthTab(\'up\')">Create Account</button>' +
         '</div>' +
         '<div id="auth-forms">' +
+          '<div id="au-signup-top" style="display:none">' +
+            '<label>Full Name</label>' +
+            '<input id="au-name" type="text" placeholder="Your name" autocomplete="name">' +
+            '<label>Mobile <span style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:.82rem;color:var(--muted)">(optional)</span></label>' +
+            '<input id="au-phone" type="tel" placeholder="+91 98765 43210" autocomplete="tel">' +
+            '<label>Gender</label>' +
+            '<select id="au-gender"><option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Other</option></select>' +
+          '</div>' +
           '<label>Email</label>' +
           '<input id="au-email" type="email" placeholder="you@example.com" autocomplete="email">' +
           '<label>Password</label>' +
@@ -251,6 +296,10 @@ function buildAuthShell(){
           '<div class="pw-strength-wrap" id="au-sw" style="display:none">' +
             '<div class="pw-bar" id="pw-bar"></div>' +
             '<p class="pw-hint" id="pw-hint"></p>' +
+          '</div>' +
+          '<div id="au-confirm-wrap" style="display:none">' +
+            '<label>Confirm Password</label>' +
+            '<input id="au-pass2" type="password" placeholder="Re-enter password" autocomplete="new-password">' +
           '</div>' +
           '<div class="au-fp-wrap" id="au-fp"><button class="auth-forgot" onclick="showForgotForm()">Forgot password?</button></div>' +
           '<p id="au-err" class="au-err"></p>' +
@@ -269,8 +318,9 @@ function buildAuthShell(){
         '<div id="auth-signed" style="display:none">' +
           '<p class="signed">Signed in as <b id="auth-email-show"></b></p>' +
           '<div class="auth-btns">' +
+            '<a class="btn solid" href="account.html">My Account</a>' +
             '<a class="btn ghost" href="cart.html">View My Cart</a>' +
-            '<button class="btn solid" onclick="doLogout()">Sign Out</button>' +
+            '<button class="btn ghost" onclick="doLogout()">Sign Out</button>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -292,6 +342,10 @@ function switchAuthTab(mode){
   }
   var sw = document.getElementById('au-sw');
   if (sw) sw.style.display = mode === 'up' ? '' : 'none';
+  var top = document.getElementById('au-signup-top');
+  if (top) top.style.display = mode === 'up' ? '' : 'none';
+  var cw = document.getElementById('au-confirm-wrap');
+  if (cw) cw.style.display = mode === 'up' ? '' : 'none';
   var fp = document.getElementById('au-fp');
   if (fp) fp.style.display = mode === 'in' ? '' : 'none';
   var errEl = document.getElementById('au-err');

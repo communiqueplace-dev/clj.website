@@ -1087,6 +1087,15 @@ html{overflow-x:hidden}
 .skel-review .skel-line.short{width:40%}
 
 
+/* ================= account page form (reuses existing form tokens) ================= */
+.acct-form{max-width:480px}
+.acct-form .pd-form-group{margin-bottom:14px}
+.acct-form label{display:block;text-align:left;font-family:var(--sans);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.acct-form input,.acct-form select{width:100%;border:1px solid var(--line);padding:10px 13px;font-family:var(--sans);font-size:.88rem;background:#fff;color:var(--ink);outline:none;box-sizing:border-box;transition:border-color .18s}
+.acct-form input:focus,.acct-form select:focus{border-color:var(--gold)}
+.acct-form input:disabled{background:#faf7f1;color:var(--muted)}
+
+
 /* ================= footer accordion — phones only ================= */
 /* Desktop/tablet: the heading button looks and sits exactly like the old <h4>,
    links always shown — no visual change above the mobile breakpoint. */

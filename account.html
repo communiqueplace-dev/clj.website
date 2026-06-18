@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — C.L Khanna Jewellers</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Cormorant+Garamond:ital@0;1&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>@media(max-width:760px){.nojs-nav{display:none!important}.nojs-burger{display:flex!important}}@media(min-width:761px){.nojs-burger{display:none}}</style>
+<link rel="stylesheet" href="style.css">
+<link rel="preload" as="image" href="assets/logo-main.png" fetchpriority="high">
+<meta name="description" content="Your C.L Khanna Jewellers account — saved favourites and profile details.">
+<link rel="icon" href="./favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="./favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
+
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://amqmojrqifsfuhnrabdc.supabase.co wss://amqmojrqifsfuhnrabdc.supabase.co https://feeds.behold.so https://www.google-analytics.com https://analytics.google.com; frame-src https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self' https://wa.me;">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+</head>
+<body>
+<noscript><div style="background:#15130e;color:#f8f4ec;text-align:center;padding:12px 16px;font-family:Jost,sans-serif;font-size:14px">C.L Khanna Jewellers · Lawrence Road, Amritsar · <a href="tel:+919815605373" style="color:#cdb36e">+91 98156 05373</a> · <a href="https://www.instagram.com/clkhannajewellers/" style="color:#cdb36e">@clkhannajewellers</a> — please enable JavaScript for the full site.</div></noscript>
+
+<div id="site-header"><header class="site"><div class="bar">
+<button class="burger nojs-burger" aria-label="Menu" onclick="if(typeof toggleDrawer==='function')toggleDrawer(true)"><span></span><span></span><span></span></button>
+<a class="brand" href="./"><img src="assets/logo-main.png" alt="C.L Khanna Jewellers"></a>
+<nav class="nojs-nav"><a href="gold.html">Gold</a><a href="diamond.html">Diamond</a><a href="polki.html">Polki</a><a href="custom.html">Custom</a><a href="about.html">About</a><a href="location.html">Contact</a><a href="cart.html">Cart</a></nav>
+</div></header><div class="hairline"></div></div>
+<div class="pagehead">
+  <p class="eyebrow">Your Account</p>
+  <h1>My Account</h1>
+  <p id="ac-greeting">Your saved favourites and profile details.</p>
+</div>
+<section style="padding-top:44px">
+  <div class="wrap" style="max-width:880px">
+
+    <div id="ac-loading"><p class="rv-empty" style="text-align:center">Loading your account…</p></div>
+
+    <div id="ac-gate" style="display:none;text-align:center">
+      <p class="rv-empty">Please sign in to view your account.</p>
+      <button class="btn solid" onclick="if(typeof openAuth==='function')openAuth('Please sign in to view your account.')">Sign In</button>
+    </div>
+
+    <div id="ac-main" style="display:none">
+      <h2 class="pd-sec-h">Profile</h2>
+      <form class="acct-form" onsubmit="saveAccountProfile(event)">
+        <div class="pd-form-group"><label>Name</label><input id="ac-name" type="text" placeholder="Your name" autocomplete="name"></div>
+        <div class="pd-form-group"><label>Email</label><input id="ac-email" type="email" disabled></div>
+        <div class="pd-form-group"><label>Mobile</label><input id="ac-phone" type="tel" placeholder="+91 98765 43210" autocomplete="tel"></div>
+        <div class="pd-form-group"><label>Gender</label><select id="ac-gender"><option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Other</option></select></div>
+        <button class="btn solid" type="submit">Save Changes</button>
+        <span id="ac-msg" class="au-err" style="display:inline-block;margin-left:12px;min-height:0"></span>
+      </form>
+
+      <h2 class="pd-sec-h" style="margin-top:52px">Saved Favourites</h2>
+      <div id="ac-wishlist"></div>
+
+      <div style="margin-top:52px;text-align:center;border-top:1px solid var(--line);padding-top:30px">
+        <button class="btn ghost" onclick="accountLogout()">Sign Out</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+<footer id="site-footer"><div class="topline"></div><div class="wrap"><div class="cols">
+<div><h4>Information</h4><a href="about.html">About Us</a><a href="location.html">Contact Us</a><a href="custom.html">Customized Jewellery</a></div>
+<div><h4>Get In Touch</h4><a href="tel:+919815605373">+91 98156 05373</a><a href="tel:+917717624298">+91 77176 24298</a><a href="mailto:clkhannajewellers@gmail.com">clkhannajewellers@gmail.com</a></div>
+<div><h4>Visit</h4><a>8 Dilawari Street, Lawrence Road, Amritsar</a><a href="https://www.instagram.com/clkhannajewellers/">@clkhannajewellers</a></div>
+</div><div class="base">Copyright © C.L Khanna Jewellers. All rights reserved.</div></div></footer>
+<script src="catalog.js"></script>
+<script src="shop.js"></script>
+<script src="app.js"></script>
+<script src="cms.js"></script>
+<script src="consent.js"></script>
+<script>
+initPage('');
+
+var _acInit = false;
+function acInit(){
+  if (typeof sb === 'undefined' || !sb) return;        // wait for Supabase to be ready
+  if (_acInit) return; _acInit = true;
+  try { sb.auth.onAuthStateChange(function(ev, session){ sbUser = session ? session.user : null; acRender(); }); } catch(e){}
+  acRender();
+}
+window.onAuthReady = acInit;                            // fired by shop.js once the session is checked
+document.addEventListener('DOMContentLoaded', function(){ setTimeout(acInit, 1200); });
+
+function acRender(){
+  var loading = document.getElementById('ac-loading');
+  var main = document.getElementById('ac-main');
+  var gate = document.getElementById('ac-gate');
+  if (typeof sbUser === 'undefined' || !sbUser){
+    loading.style.display = 'none'; main.style.display = 'none'; gate.style.display = '';
+    if (typeof openAuth === 'function') openAuth('Please sign in to view your account.');
+    return;
+  }
+  gate.style.display = 'none'; loading.style.display = 'none'; main.style.display = '';
+  var m = sbUser.user_metadata || {};
+  document.getElementById('ac-name').value = m.full_name || '';
+  document.getElementById('ac-email').value = sbUser.email || '';
+  document.getElementById('ac-phone').value = m.phone || '';
+  document.getElementById('ac-gender').value = m.gender || '';
+  if (m.full_name){ document.getElementById('ac-greeting').textContent = 'Welcome back, ' + String(m.full_name).split(' ')[0] + '.'; }
+  acRenderWishlist();
+}
+
+async function acRenderWishlist(){
+  var box = document.getElementById('ac-wishlist');
+  var ids = [];
+  try {
+    var r = await sb.from('wishlists').select('items').eq('user_id', sbUser.id).maybeSingle();
+    ids = (r.data && r.data.items) || [];
+  } catch(e){ ids = (typeof _wlGet === 'function') ? _wlGet() : []; }
+  var products = window.PRODUCTS || [];
+  var cards = ids.map(function(id){
+    var p = products.find(function(x){ return x.img === id; });
+    return p ? cardHTML(p) : '';
+  }).join('');
+  if (!cards.trim()){
+    box.innerHTML = '<p class="rv-empty" style="text-align:center">No saved favourites yet. Tap the heart on any piece to save it here.</p>';
+    return;
+  }
+  box.innerHTML = '<div class="grid">' + cards + '</div>';
+  if (typeof refreshHearts === 'function') refreshHearts();
+}
+window.__cmsRender = function(){ if (_acInit && sbUser) acRenderWishlist(); };
+
+async function saveAccountProfile(e){
+  e.preventDefault();
+  if (!sb || !sbUser) return;
+  var msg = document.getElementById('ac-msg'); msg.style.color = ''; msg.textContent = '';
+  var name = document.getElementById('ac-name').value.trim();
+  var phone = document.getElementById('ac-phone').value.trim();
+  var gender = document.getElementById('ac-gender').value;
+  if (phone){
+    var d = phone.replace(/\D/g, '');
+    if (d.length < 7 || d.length > 15){ msg.textContent = 'Please enter a valid mobile number, or leave it blank.'; return; }
+  }
+  var btn = e.target.querySelector('button[type="submit"]'); var bt = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Saving…';
+  var r = await sb.auth.updateUser({ data: { full_name: name, phone: phone, gender: gender } });
+  btn.disabled = false; btn.textContent = bt;
+  if (r.error){ msg.textContent = 'Could not save — please try again.'; }
+  else { sbUser = r.data.user; msg.style.color = 'var(--gold-deep)'; msg.textContent = 'Saved.'; }
+}
+
+async function accountLogout(){
+  if (typeof doLogout === 'function'){ try { await doLogout(); } catch(e){} }
+  location.href = './';
+}
+</script>
+</body>
+</html>

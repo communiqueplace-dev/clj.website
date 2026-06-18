@@ -400,10 +400,18 @@ function toggleWishlist(id, btn){
   }
   const a = _wlGet();
   const i = a.indexOf(id);
-  if (i === -1) a.push(id); else a.splice(i, 1);
+  const adding = (i === -1);
+  if (adding) a.push(id); else a.splice(i, 1);
   _wlSet(a);
   const on = a.includes(id);
   document.querySelectorAll('.wl-btn[data-wid="'+id+'"]').forEach(b => _wlSyncBtn(b, on));
+  // Persist per-user under RLS (instant UI above; DB sync is fire-and-forget).
+  if (typeof cloudSaveWishlist === 'function') cloudSaveWishlist(a);
+}
+// Re-sync all heart buttons on the page from stored favourites (used after login merge).
+function refreshHearts(){
+  const a = _wlGet();
+  document.querySelectorAll('.wl-btn').forEach(b => _wlSyncBtn(b, a.includes(b.getAttribute('data-wid'))));
 }
 
 /* ---- Share ---- */
