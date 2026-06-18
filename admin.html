@@ -191,6 +191,7 @@ async function admInit(){
   if (typeof sbUser === 'undefined') return; // called before Supabase ready
   if (!sbUser){
     sessionStorage.setItem('clj_auth_msg', 'Please sign in as the store admin.');
+    sessionStorage.setItem('clj_post_login', 'admin.html');
     location.replace('login.html');
     return;
   }

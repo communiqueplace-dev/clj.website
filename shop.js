@@ -257,7 +257,11 @@ async function doAuth(){
   refreshAuthUI();
   toast('Welcome to C.L Khanna');
   // On the dedicated login/register pages, go straight to the account area.
-  if (document.getElementById('auth-page')){ location.href = 'account.html'; }
+  if (document.getElementById('auth-page')){
+    var _redir = sessionStorage.getItem('clj_post_login');
+    sessionStorage.removeItem('clj_post_login');
+    location.href = _redir || 'account.html';
+  }
 }
 async function doLogout(){
   if (sb) await sb.auth.signOut();
