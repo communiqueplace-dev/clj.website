@@ -659,10 +659,6 @@ function renderProduct(){
     img.style.transform = "scale(2)";
   });
   box.addEventListener("mouseleave", () => { img.style.transform = "scale(1)"; });
-  box.addEventListener("click", function(e) {
-    if (e.target.closest('.wl-btn')) return;
-    if (typeof openLB === 'function') openLB(img.src);
-  });
   loadReviews(p.img);
   renderYMAL(p.cat, p.img);
   renderCompleteTheLook(p.cat, p.sub, p.img);
