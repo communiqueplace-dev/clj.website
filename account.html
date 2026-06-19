@@ -119,8 +119,9 @@ async function acRenderWishlist(){
     return p ? '• ' + p.name + (window.CAT_TITLES ? ' — ' + window.CAT_TITLES[p.cat] : '') : null;
   }).filter(Boolean);
   box.innerHTML = '<div class="grid">' + cards + '</div>' +
-    '<div style="text-align:center;margin-top:32px">' +
-    '<button class="btn solid" style="background:#25d366;border-color:#25d366;color:#fff" onclick="sendWishlistToWA()">&#128172; Send Wishlist on WhatsApp</button>' +
+    '<div style="margin-top:36px;padding-top:28px;border-top:1px solid var(--line);text-align:center">' +
+    '<p style="font-family:var(--serif);font-size:.95rem;color:var(--muted);margin-bottom:16px">Share your saved pieces with us and we\'ll send you prices &amp; availability.</p>' +
+    '<button class="btn ghost" onclick="sendWishlistToWA()">Send Wishlist on WhatsApp</button>' +
     '</div>';
   if (typeof refreshHearts === 'function') refreshHearts();
 }
