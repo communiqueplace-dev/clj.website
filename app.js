@@ -270,7 +270,7 @@ function imgURL(p){ if (p && p.image_url) return p.image_url; return 'assets/cat
 function cardHTML(p){
   const wled = isWishlisted(p.img);
   return `
-  <a class="card rv in" data-s="${esc(p.sub)}" href="product.html?id=${esc(p.img)}">
+  <a class="card rv in" data-s="${esc(p.sub)}" data-g="${esc(p.gender||'women')}" href="product.html?id=${esc(p.img)}">
     <div class="ph">
       <img loading="lazy" src="${imgURL(p)}" alt="${esc(p.name)}, ${esc(CAT_TITLES[p.cat]||'')} — C.L Khanna Jewellers Amritsar">
       <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}" onclick="event.preventDefault();event.stopPropagation();toggleWishlist('${esc(p.img)}',this)">
@@ -284,17 +284,31 @@ function cardHTML(p){
     </div>
   </a>`;
 }
+const FILTER_CATS = [
+  {keys:"sets",              label:"Chokers & Sets"},
+  {keys:"bangles,bracelets", label:"Bracelets & Bangles"},
+  {keys:"earrings",          label:"Earrings & Studs"},
+  {keys:"rings",             label:"Rings"},
+];
+
 function applyCatalogFilter(){
   const grid = document.getElementById("grid");
   const count = document.getElementById("count");
   const fsBody = document.getElementById("fs-body");
   if (!grid) return;
-  const checked = fsBody
-    ? Array.from(fsBody.querySelectorAll('.fs-check input[data-sub]:checked')).map(i => i.dataset.sub)
+  const checkedCatKeys = fsBody
+    ? Array.from(fsBody.querySelectorAll('.fs-check input[data-sub-keys]:checked'))
+        .flatMap(i => i.dataset.subKeys.split(','))
+    : [];
+  const checkedGenders = fsBody
+    ? Array.from(fsBody.querySelectorAll('.fs-check input[data-gender]:checked'))
+        .map(i => i.dataset.gender)
     : [];
   let n = 0;
   grid.querySelectorAll(".card").forEach(c => {
-    const show = checked.length === 0 || checked.includes(c.dataset.s);
+    const catOk    = checkedCatKeys.length  === 0 || checkedCatKeys.includes(c.dataset.s);
+    const genderOk = checkedGenders.length  === 0 || checkedGenders.includes(c.dataset.g || 'women');
+    const show = catOk && genderOk;
     c.style.display = show ? "" : "none";
     if (show) n++;
   });
@@ -308,23 +322,26 @@ function onSidebarChange(){
 function buildFilterSidebar(cat, catProducts){
   const fsBody = document.getElementById("fs-body");
   if (!fsBody) return;
-  const subs = SUBS[cat];
-  const total = catProducts.length;
   const subCounts = {};
-  catProducts.forEach(p => { subCounts[p.sub] = (subCounts[p.sub] || 0) + 1; });
+  let womenCount = 0, menCount = 0;
+  catProducts.forEach(p => {
+    subCounts[p.sub] = (subCounts[p.sub] || 0) + 1;
+    if ((p.gender || 'women') === 'men') menCount++; else womenCount++;
+  });
+  const catRows = FILTER_CATS.map(({keys, label}) => {
+    const cnt = keys.split(',').reduce((s, k) => s + (subCounts[k] || 0), 0);
+    return `<label class="fs-check"><input type="checkbox" data-sub-keys="${esc(keys)}" onchange="onSidebarChange()"><span>${esc(label)} <span class="fs-cnt">(${cnt})</span></span></label>`;
+  }).join('');
   fsBody.innerHTML =
     `<div class="fs-group">
-      <button class="fs-group-hd" onclick="toggleFsGroup(this)">Product Type <span class="fs-toggle-icon">−</span></button>
-      <div class="fs-group-body">` +
-        subs.map(([k,l]) =>
-          `<label class="fs-check"><input type="checkbox" data-sub="${esc(k)}" onchange="onSidebarChange()"><span>${esc(l)} <span class="fs-cnt">(${subCounts[k]||0})</span></span></label>`
-        ).join("") +
-      `</div>
+      <button class="fs-group-hd" onclick="toggleFsGroup(this)">Category <span class="fs-toggle-icon">−</span></button>
+      <div class="fs-group-body">${catRows}</div>
     </div>
     <div class="fs-group">
-      <button class="fs-group-hd" onclick="toggleFsGroup(this)">Shop For <span class="fs-toggle-icon">−</span></button>
+      <button class="fs-group-hd" onclick="toggleFsGroup(this)">Gender <span class="fs-toggle-icon">−</span></button>
       <div class="fs-group-body">
-        <label class="fs-check"><input type="checkbox" checked disabled><span>Women <span class="fs-cnt">(${total})</span></span></label>
+        <label class="fs-check"><input type="checkbox" data-gender="women" onchange="onSidebarChange()"><span>Women <span class="fs-cnt">(${womenCount})</span></span></label>
+        <label class="fs-check"><input type="checkbox" data-gender="men" onchange="onSidebarChange()"><span>Men <span class="fs-cnt">(${menCount})</span></span></label>
       </div>
     </div>`;
 }
@@ -351,11 +368,12 @@ function renderCatalog(cat){
   skelLoaded(grid);
   buildFilterSidebar(cat, catProducts);
   const want = new URLSearchParams(location.search).get("sub");
-  if (want && SUBS[cat].some(([k]) => k === want)) {
+  if (want) {
     const fsBody = document.getElementById("fs-body");
     if (fsBody) {
-      const cb = fsBody.querySelector('.fs-check input[data-sub="' + want + '"]');
-      if (cb) { cb.checked = true; applyCatalogFilter(); return; }
+      const cbs = Array.from(fsBody.querySelectorAll('.fs-check input[data-sub-keys]'));
+      const match = cbs.find(inp => inp.dataset.subKeys.split(',').includes(want));
+      if (match) { match.checked = true; applyCatalogFilter(); return; }
     }
   }
   applyCatalogFilter();
@@ -558,6 +576,16 @@ function renderProduct(){
   (function(m,k,v){ var el=document.querySelector('meta[name="'+k+'"]')||document.querySelector('meta[property="'+k+'"]'); if(el) el.setAttribute('content',v); }); // helper reference
   [['name','description',_desc],['property','og:title',document.title],['property','og:description',_desc],['property','og:url',_url],['property','og:image',_img],['name','twitter:title',document.title],['name','twitter:description',_desc],['name','twitter:image',_img]].forEach(function(t){ var el=document.querySelector('meta['+t[0]+'="'+t[1]+'"]'); if(el) el.setAttribute('content',t[2]); });
   var canon = document.querySelector('link[rel="canonical"]'); if(canon) canon.setAttribute('href', _url);
+  /* Product schema for Google rich results */
+  var _pdSchema = document.getElementById('pd-schema');
+  if (_pdSchema) _pdSchema.remove();
+  var _pdSchemaEl = document.createElement('script');
+  _pdSchemaEl.id = 'pd-schema';
+  _pdSchemaEl.type = 'application/ld+json';
+  var _schema = {"@context":"https://schema.org","@type":"Product","name":p.name,"description":_desc,"image":_img,"brand":{"@type":"Brand","name":"C.L Khanna Jewellers"},"category":CAT_TITLES[safeCat],"material":p.metal,"offers":{"@type":"Offer","availability":"https://schema.org/InStock","priceCurrency":"INR","seller":{"@type":"Organization","name":"C.L Khanna Jewellers","url":"https://clkhannajewellers.in"}}};
+  if (p.price_from) _schema.offers.price = p.price_from;
+  _pdSchemaEl.textContent = JSON.stringify(_schema);
+  document.head.appendChild(_pdSchemaEl);
   const TRUNC = 130;
   _pdDescFull = p.desc;
   _pdDescShort = p.desc.length > TRUNC ? p.desc.slice(0, TRUNC).replace(/\s+\S*$/, '') + '…' : p.desc;

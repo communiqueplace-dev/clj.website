@@ -114,9 +114,29 @@ async function acRenderWishlist(){
     box.innerHTML = '<p class="rv-empty" style="text-align:center">No saved favourites yet. Tap the heart on any piece to save it here.</p>';
     return;
   }
-  box.innerHTML = '<div class="grid">' + cards + '</div>';
+  var waItems = ids.map(function(id){
+    var p = products.find(function(x){ return x.img === id; });
+    return p ? '• ' + p.name + (window.CAT_TITLES ? ' — ' + window.CAT_TITLES[p.cat] : '') : null;
+  }).filter(Boolean);
+  box.innerHTML = '<div class="grid">' + cards + '</div>' +
+    '<div style="text-align:center;margin-top:32px">' +
+    '<button class="btn solid" style="background:#25d366;border-color:#25d366;color:#fff" onclick="sendWishlistToWA()">&#128172; Send Wishlist on WhatsApp</button>' +
+    '</div>';
   if (typeof refreshHearts === 'function') refreshHearts();
 }
+
+function sendWishlistToWA(){
+  var ids = typeof _wlGet === 'function' ? _wlGet() : [];
+  var products = window.PRODUCTS || [];
+  var items = ids.map(function(id){
+    var p = products.find(function(x){ return x.img === id; });
+    return p ? '• ' + p.name + (window.CAT_TITLES ? ' — ' + window.CAT_TITLES[p.cat] : '') : null;
+  }).filter(Boolean);
+  if (!items.length){ return; }
+  var text = 'Hello C.L Khanna Jewellers,\n\nI would like to enquire about the following pieces from my wishlist:\n\n' + items.join('\n') + '\n\nKindly share the price and availability. Thank you!';
+  window.open('https://wa.me/919815605373?text=' + encodeURIComponent(text), '_blank', 'noopener');
+}
+
 window.__cmsRender = function(){ if (_acInit && sbUser) acRenderWishlist(); };
 
 // When a favourite is removed via its heart here, drop the card (and show empty state if none left).
