@@ -470,6 +470,11 @@ footer .base{font-size:.68rem}
 .ed-track img{width:300px;aspect-ratio:2/3;object-fit:cover;object-position:center top;transition:transform 1s}
 .ed-track a:hover img{transform:scale(1.04)}
 @keyframes edscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* carousel progress bar */
+.ed-progress{height:2px;background:rgba(168,134,47,.15);margin-top:12px;border-radius:1px;overflow:hidden}
+.ed-bar{height:100%;width:0;background:var(--gold);border-radius:1px;animation:ed-bar-scroll 46s linear infinite}
+.ed-carousel:hover+.ed-progress .ed-bar{animation-play-state:paused}
+@keyframes ed-bar-scroll{from{width:0}to{width:100%}}
 @media(prefers-reduced-motion:reduce){.ed-track{animation:none}.ed-carousel{overflow-x:auto}}
 @media(max-width:760px){
   .ed-track{gap:14px;animation-duration:32s}

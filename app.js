@@ -732,6 +732,13 @@ function addCarouselSwipe(carousel) {
   if (!track) return;
   var sx = 0, sy = 0, baseX = 0, lastX = 0, dragging = false, moved = false;
 
+  /* inject progress bar */
+  var prog = document.createElement('div'); prog.className = 'ed-progress';
+  var bar  = document.createElement('div'); bar.className  = 'ed-bar';
+  prog.appendChild(bar); carousel.parentNode.insertBefore(prog, carousel.nextSibling);
+  var dur = parseFloat(getComputedStyle(track).animationDuration) || 46;
+  bar.style.animationDuration = dur + 's';
+
   function snapX() {
     try { return new DOMMatrix(getComputedStyle(track).transform).m41 || 0; } catch(e) { return 0; }
   }
@@ -740,6 +747,7 @@ function addCarouselSwipe(carousel) {
     sx = x; sy = y;
     baseX = lastX = snapX();
     track.style.animationPlayState = 'paused';
+    bar.style.animationPlayState  = 'paused';
     track.style.transform = 'translateX(' + baseX + 'px)';
     dragging = true; moved = false;
   }
@@ -771,6 +779,7 @@ function addCarouselSwipe(carousel) {
     track.style.setProperty('--_ed-dl', delay + 's');
     track.style.setProperty('--_ed-nm', 'edscroll');
     track.style.animationPlayState = '';
+    bar.style.animationPlayState  = '';
     track.style.transform = '';
   }
 
