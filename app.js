@@ -732,12 +732,15 @@ function addCarouselSwipe(carousel) {
   if (!track) return;
   var sx = 0, sy = 0, baseX = 0, lastX = 0, dragging = false, moved = false;
 
-  /* inject progress bar */
-  var prog = document.createElement('div'); prog.className = 'ed-progress';
-  var bar  = document.createElement('div'); bar.className  = 'ed-bar';
-  prog.appendChild(bar); carousel.parentNode.insertBefore(prog, carousel.nextSibling);
-  var dur = parseFloat(getComputedStyle(track).animationDuration) || 46;
-  bar.style.animationDuration = dur + 's';
+  /* inject progress bar (skip editorial carousel) */
+  var bar = { style: {} };
+  if (track.id !== 'editorial-track') {
+    var prog = document.createElement('div'); prog.className = 'ed-progress';
+    bar = document.createElement('div'); bar.className = 'ed-bar';
+    prog.appendChild(bar); carousel.parentNode.insertBefore(prog, carousel.nextSibling);
+    var dur = parseFloat(getComputedStyle(track).animationDuration) || 46;
+    bar.style.animationDuration = dur + 's';
+  }
 
   function snapX() {
     try { return new DOMMatrix(getComputedStyle(track).transform).m41 || 0; } catch(e) { return 0; }
