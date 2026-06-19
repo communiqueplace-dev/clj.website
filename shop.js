@@ -100,30 +100,8 @@ function sendCartEnquiry(){
 let sb = null, sbUser = null;
 var _authMode = 'in';
 
-/* hCaptcha "I'm not a robot".
-   TO ACTIVATE: (1) replace HCAPTCHA_SITE_KEY below with your real hCaptcha site key,
-   (2) in Supabase -> Auth -> Bot & Abuse Protection, enable hCaptcha and paste the matching
-   SECRET key. While Supabase CAPTCHA is OFF, the token is ignored and auth works normally. */
-var HCAPTCHA_SITE_KEY = 'c81414a8-918c-4fd0-9022-d3ea7786bca8'; // production hCaptcha site key (public — safe in frontend)
-function cljRenderCaptchas(){
-  if (typeof hcaptcha === 'undefined') return;
-  document.querySelectorAll('.h-captcha-box').forEach(function(el){
-    if (el.dataset.rendered) return;
-    try { el.dataset.widgetId = hcaptcha.render(el, { sitekey: HCAPTCHA_SITE_KEY }); el.dataset.rendered = '1'; } catch(e){}
-  });
-}
-window.cljRenderCaptchas = cljRenderCaptchas;
-function _capToken(name){
-  if (typeof hcaptcha === 'undefined') return null;          // widget not loaded -> let Supabase decide
-  var el = document.querySelector('.h-captcha-box[data-cap="' + name + '"]');
-  if (!el || !el.dataset.widgetId) return null;
-  try { return hcaptcha.getResponse(el.dataset.widgetId) || ''; } catch(e){ return null; }
-}
-function _capReset(name){
-  if (typeof hcaptcha === 'undefined') return;
-  var el = document.querySelector('.h-captcha-box[data-cap="' + name + '"]');
-  if (el && el.dataset.widgetId){ try { hcaptcha.reset(el.dataset.widgetId); } catch(e){} }
-}
+function _capToken(){ return null; }
+function _capReset(){}
 
 function sbReady(){ return !!(SUPABASE_URL && SUPABASE_ANON_KEY); }
 function initSupabase(){
@@ -194,10 +172,6 @@ async function doAuth(){
     if (!pass){ errEl.textContent = 'Please enter your password.'; return; }
   }
 
-  var capName = _authMode === 'up' ? 'signup' : 'signin';
-  var capToken = _capToken(capName);
-  if (capToken === ''){ errEl.textContent = 'Please complete the "I am not a robot" check.'; return; }
-
   var btn = document.getElementById('au-main-btn');
   btn.disabled = true;
   btn.textContent = _authMode === 'in' ? 'Signing in...' : 'Creating account...';
@@ -209,9 +183,9 @@ async function doAuth(){
     var gd = (document.getElementById('au-gender') || {}).value || '';
     if (nm) meta.full_name = nm;
     if (gd) meta.gender = gd;
-    result = await sb.auth.signUp({ email: email, password: pass, options: { data: meta, captchaToken: capToken || undefined } });
+    result = await sb.auth.signUp({ email: email, password: pass, options: { data: meta } });
   } else {
-    result = await sb.auth.signInWithPassword({ email: email, password: pass, options: { captchaToken: capToken || undefined } });
+    result = await sb.auth.signInWithPassword({ email: email, password: pass });
   }
 
   btn.disabled = false;
@@ -232,7 +206,6 @@ async function doAuth(){
     } else {
       errEl.textContent = msg || 'Something went wrong. Please try again.';
     }
-    _capReset(capName);   // hCaptcha tokens are single-use — let the user re-verify
     return;
   }
   // Already-registered email: Supabase returns a user with NO identities (and no error)
@@ -378,17 +351,14 @@ async function doForgotPassword(){
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
     ferr.textContent = 'Please enter a valid email address.'; return;
   }
-  var capToken = _capToken('forgot');
-  if (capToken === ''){ ferr.textContent = 'Please complete the "I am not a robot" check.'; return; }
   var btn = document.querySelector('#auth-forgot .btn.solid');
   btn.disabled = true; btn.textContent = 'Sending...';
   var redirectTo = 'https://clkhannajewellers.in/reset-password.html';
-  var result = await sb.auth.resetPasswordForEmail(email, { redirectTo: redirectTo, captchaToken: capToken || undefined });
+  var result = await sb.auth.resetPasswordForEmail(email, { redirectTo: redirectTo });
   btn.disabled = false; btn.textContent = 'Send Reset Link';
   if (result.error){
     var msg = (result.error.message && result.error.message !== '{}') ? result.error.message : 'Could not send reset link. Please try again.';
     ferr.textContent = msg;
-    _capReset('forgot');
   } else {
     ferr.style.color = 'var(--gold-deep)';
     ferr.textContent = 'Reset link sent! Check your inbox (and spam folder).';
