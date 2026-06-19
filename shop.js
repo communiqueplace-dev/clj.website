@@ -129,7 +129,9 @@ function sbReady(){ return !!(SUPABASE_URL && SUPABASE_ANON_KEY); }
 function initSupabase(){
   if (!sbReady()) return;
   const s = document.createElement("script");
-  s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+  s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2/dist/umd/supabase.js";
+  s.integrity = "sha384-nD3dwv4+ZqdYnmZKe/249ImlV04om7xTCcsoSeQYI+RO+XlKPoqAWaJR1M5SJH9p";
+  s.crossOrigin = "anonymous";
   s.onload = async () => {
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const { data } = await sb.auth.getSession();
