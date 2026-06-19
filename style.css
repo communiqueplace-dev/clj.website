@@ -171,7 +171,7 @@ section{padding:88px 0}
 .crumbs a:hover{color:var(--gold-deep)}
 .crumbs span{color:var(--ink)}
 .pd-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:start}
-.pd-photo{border:1px solid var(--line);overflow:hidden;cursor:crosshair;background:#fff}
+.pd-photo{border:1px solid var(--line);overflow:hidden;cursor:zoom-in;background:#fff}
 .pd-photo img{width:100%;aspect-ratio:1/1;object-fit:contain;transition:transform .25s ease}
 .pd-info h1{font-size:clamp(1.7rem,3vw,2.4rem);margin:10px 0 12px}
 .pd-desc{font-family:var(--serif);font-size:1.22rem;color:#56503f}
@@ -464,7 +464,7 @@ footer .base{font-size:.68rem}
 .ed-carousel:before,.ed-carousel:after{content:"";position:absolute;top:0;bottom:0;width:64px;z-index:2;pointer-events:none}
 .ed-carousel:before{left:0;background:linear-gradient(to right,var(--paper),rgba(255,253,249,0))}
 .ed-carousel:after{right:0;background:linear-gradient(to left,var(--paper),rgba(255,253,249,0))}
-.ed-track{display:flex;gap:20px;width:max-content;animation:edscroll 46s linear infinite}
+.ed-track{display:flex;gap:20px;width:max-content;animation:var(--_ed-nm,edscroll) 46s linear var(--_ed-dl,0s) infinite}
 .ed-carousel:hover .ed-track{animation-play-state:paused}
 .ed-track a{flex:0 0 auto;width:300px;overflow:hidden;background:var(--ivory);cursor:zoom-in}
 .ed-track img{width:300px;aspect-ratio:2/3;object-fit:cover;object-position:center top;transition:transform 1s}

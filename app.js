@@ -658,6 +658,10 @@ function renderProduct(){
     img.style.transform = "scale(2)";
   });
   box.addEventListener("mouseleave", () => { img.style.transform = "scale(1)"; });
+  box.addEventListener("click", function(e) {
+    if (e.target.closest('.wl-btn')) return;
+    if (typeof openLB === 'function') openLB(img.src);
+  });
   loadReviews(p.img);
   renderYMAL(p.cat, p.img);
   renderCompleteTheLook(p.cat, p.sub, p.img);
@@ -722,6 +726,82 @@ function closeAllOverlays(){
 }
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAllOverlays(); });
 
+/* ---------- carousel touch / mouse drag swipe ---------- */
+function addCarouselSwipe(carousel) {
+  var track = carousel.querySelector('.ed-track');
+  if (!track) return;
+  var sx = 0, sy = 0, baseX = 0, lastX = 0, dragging = false, moved = false;
+
+  function snapX() {
+    try { return new DOMMatrix(getComputedStyle(track).transform).m41 || 0; } catch(e) { return 0; }
+  }
+
+  function start(x, y) {
+    sx = x; sy = y;
+    baseX = lastX = snapX();
+    track.style.animationPlayState = 'paused';
+    track.style.transform = 'translateX(' + baseX + 'px)';
+    dragging = true; moved = false;
+  }
+
+  function move(x, y) {
+    if (!dragging) return;
+    var dx = x - sx, dy = y - sy;
+    if (!moved && Math.abs(dy) > Math.abs(dx) + 4) { dragging = false; release(); return; }
+    if (Math.abs(dx) > 5) moved = true;
+    lastX = baseX + dx;
+    track.style.transform = 'translateX(' + lastX + 'px)';
+  }
+
+  function release() {
+    if (!moved) {
+      track.style.transform = '';
+      track.style.animationPlayState = '';
+      return;
+    }
+    var half = track.offsetWidth * 0.5;
+    if (!half) { track.style.transform = ''; track.style.animationPlayState = ''; return; }
+    var norm = lastX % half;
+    if (norm > 0) norm -= half;
+    var dur = parseFloat(getComputedStyle(track).animationDuration) || 46;
+    var delay = -(Math.abs(norm) / half * dur);
+    /* restart CSS animation from the swiped position via custom property */
+    track.style.setProperty('--_ed-nm', 'none');
+    track.getBoundingClientRect();
+    track.style.setProperty('--_ed-dl', delay + 's');
+    track.style.setProperty('--_ed-nm', 'edscroll');
+    track.style.animationPlayState = '';
+    track.style.transform = '';
+  }
+
+  function end() { if (!dragging) return; dragging = false; release(); }
+
+  carousel.addEventListener('touchstart', function(e) {
+    start(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+
+  carousel.addEventListener('touchmove', function(e) {
+    if (!dragging) return;
+    if (Math.abs(e.touches[0].clientX - sx) > Math.abs(e.touches[0].clientY - sy)) e.preventDefault();
+    move(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: false });
+
+  carousel.addEventListener('touchend', end);
+
+  carousel.addEventListener('mousedown', function(e) {
+    if (e.button !== 0 || e.target.closest('.wl-btn')) return;
+    start(e.clientX, e.clientY);
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', function(e) { move(e.clientX, e.clientY); });
+  document.addEventListener('mouseup', end);
+
+  /* suppress link/button click after a real drag */
+  carousel.addEventListener('click', function(e) {
+    if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
+  }, true);
+}
+
 function initPage(active){
   try { buildHeader(active); } catch(e){ console.error("buildHeader failed:", e); }
   try { buildFooter(); } catch(e){ console.error("buildFooter failed:", e); }
@@ -732,4 +812,5 @@ function initPage(active){
     enhanceA11y();
     new MutationObserver(enhanceA11y).observe(document.body,{childList:true,subtree:true});
   } catch(e){}
+  try { document.querySelectorAll('.ed-carousel').forEach(addCarouselSwipe); } catch(e){}
 }
