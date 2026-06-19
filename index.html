@@ -27,6 +27,9 @@
 
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://amqmojrqifsfuhnrabdc.supabase.co wss://amqmojrqifsfuhnrabdc.supabase.co https://feeds.behold.so https://www.google-analytics.com https://analytics.google.com; frame-src https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self' https://wa.me;">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"JewelryStore","name":"C.L Khanna Jewellers","url":"https://clkhannajewellers.in","logo":"https://clkhannajewellers.in/assets/logo-main.png","image":"https://clkhannajewellers.in/assets/looks/col-diamond.jpg","description":"BIS hallmarked gold, diamond and polki jewellery from C.L Khanna Jewellers — Lawrence Road, Amritsar. Bridal sets, chokers, bangles and more.","telephone":["+919815605373","+917717624298"],"email":"clkhannajewellers@gmail.com","address":{"@type":"PostalAddress","streetAddress":"8 Dilawari Street, Lawrence Road","addressLocality":"Amritsar","addressRegion":"Punjab","postalCode":"143001","addressCountry":"IN"},"geo":{"@type":"GeoCoordinates","latitude":31.6340,"longitude":74.8723},"priceRange":"₹₹₹","sameAs":["https://www.instagram.com/clkhannajewellers/"],"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"10:00","closes":"21:00"}],"currenciesAccepted":"INR","paymentAccepted":"Cash, UPI","areaServed":"India"}
+</script>
 </head>
 <body>
 <noscript><div style="background:#15130e;color:#f8f4ec;text-align:center;padding:12px 16px;font-family:Jost,sans-serif;font-size:14px">C.L Khanna Jewellers · Lawrence Road, Amritsar · <a href="tel:+919815605373" style="color:#cdb36e">+91 98156 05373</a> · <a href="https://www.instagram.com/clkhannajewellers/" style="color:#cdb36e">@clkhannajewellers</a> — please enable JavaScript for the full site.</div></noscript>
@@ -42,12 +45,12 @@
 <section id="collections" style="padding-top:64px">
   <div class="wrap">
     <div class="sec-head rv in">
-      <p class="eyebrow">Shop by Collection</p>
+      <p class="eyebrow">Shop by Category</p>
       <h2>Three Traditions, One Standard</h2>
       <div class="rule"></div>
     </div>
     <div class="ed-carousel rv in">
-      <div class="ed-track ed-tiles">
+      <div class="ed-track ed-tiles" id="cat-tiles">
         <a class="tile" href="diamond.html">
           <img loading="lazy" src="assets/looks/col-diamond.jpg" alt="Certified diamond jewellery collection, C.L Khanna Jewellers Amritsar">
           <div class="veil"></div>
@@ -229,6 +232,31 @@
     </div>
   </div>
 </section>
+
+<!-- ADMIN PANEL — visible only when signed in as the store admin -->
+<div id="hp-admin" style="display:none;background:var(--ink);color:var(--ivory);padding:36px 0">
+  <div class="wrap">
+    <p style="font-family:var(--sans);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;opacity:.5;margin-bottom:22px">Homepage Settings · Admin</p>
+    <div style="display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start">
+      <div>
+        <p style="font-family:var(--disp);font-size:1rem;margin-bottom:12px;opacity:.9">Category Order</p>
+        <div id="hp-cats"></div>
+      </div>
+      <div style="flex:1;min-width:260px">
+        <p style="font-family:var(--disp);font-size:1rem;margin-bottom:12px;opacity:.9">Recently Added</p>
+        <div id="hp-feat"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <select id="hp-add-sel" style="flex:1;font-size:.82rem;padding:7px 10px;background:#2a2820;color:var(--ivory);border:1px solid #4a4535;font-family:var(--sans)"><option value="">+ Add a product</option></select>
+          <button onclick="hpAddFeat()" style="padding:7px 16px;background:var(--gold);color:#15130e;border:none;cursor:pointer;font-family:var(--sans);font-size:.8rem;letter-spacing:.06em">Add</button>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:24px;display:flex;align-items:center;gap:16px">
+      <button id="hp-save-btn" onclick="hpSave()" style="padding:10px 26px;background:var(--gold);color:#15130e;border:none;cursor:pointer;font-family:var(--sans);font-size:.85rem;letter-spacing:.08em">Save Changes</button>
+      <span id="hp-status" style="font-family:var(--serif);font-size:.9rem;opacity:.8"></span>
+    </div>
+  </div>
+</div>
 
 <footer id="site-footer"><div class="topline"></div><div class="wrap"><div class="cols">
 <div><h4>Information</h4><a href="about.html">About Us</a><a href="location.html">Contact Us</a><a href="custom.html">Customized Jewellery</a></div>

@@ -551,6 +551,12 @@ function renderProduct(){
   const safeCat = ['gold','diamond','polki'].includes(p.cat) ? p.cat : 'gold';
   const subLabel = (SUBS[safeCat].find(([k]) => k === p.sub) || ["",""])[1];
   document.title = esc(p.name) + " — C.L Khanna Jewellers";
+  var _desc = p.desc + " " + CAT_TITLES[safeCat] + " by C.L Khanna Jewellers, Lawrence Road Amritsar. BIS hallmarked, " + p.metal + ".";
+  var _url  = "https://clkhannajewellers.in/product.html?id=" + encodeURIComponent(p.img);
+  var _img  = "https://clkhannajewellers.in/assets/catalog/" + safeCat + "/" + p.img + ".jpg";
+  (function(m,k,v){ var el=document.querySelector('meta[name="'+k+'"]')||document.querySelector('meta[property="'+k+'"]'); if(el) el.setAttribute('content',v); }); // helper reference
+  [['name','description',_desc],['property','og:title',document.title],['property','og:description',_desc],['property','og:url',_url],['property','og:image',_img],['name','twitter:title',document.title],['name','twitter:description',_desc],['name','twitter:image',_img]].forEach(function(t){ var el=document.querySelector('meta['+t[0]+'="'+t[1]+'"]'); if(el) el.setAttribute('content',t[2]); });
+  var canon = document.querySelector('link[rel="canonical"]'); if(canon) canon.setAttribute('href', _url);
   const TRUNC = 130;
   _pdDescFull = p.desc;
   _pdDescShort = p.desc.length > TRUNC ? p.desc.slice(0, TRUNC).replace(/\s+\S*$/, '') + '…' : p.desc;

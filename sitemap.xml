@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc></loc><priority>1.0</priority></url>
-  <url><loc>diamond.html</loc><priority>0.9</priority></url>
-  <url><loc>gold.html</loc><priority>0.9</priority></url>
-  <url><loc>polki.html</loc><priority>0.9</priority></url>
-  <url><loc>custom.html</loc><priority>0.8</priority></url>
-  <url><loc>about.html</loc><priority>0.7</priority></url>
-  <url><loc>media.html</loc><priority>0.6</priority></url>
-  <url><loc>location.html</loc><priority>0.7</priority></url>
-  <url><loc>cart.html</loc><priority>0.3</priority></url>
-  <url><loc>privacy.html</loc><priority>0.2</priority></url>
-  <url><loc>returns.html</loc><priority>0.2</priority></url>
-  <url><loc>shipping.html</loc><priority>0.2</priority></url>
-  <url><loc>terms.html</loc><priority>0.2</priority></url>
+  <url><loc>https://clkhannajewellers.in/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://clkhannajewellers.in/diamond.html</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://clkhannajewellers.in/gold.html</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://clkhannajewellers.in/polki.html</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://clkhannajewellers.in/custom.html</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://clkhannajewellers.in/about.html</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://clkhannajewellers.in/media.html</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://clkhannajewellers.in/location.html</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://clkhannajewellers.in/cart.html</loc><priority>0.3</priority></url>
+  <url><loc>https://clkhannajewellers.in/privacy.html</loc><priority>0.2</priority></url>
+  <url><loc>https://clkhannajewellers.in/returns.html</loc><priority>0.2</priority></url>
+  <url><loc>https://clkhannajewellers.in/shipping.html</loc><priority>0.2</priority></url>
+  <url><loc>https://clkhannajewellers.in/terms.html</loc><priority>0.2</priority></url>
 </urlset>
