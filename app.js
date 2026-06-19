@@ -729,7 +729,7 @@ document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAllOverlays(
 /* ---------- carousel touch / mouse drag swipe ---------- */
 function addCarouselSwipe(carousel) {
   var track = carousel.querySelector('.ed-track');
-  if (!track) return;
+  if (!track || track.id === 'editorial-track') return;
   var sx = 0, sy = 0, baseX = 0, lastX = 0, dragging = false, moved = false;
 
   /* inject progress bar (skip editorial carousel) */
