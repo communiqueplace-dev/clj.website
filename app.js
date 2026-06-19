@@ -263,7 +263,8 @@ function openLB(src){
   lb.style.display = "flex";
 }
 
-function imgURL(p){ return (p && p.image_url) ? p.image_url : 'assets/catalog/'+p.cat+'/'+p.img+'.jpg'; }
+var _webp = (function(){ try { var c=document.createElement('canvas'); return c.toDataURL('image/webp').indexOf('data:image/webp')===0; } catch(e){ return false; } })();
+function imgURL(p){ if (p && p.image_url) return p.image_url; return 'assets/catalog/'+p.cat+'/'+p.img+(_webp?'.webp':'.jpg'); }
 
 /* ---------- product cards / catalogue ---------- */
 function cardHTML(p){
