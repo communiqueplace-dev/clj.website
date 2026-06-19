@@ -1,10 +1,12 @@
-const CACHE = 'clj-v3';
+const CACHE = 'clj-v4';
 const STATIC = [
   '/',
   '/bundle.js',
   '/style.css',
   '/consent.js',
   '/catalog.js',
+  '/page-init.js',
+  '/sw-reg.js',
   '/assets/logo-main.png',
   '/assets/fonts/marcellus-400.woff2',
   '/assets/fonts/marcellus-400-ext.woff2',

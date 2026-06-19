@@ -57,9 +57,9 @@ var GA_MEASUREMENT_ID = 'G-9TPG9YYZ7Q';
       '<p class="ck-text"><b>We use cookies.</b> Essential ones keep the site running; analytics ' +
       'help us understand what you love. <a href="privacy.html#cookies" class="ck-text-link">Learn more</a>.</p>' +
       '<div class="ck-btns">' +
-        '<button class="ck-accept" onclick="CK.acceptAll()">Accept All</button>' +
-        '<button class="ck-reject" onclick="CK.reject()">Reject Non-Essential</button>' +
-        '<button class="ck-customize" onclick="CK.openPanel()">Customize</button>' +
+        '<button class="ck-accept" data-ck="acceptAll">Accept All</button>' +
+        '<button class="ck-reject" data-ck="reject">Reject Non-Essential</button>' +
+        '<button class="ck-customize" data-ck="openPanel">Customize</button>' +
       '</div>';
     document.body.appendChild(d);
   }
@@ -73,9 +73,9 @@ var GA_MEASUREMENT_ID = 'G-9TPG9YYZ7Q';
     d.setAttribute('aria-modal', 'true');
     d.setAttribute('aria-label', 'Cookie settings');
     d.innerHTML =
-      '<div class="ck-veil" onclick="CK.closePanel()"></div>' +
+      '<div class="ck-veil" data-ck="closePanel"></div>' +
       '<div class="ck-pbox">' +
-        '<button class="ck-pbox-x" aria-label="Close" onclick="CK.closePanel()">&#215;</button>' +
+        '<button class="ck-pbox-x" aria-label="Close" data-ck="closePanel">&#215;</button>' +
         '<h3 class="ck-pbox-h">Cookie Settings</h3>' +
         '<div class="ck-row">' +
           '<div class="ck-row-info">' +
@@ -93,13 +93,12 @@ var GA_MEASUREMENT_ID = 'G-9TPG9YYZ7Q';
             ' id="ck-tog-an"' +
             ' role="switch"' +
             ' aria-checked="' + (analyticsOn ? 'true' : 'false') + '"' +
-            ' onclick="CK.toggleAnalytics()"' +
-            ' onkeydown="if(event.key===\'Enter\'||event.key===\' \')CK.toggleAnalytics()">' +
+            ' data-ck="toggleAnalytics">' +
           '</button>' +
         '</div>' +
         '<div class="ck-pbox-btns">' +
-          '<button class="btn solid" style="font-size:.82rem;padding:9px 20px" onclick="CK.savePanel()">Save Preferences</button>' +
-          '<button class="btn ghost" style="font-size:.82rem;padding:9px 20px" onclick="CK.acceptAll()">Accept All</button>' +
+          '<button class="btn solid" style="font-size:.82rem;padding:9px 20px" data-ck="savePanel">Save Preferences</button>' +
+          '<button class="btn ghost" style="font-size:.82rem;padding:9px 20px" data-ck="acceptAll">Accept All</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(d);
@@ -149,6 +148,20 @@ var GA_MEASUREMENT_ID = 'G-9TPG9YYZ7Q';
 
   /* Called from footer "Cookie Settings" link */
   window.openCookieSettings = function(){ CK.openPanel(); };
+
+  /* Event delegation for banner/panel controls (replaces inline on* handlers
+     so the page can run under a CSP without script-src 'unsafe-inline'). */
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('[data-ck]');
+    if (!el) return;
+    var fn = el.getAttribute('data-ck');
+    if (typeof CK[fn] === 'function') CK[fn]();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var el = e.target.closest && e.target.closest('[data-ck="toggleAnalytics"]');
+    if (el){ e.preventDefault(); CK.toggleAnalytics(); }
+  });
 
   /* Init: apply stored prefs or show banner */
   var stored = getStored();

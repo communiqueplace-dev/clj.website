@@ -13,14 +13,14 @@
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
 
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://amqmojrqifsfuhnrabdc.supabase.co wss://amqmojrqifsfuhnrabdc.supabase.co https://feeds.behold.so https://www.google-analytics.com https://analytics.google.com; frame-src https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self' https://wa.me;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://amqmojrqifsfuhnrabdc.supabase.co wss://amqmojrqifsfuhnrabdc.supabase.co https://feeds.behold.so https://www.google-analytics.com https://analytics.google.com; frame-src https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self' https://wa.me;">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 </head>
 <body>
 <noscript><div style="background:#15130e;color:#f8f4ec;text-align:center;padding:12px 16px;font-family:Jost,sans-serif;font-size:14px">C.L Khanna Jewellers · Lawrence Road, Amritsar · <a href="tel:+919815605373" style="color:#cdb36e">+91 98156 05373</a> · <a href="https://www.instagram.com/clkhannajewellers/" style="color:#cdb36e">@clkhannajewellers</a> — please enable JavaScript for the full site.</div></noscript>
 
 <div id="site-header"><header class="site"><div class="bar">
-<button class="burger nojs-burger" aria-label="Menu" onclick="if(typeof toggleDrawer==='function')toggleDrawer(true)"><span></span><span></span><span></span></button>
+<button class="burger nojs-burger" aria-label="Menu"><span></span><span></span><span></span></button>
 <a class="brand" href="./"><img src="assets/logo-main.png" alt="C.L Khanna Jewellers"></a>
 <nav class="nojs-nav"><a href="gold.html">Gold</a><a href="diamond.html">Diamond</a><a href="polki.html">Polki</a><a href="custom.html">Custom</a><a href="about.html">About</a><a href="location.html">Contact</a><a href="cart.html">Cart</a></nav>
 </div></header><div class="hairline"></div></div>
@@ -36,12 +36,12 @@
 
     <div id="ac-gate" style="display:none;text-align:center">
       <p class="rv-empty">Please sign in to view your account.</p>
-      <button class="btn solid" onclick="if(typeof openAuth==='function')openAuth('Please sign in to view your account.')">Sign In</button>
+      <button class="btn solid" data-action="open-auth">Sign In</button>
     </div>
 
     <div id="ac-main" style="display:none">
       <h2 class="pd-sec-h">Profile</h2>
-      <form class="acct-form" onsubmit="saveAccountProfile(event)">
+      <form class="acct-form" data-action="save-profile">
         <div class="pd-form-group"><label>Name</label><input id="ac-name" type="text" placeholder="Your name" autocomplete="name"></div>
         <div class="pd-form-group"><label>Email</label><input id="ac-email" type="email" disabled></div>
         <div class="pd-form-group"><label>Gender</label><select id="ac-gender"><option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Other</option></select></div>
@@ -53,7 +53,7 @@
       <div id="ac-wishlist"></div>
 
       <div style="margin-top:52px;text-align:center;border-top:1px solid var(--line);padding-top:30px">
-        <button class="btn ghost" onclick="accountLogout()">Sign Out</button>
+        <button class="btn ghost" data-action="logout">Sign Out</button>
       </div>
     </div>
 
@@ -66,112 +66,7 @@
 </div><div class="base">Copyright © C.L Khanna Jewellers. All rights reserved.</div></div></footer>
 <script src="bundle.js"></script>
 <script src="consent.js"></script>
-<script>
-initPage('');
-
-var _acInit = false;
-function acInit(){
-  if (typeof sb === 'undefined' || !sb) return;        // wait for Supabase to be ready
-  if (_acInit) return; _acInit = true;
-  try { sb.auth.onAuthStateChange(function(ev, session){ sbUser = session ? session.user : null; acRender(); }); } catch(e){}
-  acRender();
-}
-window.onAuthReady = acInit;                            // fired by shop.js once the session is checked
-document.addEventListener('DOMContentLoaded', function(){ setTimeout(acInit, 1200); });
-
-function acRender(){
-  var loading = document.getElementById('ac-loading');
-  var main = document.getElementById('ac-main');
-  var gate = document.getElementById('ac-gate');
-  if (typeof sbUser === 'undefined' || !sbUser){
-    loading.style.display = 'none'; main.style.display = 'none'; gate.style.display = '';
-    try { sessionStorage.setItem('clj_auth_msg', 'Please sign in to view your account.'); } catch(e){}
-    location.replace('login.html');
-    return;
-  }
-  gate.style.display = 'none'; loading.style.display = 'none'; main.style.display = '';
-  var m = sbUser.user_metadata || {};
-  document.getElementById('ac-name').value = m.full_name || '';
-  document.getElementById('ac-email').value = sbUser.email || '';
-  document.getElementById('ac-gender').value = m.gender || '';
-  if (m.full_name){ document.getElementById('ac-greeting').textContent = 'Welcome back, ' + String(m.full_name).split(' ')[0] + '.'; }
-  acRenderWishlist();
-}
-
-async function acRenderWishlist(){
-  var box = document.getElementById('ac-wishlist');
-  var ids = [];
-  try {
-    var r = await sb.from('wishlists').select('items').eq('user_id', sbUser.id).maybeSingle();
-    ids = (r.data && r.data.items) || [];
-  } catch(e){ ids = (typeof _wlGet === 'function') ? _wlGet() : []; }
-  var products = window.PRODUCTS || [];
-  var cards = ids.map(function(id){
-    var p = products.find(function(x){ return x.img === id; });
-    return p ? cardHTML(p) : '';
-  }).join('');
-  if (!cards.trim()){
-    box.innerHTML = '<p class="rv-empty" style="text-align:center">No saved favourites yet. Tap the heart on any piece to save it here.</p>';
-    return;
-  }
-  var waItems = ids.map(function(id){
-    var p = products.find(function(x){ return x.img === id; });
-    return p ? '• ' + p.name + (window.CAT_TITLES ? ' — ' + window.CAT_TITLES[p.cat] : '') : null;
-  }).filter(Boolean);
-  box.innerHTML = '<div class="grid">' + cards + '</div>' +
-    '<div style="margin-top:36px;padding-top:28px;border-top:1px solid var(--line);text-align:center">' +
-    '<p style="font-family:var(--serif);font-size:.95rem;color:var(--muted);margin-bottom:16px">Share your saved pieces with us and we\'ll send you prices &amp; availability.</p>' +
-    '<button class="btn ghost" onclick="sendWishlistToWA()">Send Wishlist on WhatsApp</button>' +
-    '</div>';
-  if (typeof refreshHearts === 'function') refreshHearts();
-}
-
-function sendWishlistToWA(){
-  var ids = typeof _wlGet === 'function' ? _wlGet() : [];
-  var products = window.PRODUCTS || [];
-  var items = ids.map(function(id){
-    var p = products.find(function(x){ return x.img === id; });
-    return p ? '• ' + p.name + (window.CAT_TITLES ? ' — ' + window.CAT_TITLES[p.cat] : '') : null;
-  }).filter(Boolean);
-  if (!items.length){ return; }
-  var text = 'Hello C.L Khanna Jewellers,\n\nI would like to enquire about the following pieces from my wishlist:\n\n' + items.join('\n') + '\n\nKindly share the price and availability. Thank you!';
-  window.open('https://wa.me/919815605373?text=' + encodeURIComponent(text), '_blank', 'noopener');
-}
-
-window.__cmsRender = function(){ if (_acInit && sbUser) acRenderWishlist(); };
-
-// When a favourite is removed via its heart here, drop the card (and show empty state if none left).
-window.onWishlistChange = function(id, on){
-  if (on) return;
-  var box = document.getElementById('ac-wishlist');
-  if (!box) return;
-  var btn = box.querySelector('.wl-btn[data-wid="' + id + '"]');
-  var card = btn ? btn.closest('.card') : null;
-  if (card) card.remove();
-  if (!box.querySelector('.card')){
-    box.innerHTML = '<p class="rv-empty" style="text-align:center">No saved favourites yet. Tap the heart on any piece to save it here.</p>';
-  }
-};
-
-async function saveAccountProfile(e){
-  e.preventDefault();
-  if (!sb || !sbUser) return;
-  var msg = document.getElementById('ac-msg'); msg.style.color = ''; msg.textContent = '';
-  var name = document.getElementById('ac-name').value.trim();
-  var gender = document.getElementById('ac-gender').value;
-  var btn = e.target.querySelector('button[type="submit"]'); var bt = btn.textContent;
-  btn.disabled = true; btn.textContent = 'Saving…';
-  var r = await sb.auth.updateUser({ data: { full_name: name, gender: gender } });
-  btn.disabled = false; btn.textContent = bt;
-  if (r.error){ msg.textContent = 'Could not save — please try again.'; }
-  else { sbUser = r.data.user; msg.style.color = 'var(--gold-deep)'; msg.textContent = 'Saved.'; }
-}
-
-async function accountLogout(){
-  if (typeof doLogout === 'function'){ try { await doLogout(); } catch(e){} }
-  location.href = './';
-}
-</script>
-<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
+<script src="account-page.js"></script>
+<script src="sw-reg.js"></script>
 </body>
 </html>

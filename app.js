@@ -37,34 +37,35 @@ function skelLoaded(container){
 /* ---------- header: burger left · logo centre · icons right · hairline ---------- */
 function buildHeader(active){
   document.getElementById("site-header").innerHTML = `
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="site">
     <div class="bar">
-      <button class="burger" aria-label="Menu" onclick="toggleDrawer(true)"><span></span><span></span><span></span></button>
+      <button class="burger" aria-label="Menu"><span></span><span></span><span></span></button>
       <a class="brand" href="./"><img src="assets/logo-main.png" alt="C.L Khanna Jewellers"></a>
       <div class="actions">
-        <button class="ic" aria-label="Search" onclick="openSearch()" title="Search">
+        <button class="ic" aria-label="Search" title="Search">
           <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/><line x1="15.4" y1="15.4" x2="21" y2="21" stroke="currentColor" stroke-width="1.4"/></svg>
         </button>
-        <button class="ic" aria-label="Book an Appointment" onclick="openAppt(event)" title="Book an Appointment">
+        <button class="ic" aria-label="Book an Appointment" title="Book an Appointment">
           <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.4"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.4"/></svg>
         </button>
         <span class="country" title="India · INR">IN · ₹</span>
-        <button class="ic" aria-label="Account" onclick="openAuth()" title="Account">
+        <button class="ic" aria-label="Account" title="Account">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
         </button>
-        <button class="ic" aria-label="Cart" onclick="location.href='cart.html'" title="Cart"><span class="cartn" id="cartn"></span>
+        <button class="ic" aria-label="Cart" title="Cart"><span class="cartn" id="cartn"></span>
           <svg viewBox="0 0 24 24"><path d="M6 7h12l-1.2 11a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 7z" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9 9V6a3 3 0 0 1 6 0v3" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
         </button>
       </div>
     </div>
   </header>
   <div class="hairline"></div>
-  <div class="drawer-veil" id="dveil" onclick="toggleDrawer(false)"></div>
+  <div class="drawer-veil" id="dveil"></div>
   <aside class="drawer" id="drawer">
-    <button class="dx" onclick="toggleDrawer(false)">×</button>
+    <button class="dx">×</button>
     <a class="d-home" href="./">Home</a>
     <div class="d-group">
-      <a class="d-cat" href="javascript:void(0)" onclick="this.parentNode.classList.toggle('openg')">Shop <i>+</i></a>
+      <a class="d-cat" href="javascript:void(0)">Shop <i>+</i></a>
       ${["gold","diamond","polki"].map(c => `
         <a class="d-sub d-strong" href="${c}.html">${CAT_TITLES[c]}</a>
       `).join("")}
@@ -75,12 +76,12 @@ function buildHeader(active){
     <a class="d-cat" href="media.html">Media</a>
     <a class="d-cat" href="about.html">About Us</a>
     <a class="d-cat" href="location.html">Contact</a>
-    <a class="d-appt" href="https://wa.me/919815605373?text=Hello%20C.L%20Khanna%20Jewellers%2C%20I%20would%20like%20to%20book%20an%20appointment%20to%20visit%20the%20store." onclick="openAppt(event);toggleDrawer(false)">Book an Appointment</a>
+    <a class="d-appt" href="https://wa.me/919815605373?text=Hello%20C.L%20Khanna%20Jewellers%2C%20I%20would%20like%20to%20book%20an%20appointment%20to%20visit%20the%20store.">Book an Appointment</a>
   </aside>
   <div class="search-veil" id="sveil">
     <div class="search-box">
-      <button class="dx" onclick="closeSearch()">×</button>
-      <input id="sq" type="text" placeholder="Search the collection — e.g. choker, ruby, kada…" oninput="runSearch()">
+      <button class="dx">×</button>
+      <input id="sq" type="text" placeholder="Search the collection — e.g. choker, ruby, kada…">
       <div id="sres" class="sres"></div>
     </div>
   </div>`;
@@ -125,14 +126,14 @@ function buildFooter(){
         <h4>Join the List</h4>
         <p>Be the first to see new collections and bridal editorials.</p>
       </div>
-      <form onsubmit="return joinNews(event)">
+      <form data-action="news">
         <input id="nl-email" type="email" placeholder="Your email address" required>
         <button class="btn solid" type="submit">Subscribe</button>
       </form>
     </div>
     <div class="cols">
       <div class="fcol">
-        <button class="fcol-h" type="button" aria-expanded="false" aria-controls="fcp-info" onclick="toggleFootCol(this)">Information<span class="fcol-ic" aria-hidden="true">+</span></button>
+        <button class="fcol-h" type="button" aria-expanded="false" aria-controls="fcp-info">Information<span class="fcol-ic" aria-hidden="true">+</span></button>
         <div class="fcol-p" id="fcp-info">
         <a href="about.html">About Us</a>
         <a href="location.html">Contact Us</a>
@@ -141,17 +142,17 @@ function buildFooter(){
         </div>
       </div>
       <div class="fcol">
-        <button class="fcol-h" type="button" aria-expanded="false" aria-controls="fcp-pol" onclick="toggleFootCol(this)">Policies<span class="fcol-ic" aria-hidden="true">+</span></button>
+        <button class="fcol-h" type="button" aria-expanded="false" aria-controls="fcp-pol">Policies<span class="fcol-ic" aria-hidden="true">+</span></button>
         <div class="fcol-p" id="fcp-pol">
         <a href="privacy.html">Privacy Policy</a>
         <a href="returns.html">Return Policy</a>
         <a href="shipping.html">Shipping Policy</a>
         <a href="terms.html">Terms &amp; Conditions</a>
-        <a href="#" onclick="if(typeof openCookieSettings==='function')openCookieSettings();return false;" class="ck-footer-link">Cookie Settings</a>
+        <a href="#" class="ck-footer-link">Cookie Settings</a>
         </div>
       </div>
       <div class="fcol git">
-        <button class="fcol-h" type="button" aria-expanded="false" aria-controls="fcp-git" onclick="toggleFootCol(this)">Get In Touch<span class="fcol-ic" aria-hidden="true">+</span></button>
+        <button class="fcol-h" type="button" aria-expanded="false" aria-controls="fcp-git">Get In Touch<span class="fcol-ic" aria-hidden="true">+</span></button>
         <div class="fcol-p" id="fcp-git">
         <a href="https://www.google.com/maps/search/?api=1&query=C.L.+Khanna+Jewellers+Lawrence+Road+Amritsar" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span>C.L Khanna Jewellers, 8 Dilawari Street,<br>Lawrence Road, Amritsar, Punjab</span></a>
         <a href="tel:+919815605373"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a13 13 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span>+91 98156 05373</span></a>
@@ -160,7 +161,7 @@ function buildFooter(){
         </div>
       </div>
       <div class="fcol">
-        <button class="fcol-h" type="button" aria-expanded="false" aria-controls="fcp-follow" onclick="toggleFootCol(this)">Follow Us<span class="fcol-ic" aria-hidden="true">+</span></button>
+        <button class="fcol-h" type="button" aria-expanded="false" aria-controls="fcp-follow">Follow Us<span class="fcol-ic" aria-hidden="true">+</span></button>
         <div class="fcol-p" id="fcp-follow">
         <div class="socials">
           <a href="https://www.instagram.com/clkhannajewellers/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
@@ -224,7 +225,7 @@ function buildShells(){
   </a>
   <div class="modal" id="appt">
     <div class="box">
-      <button class="x" onclick="document.getElementById('appt').classList.remove('open')">×</button>
+      <button class="x">×</button>
       <h3>Book an Appointment</h3>
       <p class="sub">Visit us at Lawrence Road without the wait.</p>
       <label>Your name</label><input id="ap-name" type="text" placeholder="Full name">
@@ -234,7 +235,7 @@ function buildShells(){
       <select id="ap-time"><option>11 AM – 1 PM</option><option>1 PM – 3 PM</option><option>3 PM – 5 PM</option><option>5 PM – 8 PM</option></select>
       <label>Interested in</label>
       <select id="ap-int"><option>Bridal / Wedding</option><option>Gold Jewellery</option><option>Diamond Jewellery</option><option>Polki Jewellery</option><option>Customized Jewellery</option><option>General visit</option></select>
-      <button class="btn solid send" onclick="sendAppt()">Confirm on WhatsApp</button>
+      <button class="btn solid send">Confirm on WhatsApp</button>
     </div>
   </div>
   <div class="lb" id="lb" style="position:fixed;inset:0;background:rgba(252,250,245,.97);z-index:140;display:none;align-items:center;justify-content:center;padding:4vh 4vw;cursor:zoom-out">
@@ -273,7 +274,7 @@ function cardHTML(p){
   <a class="card rv in" data-s="${esc(p.sub)}" data-g="${esc(p.gender||'women')}" href="product.html?id=${esc(p.img)}">
     <div class="ph">
       <img loading="lazy" src="${imgURL(p)}" alt="${esc(p.name)}, ${esc(CAT_TITLES[p.cat]||'')} — C.L Khanna Jewellers Amritsar">
-      <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}" onclick="event.preventDefault();event.stopPropagation();toggleWishlist('${esc(p.img)}',this)">
+      <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="${wled?'var(--gold)':'none'}" stroke="${wled?'var(--gold)':'currentColor'}" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
       </button>
     </div>
@@ -330,18 +331,18 @@ function buildFilterSidebar(cat, catProducts){
   });
   const catRows = FILTER_CATS.map(({keys, label}) => {
     const cnt = keys.split(',').reduce((s, k) => s + (subCounts[k] || 0), 0);
-    return `<label class="fs-check"><input type="checkbox" data-sub-keys="${esc(keys)}" onchange="onSidebarChange()"><span>${esc(label)} <span class="fs-cnt">(${cnt})</span></span></label>`;
+    return `<label class="fs-check"><input type="checkbox" data-sub-keys="${esc(keys)}"><span>${esc(label)} <span class="fs-cnt">(${cnt})</span></span></label>`;
   }).join('');
   fsBody.innerHTML =
     `<div class="fs-group">
-      <button class="fs-group-hd" onclick="toggleFsGroup(this)">Category <span class="fs-toggle-icon">−</span></button>
+      <button class="fs-group-hd">Category <span class="fs-toggle-icon">−</span></button>
       <div class="fs-group-body">${catRows}</div>
     </div>
     <div class="fs-group">
-      <button class="fs-group-hd" onclick="toggleFsGroup(this)">Gender <span class="fs-toggle-icon">−</span></button>
+      <button class="fs-group-hd">Gender <span class="fs-toggle-icon">−</span></button>
       <div class="fs-group-body">
-        <label class="fs-check"><input type="checkbox" data-gender="women" onchange="onSidebarChange()"><span>Women <span class="fs-cnt">(${womenCount})</span></span></label>
-        <label class="fs-check"><input type="checkbox" data-gender="men" onchange="onSidebarChange()"><span>Men <span class="fs-cnt">(${menCount})</span></span></label>
+        <label class="fs-check"><input type="checkbox" data-gender="women"><span>Women <span class="fs-cnt">(${womenCount})</span></span></label>
+        <label class="fs-check"><input type="checkbox" data-gender="men"><span>Men <span class="fs-cnt">(${menCount})</span></span></label>
       </div>
     </div>`;
 }
@@ -597,7 +598,7 @@ function renderProduct(){
     <div class="pd-left">
       <div class="pd-photo" id="zoomBox">
         <img id="zoomImg" src="${imgURL(p)}" alt="${esc(p.name)}">
-        <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}" onclick="toggleWishlist('${esc(p.img)}',this)">
+        <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="${wled?'var(--gold)':'none'}" stroke="${wled?'var(--gold)':'currentColor'}" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
       </div>
@@ -611,7 +612,7 @@ function renderProduct(){
       <h1>${esc(p.name)}</h1>
       <p class="pd-instock"><span class="pd-dot" aria-hidden="true"></span>In Stock &nbsp;·&nbsp; <span class="pd-tax">Taxes inclusive</span></p>
       <p class="pd-desc" id="pd-desc-txt">${esc(needRM ? _pdDescShort : _pdDescFull)}</p>
-      ${needRM ? '<button class="pd-readmore" id="pd-rm-btn" onclick="toggleReadMore()">Read More</button>' : ''}
+      ${needRM ? '<button class="pd-readmore" id="pd-rm-btn">Read More</button>' : ''}
       <div class="pd-specs">
         <div><b>Metal</b><span>${esc(p.metal)}</span></div>
         <div><b>Craftsmanship</b><span>${esc(p.work)}</span></div>
@@ -629,15 +630,15 @@ function renderProduct(){
         <p class="pd-pin-label">Enter your pin code to check delivery availability</p>
         <div class="pd-pin-row">
           <input class="pd-pin-input" type="text" inputmode="numeric" maxlength="6" placeholder="e.g. 143001" id="pd-pin-val">
-          <button class="pd-pin-btn" onclick="checkPinCode()">Check</button>
+          <button class="pd-pin-btn">Check</button>
         </div>
         <p class="pd-pin-result" id="pd-pin-result"></p>
       </div>
       <div class="cta-row">
-        <a class="btn solid" href="#" onclick="addToCart(this.dataset.prod);return false;" data-prod="${esc(p.img)}">Add to Cart</a>
+        <a class="btn solid" href="#" data-action="cart" data-prod="${esc(p.img)}">Add to Cart</a>
         <a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/${WA}?text=${encodeURIComponent('Hello C.L Khanna Jewellers, I would like to request the price of the "' + p.name + '" (' + CAT_TITLES[safeCat] + ') from your website.')}">Request Price on WhatsApp</a>
-        <button class="btn ghost pd-share-btn" onclick="shareProduct('${esc(p.name)}')">Share</button>
-        <a class="btn ghost" href="#" onclick="openAppt(event)">See It In Store</a>
+        <button class="btn ghost pd-share-btn" data-action="share" data-name="${esc(p.name)}">Share</button>
+        <a class="btn ghost" href="#" data-action="appt">See It In Store</a>
       </div>
       <p class="pd-note">Every piece can be customised — sizes, stones and finish. <a href="custom.html">Learn about custom orders →</a></p>
     </div>
@@ -646,7 +647,7 @@ function renderProduct(){
   <div class="pd-cols">
     <div class="pd-ask">
       <h3 class="pd-sec-h">Have a Question?</h3>
-      <form onsubmit="submitAskWA(event,'${esc(p.name)}')">
+      <form data-action="ask-wa" data-name="${esc(p.name)}">
         <div class="pd-form-group"><label>Name</label><input type="text" name="ask-name" placeholder="Your name" required></div>
         <div class="pd-form-group"><label>Phone</label><input type="tel" name="ask-phone" placeholder="+91 98765 43210" required></div>
         <div class="pd-form-group"><label>Your Question</label><textarea name="ask-query" rows="4" placeholder="e.g. Is this available in 22k gold?" required></textarea></div>
@@ -659,10 +660,10 @@ function renderProduct(){
       <div id="pd-rv-list"><p class="rv-empty">Loading…</p></div>
       <div class="pd-rv-write">
         <h4>Write a Review</h4>
-        <form data-pid="${esc(p.img)}" onsubmit="submitReview(event)">
+        <form data-pid="${esc(p.img)}" data-action="review">
           <div class="pd-form-group"><label>Your Name</label><input type="text" name="rv-name" placeholder="e.g. Priya S." required></div>
           <div class="pd-form-group"><label>Rating</label>
-            <div class="star-pick" onclick="pickStar(event)" onmouseover="hoverStar(event)" onmouseout="unhoverStar(event)">
+            <div class="star-pick">
               <span class="sps" data-v="1">★</span><span class="sps" data-v="2">★</span><span class="sps" data-v="3">★</span><span class="sps" data-v="4">★</span><span class="sps" data-v="5">★</span>
               <input type="hidden" name="rv-rating">
             </div>
@@ -710,18 +711,41 @@ function startSlider(){
 
 /* ---------- testimonial carousel ---------- */
 function startTesti(){
+  const carousel = document.querySelector(".t-carousel");
   const cards = document.querySelectorAll(".t-slide");
   const dots = document.querySelectorAll(".t-dots button");
   if (!cards.length) return;
+  if (carousel){
+    carousel.setAttribute("role", "region");
+    carousel.setAttribute("aria-roledescription", "carousel");
+    carousel.setAttribute("aria-label", "Client testimonials");
+    carousel.setAttribute("aria-live", "polite");
+  }
+  cards.forEach((c, j) => {
+    c.setAttribute("role", "group");
+    c.setAttribute("aria-roledescription", "slide");
+    c.setAttribute("aria-label", (j + 1) + " of " + cards.length);
+  });
+  dots.forEach((d, j) => d.setAttribute("aria-label", "Show testimonial " + (j + 1)));
   let i = 0, t;
   function go(n){
     i = (n + cards.length) % cards.length;
-    cards.forEach((c, j) => c.classList.toggle("on", j === i));
-    dots.forEach((d, j) => d.classList.toggle("on", j === i));
+    cards.forEach((c, j) => { c.classList.toggle("on", j === i); c.setAttribute("aria-hidden", j === i ? "false" : "true"); });
+    dots.forEach((d, j) => { d.classList.toggle("on", j === i); if (j === i) d.setAttribute("aria-current", "true"); else d.removeAttribute("aria-current"); });
     clearInterval(t); t = setInterval(() => go(i + 1), 6500);
   }
   dots.forEach((d, j) => d.addEventListener("click", () => go(j)));
   go(0);
+}
+
+/* label decorative editorial/look carousels as regions for screen readers */
+function enhanceCarouselA11y(){
+  document.querySelectorAll(".ed-carousel").forEach(function(c){
+    if (c.getAttribute("role")) return;
+    c.setAttribute("role", "region");
+    c.setAttribute("aria-roledescription", "carousel");
+    if (!c.getAttribute("aria-label")) c.setAttribute("aria-label", "Image gallery");
+  });
 }
 
 /* ---------- reveal ---------- */
@@ -735,7 +759,7 @@ function reveals(){
 
 /* ---------- a11y: keyboard support + escape-to-close ---------- */
 function enhanceA11y(){
-  document.querySelectorAll('a[onclick]:not([href]), .gallery a, .lookbook a, .ed-track a').forEach(el=>{
+  document.querySelectorAll('a[data-lb], .gallery a, .lookbook a, .ed-track a:not([href])').forEach(el=>{
     if(el.getAttribute('href')) return;
     if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex','0');
     if(!el.getAttribute('role')) el.setAttribute('role','button');
@@ -839,7 +863,112 @@ function addCarouselSwipe(carousel) {
   }, true);
 }
 
+/* ---------- event delegation (replaces all inline on* handlers; lets us drop
+   'unsafe-inline' from the script-src CSP) ---------- */
+var _delegationWired = false;
+function setupDelegation(){
+  if (_delegationWired) return; _delegationWired = true;
+
+  document.addEventListener('click', function(e){
+    var t = e.target;
+
+    /* wishlist heart (cards + product detail) — sits inside a card <a>, so stop the nav */
+    var wl = t.closest('.wl-btn');
+    if (wl){ e.preventDefault(); e.stopPropagation(); if (typeof toggleWishlist === 'function') toggleWishlist(wl.getAttribute('data-wid'), wl); return; }
+
+    /* editorial / lookbook lightbox */
+    var lbEl = t.closest('[data-lb]');
+    if (lbEl){ e.preventDefault(); if (typeof openLB === 'function') openLB(lbEl.getAttribute('data-lb')); return; }
+
+    /* cart page quantity / remove */
+    var cAct = t.closest('[data-cart-act]');
+    if (cAct){
+      var cid = cAct.getAttribute('data-id'), ca = cAct.getAttribute('data-cart-act');
+      if (ca === 'inc' && typeof changeQty === 'function') changeQty(cid, 1);
+      else if (ca === 'dec' && typeof changeQty === 'function') changeQty(cid, -1);
+      else if (ca === 'del' && typeof removeFromCart === 'function') removeFromCart(cid);
+      return;
+    }
+
+    /* header */
+    if (t.closest('.burger')){ if (typeof toggleDrawer === 'function') toggleDrawer(true); return; }
+    if (t.closest('.ic[aria-label="Search"]')){ if (typeof openSearch === 'function') openSearch(); return; }
+    if (t.closest('.ic[aria-label="Book an Appointment"]')){ if (typeof openAppt === 'function') openAppt(e); return; }
+    if (t.closest('.ic[aria-label="Account"]')){ if (typeof openAuth === 'function') openAuth(); return; }
+    if (t.closest('.ic[aria-label="Cart"]')){ location.href = 'cart.html'; return; }
+
+    /* drawer + search overlays */
+    if (t.closest('#dveil')){ if (typeof toggleDrawer === 'function') toggleDrawer(false); return; }
+    if (t.closest('#drawer .dx')){ if (typeof toggleDrawer === 'function') toggleDrawer(false); return; }
+    if (t.closest('#sveil .dx')){ if (typeof closeSearch === 'function') closeSearch(); return; }
+    var shopToggle = t.closest('a.d-cat[href^="javascript"]');
+    if (shopToggle){ e.preventDefault(); shopToggle.parentNode.classList.toggle('openg'); return; }
+    if (t.closest('.d-appt')){ if (typeof openAppt === 'function') openAppt(e); if (typeof toggleDrawer === 'function') toggleDrawer(false); return; }
+
+    /* footer */
+    var fcol = t.closest('.fcol-h');
+    if (fcol){ if (typeof toggleFootCol === 'function') toggleFootCol(fcol); return; }
+    if (t.closest('.ck-footer-link')){ e.preventDefault(); if (typeof openCookieSettings === 'function') openCookieSettings(); return; }
+
+    /* appointment modal */
+    if (t.closest('#appt .x')){ var ap = document.getElementById('appt'); if (ap) ap.classList.remove('open'); return; }
+    if (t.closest('#appt .send')){ if (typeof sendAppt === 'function') sendAppt(); return; }
+
+    /* catalogue filters */
+    if (t.closest('.filter-open-btn')){ if (typeof toggleFilterPanel === 'function') toggleFilterPanel(true); return; }
+    if (t.closest('.fs-close') || t.closest('#fs-veil')){ if (typeof toggleFilterPanel === 'function') toggleFilterPanel(false); return; }
+    var fsHd = t.closest('.fs-group-hd');
+    if (fsHd){ if (typeof toggleFsGroup === 'function') toggleFsGroup(fsHd); return; }
+
+    /* product detail */
+    if (t.closest('.pd-readmore')){ if (typeof toggleReadMore === 'function') toggleReadMore(); return; }
+    if (t.closest('.pd-pin-btn')){ if (typeof checkPinCode === 'function') checkPinCode(); return; }
+    if (t.closest('.star-pick')){ if (typeof pickStar === 'function') pickStar(e); return; }
+
+    /* data-action buttons */
+    var act = t.closest('[data-action]');
+    if (act){
+      var a = act.getAttribute('data-action');
+      if (a === 'cart'){ e.preventDefault(); if (typeof addToCart === 'function') addToCart(act.getAttribute('data-prod')); return; }
+      if (a === 'share'){ if (typeof shareProduct === 'function') shareProduct(act.getAttribute('data-name')); return; }
+      if (a === 'appt'){ if (typeof openAppt === 'function') openAppt(e); return; }
+      if (a === 'cart-enquiry'){ if (typeof sendCartEnquiry === 'function') sendCartEnquiry(); return; }
+      if (a === 'reset-link'){ location.href = 'login.html?forgot=1'; return; }
+    }
+  });
+
+  document.addEventListener('input', function(e){
+    if (e.target.id === 'sq'){ if (typeof runSearch === 'function') runSearch(); }
+  });
+
+  document.addEventListener('change', function(e){
+    var inp = e.target;
+    if (inp.matches && inp.matches('.fs-check input[data-sub-keys], .fs-check input[data-gender]')){
+      if (typeof onSidebarChange === 'function') onSidebarChange();
+    }
+  });
+
+  document.addEventListener('submit', function(e){
+    var f = e.target.closest('form[data-action]');
+    if (!f) return;
+    var a = f.getAttribute('data-action');
+    if (a === 'news'){ if (typeof joinNews === 'function') joinNews(e); }
+    else if (a === 'ask-wa'){ if (typeof submitAskWA === 'function') submitAskWA(e, f.getAttribute('data-name')); }
+    else if (a === 'review'){ if (typeof submitReview === 'function') submitReview(e); }
+  });
+
+  /* star picker hover (mouseover/mouseout bubble, so document-level works) */
+  document.addEventListener('mouseover', function(e){
+    if (e.target.closest('.star-pick') && typeof hoverStar === 'function') hoverStar(e);
+  });
+  document.addEventListener('mouseout', function(e){
+    var sp = e.target.closest('.star-pick');
+    if (sp && typeof unhoverStar === 'function') unhoverStar({ currentTarget: sp });
+  });
+}
+
 function initPage(active){
+  setupDelegation();
   try { buildHeader(active); } catch(e){ console.error("buildHeader failed:", e); }
   try { buildFooter(); } catch(e){ console.error("buildFooter failed:", e); }
   try { buildShells(); } catch(e){ console.error("buildShells failed:", e); }
@@ -850,4 +979,12 @@ function initPage(active){
     new MutationObserver(enhanceA11y).observe(document.body,{childList:true,subtree:true});
   } catch(e){}
   try { document.querySelectorAll('.ed-carousel').forEach(addCarouselSwipe); } catch(e){}
+  try { enhanceCarouselA11y(); } catch(e){}
+  /* Mark the first content region as the skip-link target. */
+  try {
+    var mc = document.getElementById('main-content') ||
+             document.querySelector('.pagehead') || document.querySelector('section');
+    if (mc && !mc.id) mc.id = 'main-content';
+    if (mc){ mc.setAttribute('role', 'main'); if (!mc.hasAttribute('tabindex')) mc.setAttribute('tabindex', '-1'); }
+  } catch(e){}
 }

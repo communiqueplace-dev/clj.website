@@ -75,11 +75,11 @@ function renderCartPage(){
         <span class="price-note">Price on request</span>
       </div>
       <div class="cq">
-        <button onclick="changeQty('${i.id}',-1)">−</button>
+        <button data-cart-act="dec" data-id="${i.id}" aria-label="Decrease quantity">−</button>
         <b>${i.qty}</b>
-        <button onclick="changeQty('${i.id}',1)">+</button>
+        <button data-cart-act="inc" data-id="${i.id}" aria-label="Increase quantity">+</button>
       </div>
-      <button class="cx" onclick="removeFromCart('${i.id}')" title="Remove">×</button>
+      <button class="cx" data-cart-act="del" data-id="${i.id}" title="Remove" aria-label="Remove item">×</button>
     </div>`;
   }).join("");
 }
