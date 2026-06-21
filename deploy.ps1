@@ -26,6 +26,10 @@ $combined  = ($parts | ForEach-Object {
 [System.IO.File]::WriteAllText((Join-Path $PSScriptRoot 'bundle.js'), $combined, $utf8NoBom)
 Write-Host "bundle.js rebuilt ($((Get-Item bundle.js).Length) bytes)"
 
+# --- 1b) Regenerate static per-product SEO pages + sitemap from catalog.js ---
+node gen-product-pages.js
+if ($LASTEXITCODE -ne 0) { throw "product page generation failed" }
+
 # --- 2) Bump service-worker cache version ---
 $sw = Get-Content 'sw.js' -Raw
 if ($sw -match "const CACHE = 'clj-v(\d+)';") {

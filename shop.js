@@ -68,9 +68,9 @@ function renderCartPage(){
     if (!p) return "";
     return `
     <div class="cart-row">
-      <a href="product.html?id=${p.img}"><img src="${imgURL(p)}" alt="${p.name}"></a>
+      <a href="${productHref(p)}"><img src="${imgURL(p)}" alt="${p.name}"></a>
       <div class="ci">
-        <a href="product.html?id=${p.img}"><h3>${p.name}</h3></a>
+        <a href="${productHref(p)}"><h3>${p.name}</h3></a>
         <small>${CAT_TITLES[p.cat]} · ${p.metal}</small>
         <span class="price-note">Price on request</span>
       </div>

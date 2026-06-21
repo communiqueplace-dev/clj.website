@@ -7,6 +7,9 @@ const SUBS = {
 };
 const CAT_TITLES = {gold:"Gold Jewellery", diamond:"Diamond Jewellery", polki:"Polki Jewellery"};
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+/* Pretty product URL — MUST match gen-product-pages.js slugify exactly. */
+function slugify(s){ return String(s).toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
+function productHref(p){ return slugify(p.name) + '.html'; }
 function fmtPrice(v){ return v ? 'from ₹' + Number(v).toLocaleString('en-IN') : 'Price on request'; }
 
 function showSkeletons(container, n){
@@ -109,7 +112,7 @@ function runSearch(){
   ).slice(0, 8);
   box.innerHTML = hits.length
     ? hits.map(p => `
-      <a href="product.html?id=${esc(p.img)}">
+      <a href="${esc(productHref(p))}">
         <img src="${imgURL(p)}" alt="${esc(p.name)}, C.L Khanna Jewellers Amritsar">
         <span><b>${esc(p.name)}</b><small>${esc(CAT_TITLES[p.cat]||'')}</small></span>
       </a>`).join("")
@@ -271,7 +274,7 @@ function imgURL(p){ if (p && p.image_url) return p.image_url; return 'assets/cat
 function cardHTML(p){
   const wled = isWishlisted(p.img);
   return `
-  <a class="card rv in" data-s="${esc(p.sub)}" data-g="${esc(p.gender||'women')}" href="product.html?id=${esc(p.img)}">
+  <a class="card rv in" data-s="${esc(p.sub)}" data-g="${esc(p.gender||'women')}" href="${esc(productHref(p))}">
     <div class="ph">
       <img loading="lazy" src="${imgURL(p)}" alt="${esc(p.name)}, ${esc(CAT_TITLES[p.cat]||'')} — C.L Khanna Jewellers Amritsar">
       <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}">
@@ -550,7 +553,7 @@ function renderCompleteTheLook(cat, sub, currentId){
     .sort(() => Math.random() - 0.5).slice(0, 2);
   if (!picks.length){ grid.closest('.pd-ctl').style.display = 'none'; return; }
   grid.innerHTML = picks.map(p => `
-    <a class="pd-ctl-card" href="product.html?id=${esc(p.img)}">
+    <a class="pd-ctl-card" href="${esc(productHref(p))}">
       <img src="${imgURL(p)}" alt="${esc(p.name)}">
       <div><span class="pd-ctl-name">${esc(p.name)}</span><span class="pd-ctl-meta">${esc(p.metal)}</span></div>
     </a>`).join('');
@@ -575,7 +578,7 @@ function renderProduct(){
   /* Prefer the page's own (pre-rendered) canonical so static pretty URLs keep theirs. */
   var _canonEl = document.querySelector('link[rel="canonical"]');
   var _canonHref = _canonEl ? _canonEl.getAttribute('href') : '';
-  var _url  = (_canonHref && _canonHref.indexOf('http') === 0) ? _canonHref : ("https://clkhannajewellers.in/product.html?id=" + encodeURIComponent(p.img));
+  var _url  = (_canonHref && _canonHref.indexOf('http') === 0) ? _canonHref : ("https://clkhannajewellers.in/" + productHref(p));
   var _img  = "https://clkhannajewellers.in/assets/catalog/" + safeCat + "/" + p.img + ".jpg";
   (function(m,k,v){ var el=document.querySelector('meta[name="'+k+'"]')||document.querySelector('meta[property="'+k+'"]'); if(el) el.setAttribute('content',v); }); // helper reference
   [['name','description',_desc],['property','og:title',document.title],['property','og:description',_desc],['property','og:url',_url],['property','og:image',_img],['name','twitter:title',document.title],['name','twitter:description',_desc],['name','twitter:image',_img]].forEach(function(t){ var el=document.querySelector('meta['+t[0]+'="'+t[1]+'"]'); if(el) el.setAttribute('content',t[2]); });
