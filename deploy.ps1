@@ -15,8 +15,15 @@ $ErrorActionPreference = 'Stop'
 Set-Location -Path $PSScriptRoot
 
 # --- 1) Rebuild bundle.js (catalog + shop + app + cms, in this order) ---
+# Read/write as UTF-8 (no BOM) explicitly. Windows PowerShell's Get-Content
+# defaults to ANSI for files without a BOM, which double-encodes characters
+# like - / · / ₹ / … into mojibake — so we must specify the encoding.
 $parts = 'catalog.js','shop.js','app.js','cms.js'
-Get-Content $parts -Raw | Set-Content -Path 'bundle.js' -NoNewline -Encoding utf8
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+$combined  = ($parts | ForEach-Object {
+  [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot $_), $utf8NoBom)
+}) -join ''
+[System.IO.File]::WriteAllText((Join-Path $PSScriptRoot 'bundle.js'), $combined, $utf8NoBom)
 Write-Host "bundle.js rebuilt ($((Get-Item bundle.js).Length) bytes)"
 
 # --- 2) Bump service-worker cache version ---

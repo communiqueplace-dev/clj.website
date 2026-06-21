@@ -1,25 +1,25 @@
-﻿/* C.L Khanna Jewellers â€” product catalogue (v3) */
+/* C.L Khanna Jewellers — product catalogue (v3) */
 var PRODUCTS = [
-  {img:"d01", cat:"diamond", sub:"bangles",   name:"Diamond Bangle Pair",                desc:"A matched pair of bangles fully set with round brilliants.",            metal:"18k White Gold", work:"PavÃ©-set certified diamonds", occasion:"Evening & festive wear"},
-  {img:"d02", cat:"diamond", sub:"earrings",  name:"Emerald & Diamond Paisley Earrings", desc:"Paisley drops of pavÃ© diamonds carrying natural emeralds.",        metal:"18k Gold", work:"PavÃ© setting with natural emeralds", occasion:"Festive & party wear"},
+  {img:"d01", cat:"diamond", sub:"bangles",   name:"Diamond Bangle Pair",                desc:"A matched pair of bangles fully set with round brilliants.",            metal:"18k White Gold", work:"Pavé-set certified diamonds", occasion:"Evening & festive wear"},
+  {img:"d02", cat:"diamond", sub:"earrings",  name:"Emerald & Diamond Paisley Earrings", desc:"Paisley drops of pavé diamonds carrying natural emeralds.",        metal:"18k Gold", work:"Pavé setting with natural emeralds", occasion:"Festive & party wear"},
   {img:"d03", cat:"diamond", sub:"earrings",  name:"Emerald Drop Danglers",              desc:"Long diamond danglers finished with emerald drops.",                   metal:"18k Gold", work:"Prong-set diamonds, emerald drops", occasion:"Evening wear"},
   {img:"d04", cat:"diamond", sub:"sets", name:"Ruby Centre Choker",                 desc:"A polished gold choker crowned with a ruby and diamond cluster.",      metal:"18k Gold", work:"Cluster setting with ruby centre", occasion:"Bridal & festive wear"},
   {img:"d05", cat:"diamond", sub:"rings",     name:"Ruby & Sapphire Floral Ring",        desc:"A floral cocktail ring in rubies, sapphires and rose-cut diamonds.",   metal:"18k Gold", work:"Hand-set rubies, sapphires & uncut diamonds", occasion:"Cocktail & festive wear"},
   {img:"d06", cat:"diamond", sub:"rings",     name:"Baguette Floral Ring",               desc:"A flower of baguette diamonds with a ruby-lined centre.",              metal:"18k Gold", work:"Baguette & round brilliant setting", occasion:"Cocktail wear"},
   {img:"d07", cat:"diamond", sub:"rings",     name:"Ruby Cocktail Ring",                 desc:"A deep ruby oval inside a double halo of brilliants.",                 metal:"18k Gold", work:"Double-halo setting, natural ruby", occasion:"Cocktail & party wear"},
   {img:"d08", cat:"diamond", sub:"rings",     name:"Enamel Cluster Ring",                desc:"A sculpted floral ring in blue enamel and diamond clusters.",          metal:"18k Gold", work:"Meenakari enamel with diamond clusters", occasion:"Festive wear"},
-  {img:"d09", cat:"diamond", sub:"rings",     name:"Emerald PavÃ© Dome Ring",        desc:"A pavÃ© dome ring centred on a natural emerald.",                  metal:"18k Gold", work:"Micro-pavÃ© with emerald centre", occasion:"Party wear"},
-  {img:"d10", cat:"diamond", sub:"rings",     name:"Ruby & Diamond Band",                desc:"A broad band woven with rubies and white diamonds.",                   metal:"18k Gold", work:"Channel & pavÃ© setting", occasion:"Daily & party wear"},
-  {img:"d11", cat:"diamond", sub:"rings",     name:"Diamond Wave Ring",                  desc:"A sculptural wave of micro-set pavÃ© diamonds.",                   metal:"18k Gold", work:"Micro-pavÃ© setting", occasion:"Daily & evening wear"},
+  {img:"d09", cat:"diamond", sub:"rings",     name:"Emerald Pavé Dome Ring",        desc:"A pavé dome ring centred on a natural emerald.",                  metal:"18k Gold", work:"Micro-pavé with emerald centre", occasion:"Party wear"},
+  {img:"d10", cat:"diamond", sub:"rings",     name:"Ruby & Diamond Band",                desc:"A broad band woven with rubies and white diamonds.",                   metal:"18k Gold", work:"Channel & pavé setting", occasion:"Daily & party wear"},
+  {img:"d11", cat:"diamond", sub:"rings",     name:"Diamond Wave Ring",                  desc:"A sculptural wave of micro-set pavé diamonds.",                   metal:"18k Gold", work:"Micro-pavé setting", occasion:"Daily & evening wear"},
   {img:"d12", cat:"diamond", sub:"earrings",  name:"Ruby Fan Studs",                     desc:"Fan-shaped studs in rubies edged with white diamonds.",                metal:"18k Gold", work:"Channel-set rubies & diamonds", occasion:"Festive wear"},
   {img:"d13", cat:"diamond", sub:"bangles",   name:"Ruby Halo Bracelet",                 desc:"Oval rubies in diamond halos, linked in warm gold.",                   metal:"18k Gold", work:"Halo setting with natural rubies", occasion:"Festive & party wear"},
   {img:"d14", cat:"diamond", sub:"rings",     name:"Diamond Spray Cocktail Ring",        desc:"A spray of round brilliants in an open floral design.",                metal:"18k White Gold", work:"Prong-set round brilliants", occasion:"Cocktail & evening wear"},
   {img:"d15", cat:"diamond", sub:"rings",     name:"Blue Sapphire Ring",                 desc:"A royal blue sapphire framed by a crown of diamonds.",                 metal:"18k Gold", work:"Halo setting, natural sapphire", occasion:"Engagement & evening wear"},
   {img:"d16", cat:"diamond", sub:"earrings",  name:"Ruby Wing Earrings",                 desc:"Dramatic wings of channel-set rubies tipped with diamonds.",           metal:"18k Gold", work:"Channel-set rubies", occasion:"Party & festive wear"},
-  {img:"d17", cat:"diamond", sub:"bangles",   name:"Pink Sapphire Polki Bracelet",       desc:"A broad bracelet of pink sapphires set with uncut polki.",             metal:"18k Gold", work:"PavÃ© pink sapphires with uncut polki", occasion:"Festive & party wear"},
-  {img:"d18", cat:"diamond", sub:"bangles",   name:"Peacock Kada",                       desc:"Twin pavÃ© peacocks in blue enamel meeting in a hinged kada.",     metal:"18k Gold", work:"Enamel work with rose-cut diamonds", occasion:"Festive & bridal wear", gender:"men"},
+  {img:"d17", cat:"diamond", sub:"bangles",   name:"Pink Sapphire Polki Bracelet",       desc:"A broad bracelet of pink sapphires set with uncut polki.",             metal:"18k Gold", work:"Pavé pink sapphires with uncut polki", occasion:"Festive & party wear"},
+  {img:"d18", cat:"diamond", sub:"bangles",   name:"Peacock Kada",                       desc:"Twin pavé peacocks in blue enamel meeting in a hinged kada.",     metal:"18k Gold", work:"Enamel work with rose-cut diamonds", occasion:"Festive & bridal wear", gender:"men"},
   {img:"d19", cat:"diamond", sub:"bangles",   name:"Diamond Cluster Bangle",             desc:"A broad gold bangle set end-to-end with diamond clusters.",            metal:"18k Gold", work:"Cluster-set brilliants", occasion:"Festive wear"},
-  {img:"d20", cat:"diamond", sub:"sets", name:"Rose Gold Necklace Set",             desc:"A scalloped rose-gold diamond necklace with matching drops.",          metal:"18k Rose Gold", work:"Prong & pavÃ© setting", occasion:"Reception & evening wear"},
+  {img:"d20", cat:"diamond", sub:"sets", name:"Rose Gold Necklace Set",             desc:"A scalloped rose-gold diamond necklace with matching drops.",          metal:"18k Rose Gold", work:"Prong & pavé setting", occasion:"Reception & evening wear"},
   {img:"d21", cat:"diamond", sub:"sets", name:"Sapphire Drop Necklace",             desc:"A diamond fringe collar finished with blue sapphire drops.",           metal:"18k White Gold", work:"Fringe setting with sapphire drops", occasion:"Reception wear"},
   {img:"d22", cat:"diamond", sub:"sets", name:"Sapphire Bridal Choker",             desc:"A grand diamond bib studded with deep blue sapphires.",                metal:"18k White Gold", work:"Bib setting, natural sapphires", occasion:"Bridal & reception wear"},
   {img:"g01", cat:"gold", sub:"sets", name:"Emerald Bead Haram",            desc:"Strands of emerald-green beads beneath a carved gold pendant.",  metal:"22k Gold", work:"Hand-strung beads, nakshi pendant", occasion:"Festive & temple wear"},
@@ -43,7 +43,7 @@ var PRODUCTS = [
   {img:"p05", cat:"polki", sub:"sets", name:"Emerald Bead Choker Set",         desc:"Emerald beads and polki with bracelet and studs to match.",       metal:"22k Gold, jadau set", work:"Jadau polki with emerald beads", occasion:"Wedding & festive wear"},
   {img:"p06", cat:"polki", sub:"sets", name:"Bridal Polki Layered Choker",     desc:"A double-layer bridal choker in luminous uncut polki.",           metal:"22k Gold, jadau set", work:"Layered uncut polki, hand-set", occasion:"Bridal wear"}
 ];
-/* C.L Khanna Jewellers â€” shop backend (cart + accounts)
+/* C.L Khanna Jewellers — shop backend (cart + accounts)
    ====================================================
    ACCOUNTS: paste your Supabase project values below.
    Get them from: supabase.com -> your project -> Settings -> API
@@ -103,7 +103,7 @@ function renderCartPage(){
   if (!box) return;
   const items = getCart();
   if (!items.length){
-    box.innerHTML = `<p class="cart-empty">Your cart is empty. <a href="./#collections">Explore the collections â†’</a></p>`;
+    box.innerHTML = `<p class="cart-empty">Your cart is empty. <a href="./#collections">Explore the collections →</a></p>`;
     document.getElementById("cart-actions").style.display = "none";
     return;
   }
@@ -116,15 +116,15 @@ function renderCartPage(){
       <a href="product.html?id=${p.img}"><img src="${imgURL(p)}" alt="${p.name}"></a>
       <div class="ci">
         <a href="product.html?id=${p.img}"><h3>${p.name}</h3></a>
-        <small>${CAT_TITLES[p.cat]} Â· ${p.metal}</small>
+        <small>${CAT_TITLES[p.cat]} · ${p.metal}</small>
         <span class="price-note">Price on request</span>
       </div>
       <div class="cq">
-        <button data-cart-act="dec" data-id="${i.id}" aria-label="Decrease quantity">âˆ’</button>
+        <button data-cart-act="dec" data-id="${i.id}" aria-label="Decrease quantity">−</button>
         <b>${i.qty}</b>
         <button data-cart-act="inc" data-id="${i.id}" aria-label="Increase quantity">+</button>
       </div>
-      <button class="cx" data-cart-act="del" data-id="${i.id}" title="Remove" aria-label="Remove item">Ã—</button>
+      <button class="cx" data-cart-act="del" data-id="${i.id}" title="Remove" aria-label="Remove item">×</button>
     </div>`;
   }).join("");
 }
@@ -135,7 +135,7 @@ function sendCartEnquiry(){
   let msg = "Hello C.L Khanna Jewellers, I would like to enquire about these pieces from your website:\n";
   items.forEach((i, n) => {
     const p = PRODUCTS.find(x => x.img === i.id);
-    if (p) msg += `\n${n+1}. ${p.name} (${CAT_TITLES[p.cat]})${i.qty > 1 ? " Ã— " + i.qty : ""}`;
+    if (p) msg += `\n${n+1}. ${p.name} (${CAT_TITLES[p.cat]})${i.qty > 1 ? " × " + i.qty : ""}`;
   });
   if (note.trim()) msg += "\n\nNote: " + note.trim();
   window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(msg), "_blank");
@@ -169,7 +169,7 @@ function initSupabase(){
    prompt is carried across the navigation and shown on the login page. */
 function openAuth(msg){
   if (!sbReady()){
-    alert("Accounts are launching soon.\nYour cart is already saved on this device â€” and you can send it to us on WhatsApp any time.");
+    alert("Accounts are launching soon.\nYour cart is already saved on this device — and you can send it to us on WhatsApp any time.");
     return;
   }
   if (typeof sbUser !== 'undefined' && sbUser){ location.href = 'account.html'; return; }
@@ -242,12 +242,12 @@ async function doAuth(){
     if (msg.includes('Invalid login credentials') || msg.includes('invalid_grant')){
       errEl.textContent = 'Incorrect email or password. Please try again.';
     } else if (msg.includes('User already registered') || msg.includes('already registered') || msg.includes('already exists')){
-      errEl.textContent = 'An account with this email already exists â€” taking you to sign inâ€¦';
+      errEl.textContent = 'An account with this email already exists — taking you to sign in…';
       setTimeout(function(){ location.href = 'login.html'; }, 1800);
     } else if (msg.includes('Email not confirmed')){
-      errEl.textContent = 'Please confirm your email first â€” check your inbox.';
+      errEl.textContent = 'Please confirm your email first — check your inbox.';
     } else if (msg.includes('rate limit') || msg.includes('too many')){
-      errEl.textContent = 'Too many attempts â€” please wait a moment and try again.';
+      errEl.textContent = 'Too many attempts — please wait a moment and try again.';
     } else {
       errEl.textContent = msg || 'Something went wrong. Please try again.';
     }
@@ -256,7 +256,7 @@ async function doAuth(){
   // Already-registered email: Supabase returns a user with NO identities (and no error)
   // to avoid leaking which emails exist. Treat it as "account exists" and send them to sign in.
   if (_authMode === 'up' && data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0){
-    errEl.textContent = 'An account with this email already exists â€” taking you to sign inâ€¦';
+    errEl.textContent = 'An account with this email already exists — taking you to sign in…';
     setTimeout(function(){ location.href = 'login.html'; }, 1800);
     return;
   }
@@ -299,7 +299,7 @@ async function afterLogin(){
     if (document.getElementById("cart-list")) renderCartPage();
     cloudSaveCart(merged);
   } catch(e){}
-  /* merge per-user wishlist (cloud) with local favourites â€” same items-jsonb pattern as carts */
+  /* merge per-user wishlist (cloud) with local favourites — same items-jsonb pattern as carts */
   try {
     const { data } = await sb.from("wishlists").select("items").eq("user_id", sbUser.id).maybeSingle();
     const cloud = (data && data.items) || [];
@@ -355,7 +355,7 @@ function onAuthPassInput(){
   var hnt = document.getElementById('pw-hint');
   if (bar) bar.setAttribute('data-s', s || '');
   if (hnt){
-    var hints = ['', 'Too short â€” use at least 8 characters', 'Getting stronger â€” try adding numbers or symbols', 'Strong password'];
+    var hints = ['', 'Too short — use at least 8 characters', 'Getting stronger — try adding numbers or symbols', 'Strong password'];
     hnt.textContent = pw ? (hints[s] || '') : '';
   }
 }
@@ -414,7 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCartBadge();
   initSupabase();
 });
-/* C.L Khanna Jewellers â€” shared site logic (v4) */
+/* C.L Khanna Jewellers — shared site logic (v4) */
 const WA = "919815605373";
 const SUBS = {
   gold:    [["sets","Chokers, Malas & Sets"],["bangles","Bangles & Kadas"],["bracelets","Bracelets"],["earrings","Earrings & Studs"],["rings","Rings"]],
@@ -423,7 +423,7 @@ const SUBS = {
 };
 const CAT_TITLES = {gold:"Gold Jewellery", diamond:"Diamond Jewellery", polki:"Polki Jewellery"};
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
-function fmtPrice(v){ return v ? 'from â‚¹' + Number(v).toLocaleString('en-IN') : 'Price on request'; }
+function fmtPrice(v){ return v ? 'from ₹' + Number(v).toLocaleString('en-IN') : 'Price on request'; }
 
 function showSkeletons(container, n){
   if(!container) return;
@@ -450,7 +450,7 @@ function skelLoaded(container){
 
 
 
-/* ---------- header: burger left Â· logo centre Â· icons right Â· hairline ---------- */
+/* ---------- header: burger left · logo centre · icons right · hairline ---------- */
 function buildHeader(active){
   document.getElementById("site-header").innerHTML = `
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -465,7 +465,7 @@ function buildHeader(active){
         <button class="ic" aria-label="Book an Appointment" title="Book an Appointment">
           <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.4"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.4"/></svg>
         </button>
-        <span class="country" title="India Â· INR">IN Â· â‚¹</span>
+        <span class="country" title="India · INR">IN · ₹</span>
         <button class="ic" aria-label="Account" title="Account">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
         </button>
@@ -478,7 +478,7 @@ function buildHeader(active){
   <div class="hairline"></div>
   <div class="drawer-veil" id="dveil"></div>
   <aside class="drawer" id="drawer">
-    <button class="dx">Ã—</button>
+    <button class="dx">×</button>
     <a class="d-home" href="./">Home</a>
     <div class="d-group">
       <a class="d-cat" href="javascript:void(0)">Shop <i>+</i></a>
@@ -496,8 +496,8 @@ function buildHeader(active){
   </aside>
   <div class="search-veil" id="sveil">
     <div class="search-box">
-      <button class="dx">Ã—</button>
-      <input id="sq" type="text" placeholder="Search the collection â€” e.g. choker, ruby, kadaâ€¦">
+      <button class="dx">×</button>
+      <input id="sq" type="text" placeholder="Search the collection — e.g. choker, ruby, kada…">
       <div id="sres" class="sres"></div>
     </div>
   </div>`;
@@ -507,7 +507,7 @@ function toggleDrawer(open){
   document.getElementById("dveil").classList.toggle("open", open);
 }
 function soon(what){
-  alert(what + " are coming soon.\nFor now, we serve you personally â€” call or WhatsApp +91 98156 05373.");
+  alert(what + " are coming soon.\nFor now, we serve you personally — call or WhatsApp +91 98156 05373.");
 }
 
 /* ---------- search ---------- */
@@ -529,10 +529,10 @@ function runSearch(){
         <img src="${imgURL(p)}" alt="${esc(p.name)}, C.L Khanna Jewellers Amritsar">
         <span><b>${esc(p.name)}</b><small>${esc(CAT_TITLES[p.cat]||'')}</small></span>
       </a>`).join("")
-    : `<p class="nores">No pieces found â€” try "choker", "ring", "polki"â€¦</p>`;
+    : `<p class="nores">No pieces found — try "choker", "ring", "polki"…</p>`;
 }
 
-/* ---------- footer: Company Â· Services Â· Policies Â· Social + newsletter ---------- */
+/* ---------- footer: Company · Services · Policies · Social + newsletter ---------- */
 function buildFooter(){
   document.getElementById("site-footer").innerHTML = `
   <div class="topline"></div>
@@ -591,7 +591,7 @@ function buildFooter(){
         </div>
       </div>
     </div>
-    <div class="base">Copyright Â© <span id="yr"></span> C.L Khanna Jewellers. All rights reserved.</div>
+    <div class="base">Copyright © <span id="yr"></span> C.L Khanna Jewellers. All rights reserved.</div>
   </div>`;
   document.getElementById("yr").textContent = new Date().getFullYear();
 }
@@ -601,7 +601,7 @@ function toggleFootCol(btn){
   var open = btn.getAttribute("aria-expanded") === "true";
   btn.setAttribute("aria-expanded", open ? "false" : "true");
   var ic = btn.querySelector(".fcol-ic");
-  if (ic) ic.textContent = open ? "+" : "â€“";
+  if (ic) ic.textContent = open ? "+" : "–";
 }
 
 function joinNews(e){
@@ -628,7 +628,7 @@ function joinNews(e){
       body: JSON.stringify({ email: email })
     }).catch(function(){});
   }
-  e.target.innerHTML = '<p class="nl-thanks">Thank you â€” you are on the list.</p>';
+  e.target.innerHTML = '<p class="nl-thanks">Thank you — you are on the list.</p>';
   return false;
 }
 
@@ -641,14 +641,14 @@ function buildShells(){
   </a>
   <div class="modal" id="appt">
     <div class="box">
-      <button class="x">Ã—</button>
+      <button class="x">×</button>
       <h3>Book an Appointment</h3>
       <p class="sub">Visit us at Lawrence Road without the wait.</p>
       <label>Your name</label><input id="ap-name" type="text" placeholder="Full name">
       <label>Preferred day</label>
       <select id="ap-day"><option>Today</option><option>Tomorrow</option><option>This weekend</option><option>Next week</option></select>
       <label>Preferred time</label>
-      <select id="ap-time"><option>11 AM â€“ 1 PM</option><option>1 PM â€“ 3 PM</option><option>3 PM â€“ 5 PM</option><option>5 PM â€“ 8 PM</option></select>
+      <select id="ap-time"><option>11 AM – 1 PM</option><option>1 PM – 3 PM</option><option>3 PM – 5 PM</option><option>5 PM – 8 PM</option></select>
       <label>Interested in</label>
       <select id="ap-int"><option>Bridal / Wedding</option><option>Gold Jewellery</option><option>Diamond Jewellery</option><option>Polki Jewellery</option><option>Customized Jewellery</option><option>General visit</option></select>
       <button class="btn solid send">Confirm on WhatsApp</button>
@@ -689,7 +689,7 @@ function cardHTML(p){
   return `
   <a class="card rv in" data-s="${esc(p.sub)}" data-g="${esc(p.gender||'women')}" href="product.html?id=${esc(p.img)}">
     <div class="ph">
-      <img loading="lazy" src="${imgURL(p)}" alt="${esc(p.name)}, ${esc(CAT_TITLES[p.cat]||'')} â€” C.L Khanna Jewellers Amritsar">
+      <img loading="lazy" src="${imgURL(p)}" alt="${esc(p.name)}, ${esc(CAT_TITLES[p.cat]||'')} — C.L Khanna Jewellers Amritsar">
       <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="${wled?'var(--gold)':'none'}" stroke="${wled?'var(--gold)':'currentColor'}" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
       </button>
@@ -751,11 +751,11 @@ function buildFilterSidebar(cat, catProducts){
   }).join('');
   fsBody.innerHTML =
     `<div class="fs-group">
-      <button class="fs-group-hd">Category <span class="fs-toggle-icon">âˆ’</span></button>
+      <button class="fs-group-hd">Category <span class="fs-toggle-icon">−</span></button>
       <div class="fs-group-body">${catRows}</div>
     </div>
     <div class="fs-group">
-      <button class="fs-group-hd">Gender <span class="fs-toggle-icon">âˆ’</span></button>
+      <button class="fs-group-hd">Gender <span class="fs-toggle-icon">−</span></button>
       <div class="fs-group-body">
         <label class="fs-check"><input type="checkbox" data-gender="women"><span>Women <span class="fs-cnt">(${womenCount})</span></span></label>
         <label class="fs-check"><input type="checkbox" data-gender="men"><span>Men <span class="fs-cnt">(${menCount})</span></span></label>
@@ -767,7 +767,7 @@ function toggleFsGroup(btn){
   const group = btn.closest(".fs-group");
   const icon = btn.querySelector(".fs-toggle-icon");
   group.classList.toggle("collapsed");
-  icon.textContent = group.classList.contains("collapsed") ? "+" : "âˆ’";
+  icon.textContent = group.classList.contains("collapsed") ? "+" : "−";
 }
 
 function toggleFilterPanel(open){
@@ -813,7 +813,7 @@ function checkPinCode(){
   const res = document.getElementById("pd-pin-result");
   if (!res) return;
   if (!val.trim()) { res.textContent = "Please enter a pin code."; res.style.color = "#b87c2a"; return; }
-  res.textContent = "We deliver across India â€” free insured shipping.";
+  res.textContent = "We deliver across India — free insured shipping.";
   res.style.color = "#3d9c5a";
 }
 
@@ -829,7 +829,7 @@ function _wlSyncBtn(btn, on){
   if (path){ path.setAttribute('fill', on ? 'var(--gold)' : 'none'); path.setAttribute('stroke', on ? 'var(--gold)' : 'currentColor'); }
 }
 function toggleWishlist(id, btn){
-  // Saving favourites requires an account â€” logged-out taps open the sign-in modal and save nothing.
+  // Saving favourites requires an account — logged-out taps open the sign-in modal and save nothing.
   if (typeof sbUser === 'undefined' || !sbUser){
     if (typeof openAuth === 'function') openAuth('Please sign in to save favourites.');
     return;
@@ -855,7 +855,7 @@ function refreshHearts(){
 /* ---- Share ---- */
 function shareProduct(name){
   const url = location.href;
-  const data = { title: name + ' â€” C.L Khanna Jewellers', url };
+  const data = { title: name + ' — C.L Khanna Jewellers', url };
   if (navigator.share && navigator.canShare && navigator.canShare(data)){
     navigator.share(data).catch(()=>{});
   } else {
@@ -868,7 +868,7 @@ function shareProduct(name){
   }
 }
 
-/* ---- Ask â†’ WhatsApp ---- */
+/* ---- Ask → WhatsApp ---- */
 function submitAskWA(e, productName){
   e.preventDefault();
   const f = e.target;
@@ -919,7 +919,7 @@ function _renderReviews(rows){
   const list = document.getElementById('pd-rv-list');
   const summary = document.getElementById('pd-rv-summary');
   if (!list) return;
-  const stars = n => 'â˜…'.repeat(Math.round(n)) + 'â˜†'.repeat(5 - Math.round(n));
+  const stars = n => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
   if (!rows.length){
     if (summary) summary.innerHTML = '';
     list.innerHTML = '<p class="rv-empty">Be the first to review this item.</p>';
@@ -942,7 +942,7 @@ async function submitReview(e){
   if (!rating){ alert('Please select a star rating.'); return; }
   if (typeof SUPABASE_URL === 'undefined' || !SUPABASE_URL){ alert('Reviews service unavailable.'); return; }
   const btn = form.querySelector('[type=submit]');
-  btn.disabled = true; btn.textContent = 'Savingâ€¦';
+  btn.disabled = true; btn.textContent = 'Saving…';
   try {
     const r = await fetch(SUPABASE_URL + '/rest/v1/reviews', {
       method: 'POST',
@@ -986,7 +986,7 @@ function renderProduct(){
   const p = PRODUCTS.find(x => x.img === id) || PRODUCTS[0];
   const safeCat = ['gold','diamond','polki'].includes(p.cat) ? p.cat : 'gold';
   const subLabel = (SUBS[safeCat].find(([k]) => k === p.sub) || ["",""])[1];
-  document.title = p.name + " â€” " + CAT_TITLES[safeCat] + " | C.L Khanna Jewellers, Amritsar";
+  document.title = p.name + " — " + CAT_TITLES[safeCat] + " | C.L Khanna Jewellers, Amritsar";
   var _desc = p.desc + " " + CAT_TITLES[safeCat] + " by C.L Khanna Jewellers, Lawrence Road Amritsar. BIS hallmarked, " + p.metal + ".";
   /* Prefer the page's own (pre-rendered) canonical so static pretty URLs keep theirs. */
   var _canonEl = document.querySelector('link[rel="canonical"]');
@@ -1008,7 +1008,7 @@ function renderProduct(){
   document.head.appendChild(_pdSchemaEl);
   const TRUNC = 130;
   _pdDescFull = p.desc;
-  _pdDescShort = p.desc.length > TRUNC ? p.desc.slice(0, TRUNC).replace(/\s+\S*$/, '') + 'â€¦' : p.desc;
+  _pdDescShort = p.desc.length > TRUNC ? p.desc.slice(0, TRUNC).replace(/\s+\S*$/, '') + '…' : p.desc;
   const needRM = p.desc.length > TRUNC;
   const wled = isWishlisted(p.img);
   document.getElementById("pd").innerHTML =
@@ -1027,16 +1027,16 @@ function renderProduct(){
       </div>
     </div>
     <div class="pd-info">
-      <p class="eyebrow">${esc(CAT_TITLES[safeCat])} Â· ${esc(subLabel)}</p>
+      <p class="eyebrow">${esc(CAT_TITLES[safeCat])} · ${esc(subLabel)}</p>
       <h1>${esc(p.name)}</h1>
-      <p class="pd-instock"><span class="pd-dot" aria-hidden="true"></span>In Stock &nbsp;Â·&nbsp; <span class="pd-tax">Taxes inclusive</span></p>
+      <p class="pd-instock"><span class="pd-dot" aria-hidden="true"></span>In Stock</p>
       <p class="pd-desc" id="pd-desc-txt">${esc(needRM ? _pdDescShort : _pdDescFull)}</p>
       ${needRM ? '<button class="pd-readmore" id="pd-rm-btn">Read More</button>' : ''}
       <div class="pd-specs">
         <div><b>Metal</b><span>${esc(p.metal)}</span></div>
         <div><b>Craftsmanship</b><span>${esc(p.work)}</span></div>
         <div><b>Occasion</b><span>${esc(p.occasion)}</span></div>
-        <div><b>Price</b><span>${p.price_from ? 'from â‚¹' + Number(p.price_from).toLocaleString('en-IN') + ' Â· varies with the daily rate' : 'Price on request'}</span></div>
+        <div><b>Price</b><span>${p.price_from ? 'from ₹' + Number(p.price_from).toLocaleString('en-IN') + ' · varies with the daily rate' : 'Price on request'}</span></div>
         <div><b>Certification</b><span>BIS hallmarked</span></div>
       </div>
       <div class="trust-badges">
@@ -1059,7 +1059,7 @@ function renderProduct(){
         <button class="btn ghost pd-share-btn" data-action="share" data-name="${esc(p.name)}">Share</button>
         <a class="btn ghost" href="#" data-action="appt">See It In Store</a>
       </div>
-      <p class="pd-note">Every piece can be customised â€” sizes, stones and finish. <a href="custom.html">Learn about custom orders â†’</a></p>
+      <p class="pd-note">Every piece can be customised — sizes, stones and finish. <a href="custom.html">Learn about custom orders →</a></p>
     </div>
   </div>
 
@@ -1076,18 +1076,18 @@ function renderProduct(){
     <div class="pd-revs">
       <h3 class="pd-sec-h">Ratings &amp; Reviews</h3>
       <div id="pd-rv-summary"></div>
-      <div id="pd-rv-list"><p class="rv-empty">Loadingâ€¦</p></div>
+      <div id="pd-rv-list"><p class="rv-empty">Loading…</p></div>
       <div class="pd-rv-write">
         <h4>Write a Review</h4>
         <form data-pid="${esc(p.img)}" data-action="review">
           <div class="pd-form-group"><label>Your Name</label><input type="text" name="rv-name" placeholder="e.g. Priya S." required></div>
           <div class="pd-form-group"><label>Rating</label>
             <div class="star-pick">
-              <span class="sps" data-v="1">â˜…</span><span class="sps" data-v="2">â˜…</span><span class="sps" data-v="3">â˜…</span><span class="sps" data-v="4">â˜…</span><span class="sps" data-v="5">â˜…</span>
+              <span class="sps" data-v="1">★</span><span class="sps" data-v="2">★</span><span class="sps" data-v="3">★</span><span class="sps" data-v="4">★</span><span class="sps" data-v="5">★</span>
               <input type="hidden" name="rv-rating">
             </div>
           </div>
-          <div class="pd-form-group"><label>Comment <span style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:.82rem;color:var(--muted)">(optional)</span></label><textarea name="rv-comment" rows="3" placeholder="Share your experienceâ€¦"></textarea></div>
+          <div class="pd-form-group"><label>Comment <span style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:.82rem;color:var(--muted)">(optional)</span></label><textarea name="rv-comment" rows="3" placeholder="Share your experience…"></textarea></div>
           <button type="submit" class="btn solid">Submit Review</button>
         </form>
       </div>
@@ -1291,7 +1291,7 @@ function setupDelegation(){
   document.addEventListener('click', function(e){
     var t = e.target;
 
-    /* wishlist heart (cards + product detail) â€” sits inside a card <a>, so stop the nav */
+    /* wishlist heart (cards + product detail) — sits inside a card <a>, so stop the nav */
     var wl = t.closest('.wl-btn');
     if (wl){ e.preventDefault(); e.stopPropagation(); if (typeof toggleWishlist === 'function') toggleWishlist(wl.getAttribute('data-wid'), wl); return; }
 
@@ -1407,10 +1407,10 @@ function initPage(active){
     if (mc){ mc.setAttribute('role', 'main'); if (!mc.hasAttribute('tabindex')) mc.setAttribute('tabindex', '-1'); }
   } catch(e){}
 }
-/* C.L Khanna â€” CMS loader (safe, non-blocking)
+/* C.L Khanna — CMS loader (safe, non-blocking)
    Each page first renders the built-in catalogue (catalog.js) immediately, so
    the site ALWAYS shows. This then quietly upgrades to the database products
-   if they load. Any failure or slowness is ignored â€” the page is never blocked. */
+   if they load. Any failure or slowness is ignored — the page is never blocked. */
 (function(){
   if (typeof SUPABASE_URL === "undefined" || !SUPABASE_URL || !SUPABASE_ANON_KEY) return;
   var ctrl = new AbortController();

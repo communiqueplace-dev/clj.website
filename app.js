@@ -613,7 +613,7 @@ function renderProduct(){
     <div class="pd-info">
       <p class="eyebrow">${esc(CAT_TITLES[safeCat])} · ${esc(subLabel)}</p>
       <h1>${esc(p.name)}</h1>
-      <p class="pd-instock"><span class="pd-dot" aria-hidden="true"></span>In Stock &nbsp;·&nbsp; <span class="pd-tax">Taxes inclusive</span></p>
+      <p class="pd-instock"><span class="pd-dot" aria-hidden="true"></span>In Stock</p>
       <p class="pd-desc" id="pd-desc-txt">${esc(needRM ? _pdDescShort : _pdDescFull)}</p>
       ${needRM ? '<button class="pd-readmore" id="pd-rm-btn">Read More</button>' : ''}
       <div class="pd-specs">
