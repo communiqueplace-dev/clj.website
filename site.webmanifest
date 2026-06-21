@@ -1,0 +1,13 @@
+{
+  "name": "C.L Khanna Jewellers",
+  "short_name": "C.L Khanna",
+  "description": "BIS hallmarked gold, diamond & polki jewellery — Lawrence Road, Amritsar.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fffdf9",
+  "theme_color": "#15130e",
+  "icons": [
+    { "src": "favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "favicon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
