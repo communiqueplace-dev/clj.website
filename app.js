@@ -566,13 +566,16 @@ function renderYMAL(cat, currentId){
 }
 
 function renderProduct(){
-  const id = new URLSearchParams(location.search).get("id");
+  const id = new URLSearchParams(location.search).get("id") || document.body.getAttribute("data-product");
   const p = PRODUCTS.find(x => x.img === id) || PRODUCTS[0];
   const safeCat = ['gold','diamond','polki'].includes(p.cat) ? p.cat : 'gold';
   const subLabel = (SUBS[safeCat].find(([k]) => k === p.sub) || ["",""])[1];
-  document.title = esc(p.name) + " — C.L Khanna Jewellers";
+  document.title = p.name + " — " + CAT_TITLES[safeCat] + " | C.L Khanna Jewellers, Amritsar";
   var _desc = p.desc + " " + CAT_TITLES[safeCat] + " by C.L Khanna Jewellers, Lawrence Road Amritsar. BIS hallmarked, " + p.metal + ".";
-  var _url  = "https://clkhannajewellers.in/product.html?id=" + encodeURIComponent(p.img);
+  /* Prefer the page's own (pre-rendered) canonical so static pretty URLs keep theirs. */
+  var _canonEl = document.querySelector('link[rel="canonical"]');
+  var _canonHref = _canonEl ? _canonEl.getAttribute('href') : '';
+  var _url  = (_canonHref && _canonHref.indexOf('http') === 0) ? _canonHref : ("https://clkhannajewellers.in/product.html?id=" + encodeURIComponent(p.img));
   var _img  = "https://clkhannajewellers.in/assets/catalog/" + safeCat + "/" + p.img + ".jpg";
   (function(m,k,v){ var el=document.querySelector('meta[name="'+k+'"]')||document.querySelector('meta[property="'+k+'"]'); if(el) el.setAttribute('content',v); }); // helper reference
   [['name','description',_desc],['property','og:title',document.title],['property','og:description',_desc],['property','og:url',_url],['property','og:image',_img],['name','twitter:title',document.title],['name','twitter:description',_desc],['name','twitter:image',_img]].forEach(function(t){ var el=document.querySelector('meta['+t[0]+'="'+t[1]+'"]'); if(el) el.setAttribute('content',t[2]); });
