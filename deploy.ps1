@@ -26,6 +26,13 @@ $combined  = ($parts | ForEach-Object {
 [System.IO.File]::WriteAllText((Join-Path $PSScriptRoot 'bundle.js'), $combined, $utf8NoBom)
 Write-Host "bundle.js rebuilt ($((Get-Item bundle.js).Length) bytes)"
 
+# --- 1a) Minify bundle.js (compress + mangle locals only; top-level globals
+# are preserved by default so page-init.js / *-page.js still call them by name) ---
+npx --yes terser bundle.js -c -m -o bundle.min.js
+if ($LASTEXITCODE -ne 0) { throw "terser minify failed" }
+Move-Item -Force bundle.min.js bundle.js
+Write-Host "bundle.js minified ($((Get-Item bundle.js).Length) bytes)"
+
 # --- 1b) Regenerate static per-product SEO pages + sitemap from catalog.js ---
 node gen-product-pages.js
 if ($LASTEXITCODE -ne 0) { throw "product page generation failed" }
