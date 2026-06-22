@@ -93,6 +93,18 @@ function sendCartEnquiry(){
     if (p) msg += `\n${n+1}. ${p.name} (${CAT_TITLES[p.cat]})${i.qty > 1 ? " × " + i.qty : ""}`;
   });
   if (note.trim()) msg += "\n\nNote: " + note.trim();
+  /* fire-and-forget enquiry log (reuses shared `sb`); must NOT block the redirect */
+  try {
+    if (typeof sb !== 'undefined' && sb){
+      sb.from('enquiries').insert({
+        note: note.trim() || null,
+        items: items,
+        user_id: (typeof sbUser !== 'undefined' && sbUser) ? sbUser.id : null,
+        visitor_id: (typeof window.clkVid === 'function') ? window.clkVid() : null
+      }).then(function(){}, function(){});
+    }
+    if (typeof window.clkLog === 'function') window.clkLog('enquiry_click');
+  } catch(e){}
   window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(msg), "_blank");
 }
 

@@ -83,3 +83,51 @@
   })
   .catch(function(){ clearTimeout(timer); track.innerHTML = staticHTML; skelLoaded(track); });
 })();
+
+/* ---- privacy-safe, fire-and-forget analytics (reuses the shared `sb` client) ----
+   Logs page views / product opens / enquiries to the existing analytics_events &
+   enquiries tables. No personal data, no third-party scripts. Any failure is
+   ignored and NEVER blocks or delays the page. */
+(function(){
+  var path = location.pathname || '/';
+  /* never track the admin / studio tools (they don't even load this bundle) */
+  if (/clkhanna-(admin|studio)\.html$/i.test(path)) return;
+
+  function vid(){
+    try {
+      var v = localStorage.getItem('clk_vid');
+      if (!v){
+        v = (window.crypto && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c){
+              var r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+        localStorage.setItem('clk_vid', v);
+      }
+      return v;
+    } catch(e){ return null; }
+  }
+  window.clkVid = vid;
+
+  /* run fn once the shared Supabase client (shop.js) is ready; give up after ~10s */
+  function whenSb(fn){
+    if (typeof sb !== 'undefined' && sb){ fn(); return; }
+    var n = 0, t = setInterval(function(){
+      if (typeof sb !== 'undefined' && sb){ clearInterval(t); fn(); }
+      else if (++n > 100){ clearInterval(t); }
+    }, 100);
+  }
+
+  window.clkLog = function(type, extra){
+    whenSb(function(){
+      try {
+        var row = { event_type: type, path: path, visitor_id: vid() };
+        if (extra){ for (var k in extra){ row[k] = extra[k]; } }
+        sb.from('analytics_events').insert(row).then(function(){}, function(){});
+      } catch(e){}
+    });
+  };
+
+  /* page view on every public page load */
+  window.clkLog('page_view');
+})();
