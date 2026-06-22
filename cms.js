@@ -15,7 +15,7 @@
     clearTimeout(timer);
     if (Array.isArray(rows) && rows.length){
       window.PRODUCTS = rows.map(function(r){ return {
-        img:r.img, cat:r.cat, sub:r.sub, name:r.name, desc:r.description||"",
+        id:r.id, img:r.img, cat:r.cat, sub:r.sub, name:r.name, desc:r.description||"",
         metal:r.metal||"", work:r.work||"", occasion:r.occasion||"", image_url:r.image_url||"",
         price_from: r.price_from ?? null
       };});

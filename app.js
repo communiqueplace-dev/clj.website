@@ -571,8 +571,10 @@ function renderYMAL(cat, currentId){
 function renderProduct(){
   const id = new URLSearchParams(location.search).get("id") || document.body.getAttribute("data-product");
   const p = PRODUCTS.find(x => x.img === id) || PRODUCTS[0];
-  /* fire-and-forget product-open tracking (once per page; never blocks) */
-  try { if (!window.__clkPC && typeof window.clkLog === 'function'){ window.__clkPC = 1; window.clkLog('product_click', { product_id: p.img }); } } catch(e){}
+  /* fire-and-forget product-open tracking (once per page; never blocks).
+     analytics_events.product_id is a FK to products(id), so we use the DB id
+     (carried in via cms.js) — only logs once the DB product is available. */
+  try { if (p.id && !window.__clkPC && typeof window.clkLog === 'function'){ window.__clkPC = 1; window.clkLog('product_click', { product_id: p.id }); } } catch(e){}
   const safeCat = ['gold','diamond','polki'].includes(p.cat) ? p.cat : 'gold';
   const subLabel = (SUBS[safeCat].find(([k]) => k === p.sub) || ["",""])[1];
   document.title = p.name + " — " + CAT_TITLES[safeCat] + " | C.L Khanna Jewellers, Amritsar";
