@@ -476,7 +476,10 @@ footer .base{font-size:.68rem}
 .ed-carousel:before,.ed-carousel:after{content:"";position:absolute;top:0;bottom:0;width:64px;z-index:2;pointer-events:none}
 .ed-carousel:before{left:0;background:linear-gradient(to right,var(--paper),rgba(255,253,249,0))}
 .ed-carousel:after{right:0;background:linear-gradient(to left,var(--paper),rgba(255,253,249,0))}
-.ed-track{display:flex;gap:20px;width:max-content;animation:var(--_ed-nm,edscroll) 46s linear var(--_ed-dl,0s) infinite}
+.ed-track{display:flex;width:max-content;animation:var(--_ed-nm,edscroll) 46s linear var(--_ed-dl,0s) infinite;will-change:transform;backface-visibility:hidden}
+/* trailing margin (not flex gap) so spacing is uniform across the loop seam —
+   makes the -50% marquee reset land exactly on a copy boundary (no 10px jump) */
+.ed-track>*{margin-right:20px}
 .ed-carousel:hover .ed-track{animation-play-state:paused}
 .ed-track a{flex:0 0 auto;width:300px;overflow:hidden;background:var(--ivory);cursor:zoom-in}
 .ed-track img{width:300px;aspect-ratio:2/3;object-fit:cover;object-position:center top;transition:transform 1s}
@@ -489,7 +492,8 @@ footer .base{font-size:.68rem}
 @keyframes ed-bar-scroll{from{width:0}to{width:100%}}
 @media(prefers-reduced-motion:reduce){.ed-track{animation:none}.ed-carousel{overflow-x:auto}}
 @media(max-width:760px){
-  .ed-track{gap:14px;animation-duration:32s}
+  .ed-track{animation-duration:32s}
+  .ed-track>*{margin-right:14px}
   .ed-track a,.ed-track img{width:230px}
 }
 
