@@ -419,7 +419,7 @@ footer .git svg{width:15px;height:15px;flex:none;margin-top:5px;color:var(--gold
 @media(max-width:760px){
   .bar{min-height:112px;padding:16px 4%}
   .brand img{height:64px}
-  footer .git a{justify-content:center}
+  footer .git a{justify-content:flex-start}
 }
 
 
