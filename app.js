@@ -545,18 +545,26 @@ async function submitReview(e){
   } catch(err){ btn.disabled = false; btn.textContent = 'Submit Review'; alert('Could not save your review. Please try again.'); }
 }
 
-/* ---- Complete the Look ---- */
-function renderCompleteTheLook(cat, sub, currentId){
-  const grid = document.getElementById('pd-ctl-grid');
-  if (!grid) return;
-  const picks = PRODUCTS.filter(p => p.cat === cat && p.sub === sub && p.img !== currentId)
-    .sort(() => Math.random() - 0.5).slice(0, 2);
-  if (!picks.length){ grid.closest('.pd-ctl').style.display = 'none'; return; }
-  grid.innerHTML = picks.map(p => `
-    <a class="pd-ctl-card" href="${esc(productHref(p))}">
-      <img src="${imgURL(p)}" alt="${esc(p.name)}">
-      <div><span class="pd-ctl-name">${esc(p.name)}</span><span class="pd-ctl-meta">${esc(p.metal)}</span></div>
-    </a>`).join('');
+/* ---- How to Style It (relatable styling / occasion note) ---- */
+function renderStyleNote(p){
+  const el = document.getElementById('pd-style-txt');
+  if (!el) return;
+  const safeCat = ['gold','diamond','polki'].includes(p.cat) ? p.cat : 'gold';
+  const occ = (p.occasion || '').trim().replace(/\.$/, '');
+  const lead = occ
+    ? 'Perfect for ' + occ.charAt(0).toLowerCase() + occ.slice(1) + '.'
+    : ({ gold:'An effortless everyday-to-festive piece.', diamond:'Made for celebrations and milestone moments.', polki:'A true bridal heirloom.' })[safeCat];
+  const pair = ({
+    sets:      'Let it take centre stage — finish the look with matching jhumkas and a few fine bangles.',
+    necklaces: 'Let it take centre stage — finish the look with matching jhumkas and a few fine bangles.',
+    chokers:   'Let it sit high on the neckline and pair it with statement jhumkas for a complete bridal look.',
+    harams:    'Layer it over a choker for a full bridal neckline, and echo it with matching jhumkas.',
+    earrings:  'Pair with a sleek choker or a layered haram so the earrings frame the face.',
+    rings:     'Stack it with a slim band, or wear it solo for a clean, modern statement.',
+    bangles:   'Wear it stacked with other kadas, or balance it with a delicate bracelet on the other wrist.',
+    bracelets: 'Pair with statement studs and a cocktail ring for a polished evening look.'
+  })[p.sub] || 'Pair it with complementary pieces from the collection to complete your look.';
+  el.textContent = lead + ' ' + pair;
 }
 
 /* ---- You May Also Like ---- */
@@ -612,9 +620,9 @@ function renderProduct(){
           <svg width="20" height="20" viewBox="0 0 24 24" fill="${wled?'var(--gold)':'none'}" stroke="${wled?'var(--gold)':'currentColor'}" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
       </div>
-      <div class="pd-ctl">
-        <p class="pd-ctl-h">Complete the Look</p>
-        <div id="pd-ctl-grid"></div>
+      <div class="pd-style" id="pd-style">
+        <p class="pd-style-h">How to Style It</p>
+        <p class="pd-style-txt" id="pd-style-txt"></p>
       </div>
     </div>
     <div class="pd-info">
@@ -626,7 +634,6 @@ function renderProduct(){
       <div class="pd-specs">
         <div><b>Metal</b><span>${esc(p.metal)}</span></div>
         <div><b>Craftsmanship</b><span>${esc(p.work)}</span></div>
-        <div><b>Occasion</b><span>${esc(p.occasion)}</span></div>
         <div><b>Price</b><span>${p.price_from ? 'from ₹' + Number(p.price_from).toLocaleString('en-IN') + ' · varies with the daily rate' : 'Price on request'}</span></div>
         <div><b>Certification</b><span>BIS hallmarked</span></div>
       </div>
@@ -700,7 +707,7 @@ function renderProduct(){
   box.addEventListener("mouseleave", () => { img.style.transform = "scale(1)"; });
   loadReviews(p.img);
   renderYMAL(p.cat, p.img);
-  renderCompleteTheLook(p.cat, p.sub, p.img);
+  renderStyleNote(p);
 }
 
 /* ---------- hero slider ---------- */

@@ -883,16 +883,11 @@ html{overflow-x:hidden}
 .sps.on{color:var(--gold)}
 .sps.hov{color:var(--gold)}
 
-/* Complete the Look */
+/* How to Style It — relatable styling / occasion note */
 .pd-left{display:flex;flex-direction:column;gap:16px}
-.pd-ctl{}
-.pd-ctl-h{font-family:var(--sans);font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
-.pd-ctl-card{display:flex;align-items:center;gap:12px;text-decoration:none;border:1px solid var(--line);padding:10px 12px;background:#fff;transition:.2s;margin-bottom:8px}
-.pd-ctl-card:last-child{margin-bottom:0}
-.pd-ctl-card:hover{border-color:var(--gold);box-shadow:0 4px 18px rgba(120,95,40,.1)}
-.pd-ctl-card img{width:62px;height:62px;object-fit:contain;background:#faf7f1;flex:none}
-.pd-ctl-name{display:block;font-family:var(--disp);font-size:.92rem;color:var(--ink);margin-bottom:3px;line-height:1.3}
-.pd-ctl-meta{font-family:var(--sans);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.pd-style{background:var(--ivory);border:1px solid var(--line);border-left:3px solid var(--gold);padding:18px 20px}
+.pd-style-h{font-family:var(--sans);font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);margin:0 0 8px}
+.pd-style-txt{font-family:var(--serif);font-style:italic;font-size:1.05rem;line-height:1.62;color:#4d4639;margin:0}
 
 /* You May Also Like */
 .pd-ymal{margin-top:60px;padding-top:48px;border-top:1px solid var(--line)}
