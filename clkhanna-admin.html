@@ -62,6 +62,17 @@
   .mini .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .mini .ct{color:var(--gold-deep);font-size:.8rem;white-space:nowrap}
   .dash-empty{color:var(--muted);font-family:var(--serif);font-size:.9rem}
+  /* ---- Product category accordions ---- */
+  .plist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+  .acc{border:1px solid var(--line);background:#fff;margin-bottom:12px}
+  .acc-head{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;background:none;border:none;cursor:pointer;padding:15px 20px;font-family:var(--disp);font-weight:400;font-size:1.15rem;color:var(--ink);text-align:left}
+  .acc-head:hover{background:var(--ivory)}
+  .acc-title{display:flex;align-items:center;gap:10px}
+  .acc-count{font-family:var(--sans);font-size:.6rem;letter-spacing:.14em;color:var(--gold-deep);background:var(--ivory);border:1px solid var(--line);border-radius:20px;padding:2px 10px}
+  .acc-chev{transition:transform .25s ease;color:var(--muted);font-size:1rem;flex:none}
+  .acc.open .acc-chev{transform:rotate(180deg)}
+  .acc-body{display:none;padding:0 20px 20px}
+  .acc.open .acc-body{display:block}
 </style>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://amqmojrqifsfuhnrabdc.supabase.co wss://amqmojrqifsfuhnrabdc.supabase.co https://feeds.behold.so; frame-src https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self' https://wa.me;">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -107,10 +118,15 @@
       </div>
     </section>
 
+    <!-- PRODUCTS -->
+    <div class="sec-head" style="margin-top:6px">
+      <h3>Products</h3>
+      <span class="sec-meta" id="countLbl"></span>
+    </div>
+
     <div class="toolbar">
       <button class="btn solid" onclick="openForm()">+ Add New Product</button>
       <button class="btn ghost" onclick="loadProducts()">Refresh</button>
-      <span class="signed-as" id="countLbl"></span>
     </div>
 
     <!-- PRODUCT FORM -->
@@ -152,13 +168,15 @@
       </div>
     </div>
 
-    <!-- PRODUCT LIST -->
-    <div class="plist" id="plist"></div>
+    <!-- PRODUCT LIST (grouped into category accordions) -->
+    <div id="plist"></div>
 
-    <!-- EDITORIAL -->
-    <div class="adm-card" style="margin-top:26px">
-      <h3 style="font-family:var(--disp);font-weight:400;font-size:1.3rem;margin-bottom:6px">Editorial / Model Photos</h3>
-      <p style="color:var(--muted);font-family:var(--serif);font-size:.95rem;margin-bottom:10px">These appear in the "Moments from the Maison" slider on your homepage. Upload model &amp; jewellery photos here; remove any you don't want.</p>
+    <!-- EDITORIAL / MODEL IMAGES -->
+    <div class="sec-head" style="margin-top:40px">
+      <h3>Editorial / Model Images</h3>
+    </div>
+    <div class="adm-card">
+      <p style="color:var(--muted);font-family:var(--serif);font-size:.95rem;margin-bottom:10px">These appear in the "Moments from the Maison" slider on your homepage. Upload model &amp; jewellery photos here (same image upload as products); remove any you don't want.</p>
       <input id="ed_file" type="file" accept="image/*">
       <div style="margin-top:10px"><button class="btn solid" id="edBtn" onclick="addEditorial()">Upload Photo</button></div>
       <div class="msg" id="ed_msg"></div>
@@ -246,20 +264,57 @@ function fillSubs(){
   $("f_sub").innerHTML = SUBS[cat].map(s => '<option value="'+s[0]+'">'+s[1]+'</option>').join("");
 }
 
-/* ---- Products ---- */
+/* ---- Products (grouped into collapsible category accordions) ---- */
+const CAT_LABEL = { gold:"Gold", diamond:"Diamond", polki:"Polki" };
+const CAT_ORDER = ["gold","diamond","polki"];
+let openCats = {};   /* remembers which category accordions are open this session */
+
+function catLabel(c){ return CAT_LABEL[c] || (c ? c.charAt(0).toUpperCase()+c.slice(1) : "Other"); }
+
+function pcardHTML(p){
+  const img = p.image_url || ("assets/catalog/"+p.cat+"/"+p.img+".jpg");
+  const meta = [escapeHtml(p.cat), escapeHtml(p.sub), p.price_from ? "₹"+Number(p.price_from).toLocaleString("en-IN") : null, p.in_stock===false ? "Out of stock" : null].filter(Boolean).join(" · ");
+  return '<div class="pcard"><img src="'+escapeHtml(img)+'" alt="" onerror="this.style.visibility=\'hidden\'">'+
+    '<div class="pi"><h3>'+escapeHtml(p.name)+'</h3><small>'+meta+'</small></div>'+
+    '<div class="pacts"><button onclick="editProduct(\''+p.img+'\')">Edit</button>'+
+    '<button class="del" onclick="deleteProduct(\''+p.img+'\')">Delete</button></div></div>';
+}
+
 async function loadProducts(){
   const { data, error } = await sb.from("products").select("*").order("sort",{ascending:true});
   if (error){ $("plist").innerHTML = '<p class="msg err">'+error.message+'</p>'; return; }
   PRODUCTS = data || [];
   $("countLbl").textContent = PRODUCTS.length + " products";
-  $("plist").innerHTML = PRODUCTS.map(p => {
-    const img = p.image_url || ("assets/catalog/"+p.cat+"/"+p.img+".jpg");
-    const meta = [escapeHtml(p.cat), escapeHtml(p.sub), p.price_from ? "₹"+Number(p.price_from).toLocaleString("en-IN") : null, p.in_stock===false ? "Out of stock" : null].filter(Boolean).join(" · ");
-    return '<div class="pcard"><img src="'+escapeHtml(img)+'" alt="" onerror="this.style.visibility=\'hidden\'">'+
-      '<div class="pi"><h3>'+escapeHtml(p.name)+'</h3><small>'+meta+'</small></div>'+
-      '<div class="pacts"><button onclick="editProduct(\''+p.img+'\')">Edit</button>'+
-      '<button class="del" onclick="deleteProduct(\''+p.img+'\')">Delete</button></div></div>';
+  renderProducts();
+}
+
+function renderProducts(){
+  const host = $("plist");
+  if (!PRODUCTS.length){ host.innerHTML = '<p style="color:var(--muted);font-family:var(--serif)">No products yet — use “+ Add New Product”.</p>'; return; }
+  const groups = {};
+  PRODUCTS.forEach(p => { const c = p.cat || "other"; (groups[c] = groups[c] || []).push(p); });
+  const cats = Object.keys(groups).sort((a,b) => {
+    const ia = CAT_ORDER.indexOf(a), ib = CAT_ORDER.indexOf(b);
+    if (ia !== -1 || ib !== -1) return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+    return a.localeCompare(b);
+  });
+  host.innerHTML = cats.map(c => {
+    const open = !!openCats[c];
+    const cards = groups[c].map(pcardHTML).join("");
+    return '<div class="acc'+(open?' open':'')+'" data-cat="'+escapeHtml(c)+'">'+
+      '<button type="button" class="acc-head" onclick="toggleAcc(\''+escapeHtml(c)+'\')">'+
+        '<span class="acc-title">'+escapeHtml(catLabel(c))+' <span class="acc-count">'+groups[c].length+'</span></span>'+
+        '<span class="acc-chev" aria-hidden="true">⌄</span>'+
+      '</button>'+
+      '<div class="acc-body"><div class="plist-grid">'+cards+'</div></div>'+
+    '</div>';
   }).join("");
+}
+
+function toggleAcc(c){
+  openCats[c] = !openCats[c];
+  const el = $("plist").querySelector('.acc[data-cat="'+(window.CSS && CSS.escape ? CSS.escape(c) : c)+'"]');
+  if (el) el.classList.toggle('open', openCats[c]);
 }
 
 function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
