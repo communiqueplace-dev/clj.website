@@ -47,6 +47,21 @@
   .chk-row{display:flex;align-items:center;gap:10px;padding-top:22px}
   .chk-row input[type=checkbox]{width:16px;height:16px;flex:none;accent-color:var(--gold);cursor:pointer}
   .chk-row label{margin:0;font-size:.62rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep)}
+  /* ---- Dashboard ---- */
+  .dash{margin-bottom:30px}
+  .dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:16px}
+  .dash-card{background:#fff;border:1px solid var(--line);padding:20px 22px}
+  .dash-card h4{font-family:var(--sans);font-weight:500;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:14px}
+  .stat-row{display:flex;gap:16px}
+  .stat{flex:1}
+  .stat .n{font-family:var(--disp);font-weight:400;font-size:1.7rem;color:var(--ink);line-height:1}
+  .stat .l{font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+  .mini{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f0e9d9;font-size:.85rem;color:var(--ink)}
+  .mini:last-child{border-bottom:none}
+  .mini img{width:34px;height:34px;object-fit:contain;background:#faf7f1;border:1px solid #f0e9d9;flex:none}
+  .mini .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mini .ct{color:var(--gold-deep);font-size:.8rem;white-space:nowrap}
+  .dash-empty{color:var(--muted);font-family:var(--serif);font-size:.9rem}
 </style>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://amqmojrqifsfuhnrabdc.supabase.co wss://amqmojrqifsfuhnrabdc.supabase.co https://feeds.behold.so; frame-src https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self' https://wa.me;">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -77,6 +92,20 @@
 
   <!-- APP (shown after login) -->
   <div id="app" class="hidden">
+
+    <!-- DASHBOARD -->
+    <section class="dash">
+      <div class="sec-head">
+        <h3>Dashboard</h3>
+        <button class="btn ghost" style="padding:9px 18px" onclick="loadDashboard()">Refresh</button>
+      </div>
+      <div class="dash-grid">
+        <div class="dash-card" id="dashVisitors"><h4>Visitors</h4><div class="dash-empty">Loading…</div></div>
+        <div class="dash-card" id="dashSignups"><h4>Signups &amp; Wishlists</h4><div class="dash-empty">Loading…</div></div>
+        <div class="dash-card" id="dashProducts"><h4>Most-Clicked Products</h4><div class="dash-empty">Loading…</div></div>
+        <div class="dash-card" id="dashEnquiries"><h4>Recent Enquiries</h4><div class="dash-empty">Loading…</div></div>
+      </div>
+    </section>
 
     <div class="toolbar">
       <button class="btn solid" onclick="openForm()">+ Add New Product</button>
@@ -206,7 +235,7 @@ function showApp(user){
   $("who").classList.remove("hidden");
   $("whoEmail").textContent = "Signed in as " + user.email + "  ·  ";
   fillSubs();
-  loadProducts();
+  loadProducts().then(loadDashboard, loadDashboard);
   loadEditorial();
   loadSubscribers();
   loadReviews();
@@ -397,6 +426,93 @@ async function deleteReview(id){
   const { error } = await sb.from("reviews").delete().eq("id",id);
   if (error){ alert(error.message); return; }
   loadReviews();
+}
+
+/* ---- Dashboard (read-only analytics overview) ---- */
+const DAY = 864e5;
+function loadDashboard(){ loadVisitors(); loadSignupStats(); loadTopProducts(); loadRecentEnquiries(); }
+
+async function loadVisitors(){
+  const box = $("dashVisitors");
+  try {
+    const since = new Date(Date.now() - 30*DAY).toISOString();
+    const { data, error } = await sb.from("analytics_events")
+      .select("visitor_id, created_at").eq("event_type","page_view").gte("created_at", since);
+    if (error) throw error;
+    const rows = data || [];
+    const midnight = new Date(); midnight.setHours(0,0,0,0);
+    const distinct = ms => { const s = new Set(); rows.forEach(r => { if (r.visitor_id && new Date(r.created_at).getTime() >= ms) s.add(r.visitor_id); }); return s.size; };
+    const today = distinct(midnight.getTime()), w = distinct(Date.now()-7*DAY), m = distinct(Date.now()-30*DAY);
+    box.innerHTML = '<h4>Visitors</h4><div class="stat-row">' +
+      '<div class="stat"><div class="n">'+today+'</div><div class="l">Today</div></div>' +
+      '<div class="stat"><div class="n">'+w+'</div><div class="l">7 Days</div></div>' +
+      '<div class="stat"><div class="n">'+m+'</div><div class="l">30 Days</div></div></div>' +
+      '<div style="margin-top:12px;font-size:.78rem;color:var(--muted)">'+rows.length+' page views in last 30 days</div>';
+  } catch(e){ box.innerHTML = '<h4>Visitors</h4><div class="dash-empty">— couldn\'t load</div>'; }
+}
+
+async function loadSignupStats(){
+  const box = $("dashSignups");
+  try {
+    let s = { total:0, last_7_days:0, last_30_days:0 };
+    try { const { data } = await sb.rpc("admin_signup_stats"); if (data && data[0]) s = data[0]; } catch(e){}
+    let topHtml = '';
+    try {
+      const { data } = await sb.from("wishlists").select("items");
+      const counts = {};
+      (data||[]).forEach(w => { if (Array.isArray(w.items)) w.items.forEach(it => { const code = typeof it === "string" ? it : (it && it.img); if (code) counts[code] = (counts[code]||0)+1; }); });
+      const top = Object.keys(counts).sort((a,b)=>counts[b]-counts[a]).slice(0,5);
+      if (top.length){
+        topHtml = '<div style="margin-top:14px;border-top:1px solid #f0e9d9;padding-top:8px">' +
+          '<div class="l" style="font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Most Wishlisted</div>' +
+          top.map(code => { const p = PRODUCTS.find(x=>x.img===code); const name = p ? p.name : code;
+            return '<div class="mini" style="padding:4px 0"><span class="nm">'+escapeHtml(name)+'</span><span class="ct">'+counts[code]+'</span></div>'; }).join("") + '</div>';
+      }
+    } catch(e){}
+    box.innerHTML = '<h4>Signups &amp; Wishlists</h4><div class="stat-row">' +
+      '<div class="stat"><div class="n">'+s.total+'</div><div class="l">Total Signups</div></div>' +
+      '<div class="stat"><div class="n">'+s.last_7_days+'</div><div class="l">7 Days</div></div>' +
+      '<div class="stat"><div class="n">'+s.last_30_days+'</div><div class="l">30 Days</div></div></div>' +
+      (topHtml || '<div style="margin-top:12px;font-size:.78rem;color:var(--muted)">No wishlists saved yet.</div>');
+  } catch(e){ box.innerHTML = '<h4>Signups &amp; Wishlists</h4><div class="dash-empty">— couldn\'t load</div>'; }
+}
+
+async function loadTopProducts(){
+  const box = $("dashProducts");
+  try {
+    const since = new Date(Date.now() - 30*DAY).toISOString();
+    const { data, error } = await sb.from("analytics_events")
+      .select("product_id").eq("event_type","product_click").gte("created_at", since).not("product_id","is",null);
+    if (error) throw error;
+    const counts = {};
+    (data||[]).forEach(r => { if (r.product_id) counts[r.product_id] = (counts[r.product_id]||0)+1; });
+    const top = Object.keys(counts).sort((a,b)=>counts[b]-counts[a]).slice(0,5);
+    if (!top.length){ box.innerHTML = '<h4>Most-Clicked Products</h4><div class="dash-empty">No product clicks yet.</div>'; return; }
+    box.innerHTML = '<h4>Most-Clicked Products</h4>' + top.map(id => {
+      const p = PRODUCTS.find(x => x.id === id);
+      const name = p ? p.name : "Unknown product";
+      const img = p ? (p.image_url || ("assets/catalog/"+p.cat+"/"+p.img+".jpg")) : "";
+      return '<div class="mini">' + (img ? '<img src="'+escapeHtml(img)+'" alt="" onerror="this.style.visibility=\'hidden\'">' : '') +
+        '<span class="nm">'+escapeHtml(name)+'</span><span class="ct">'+counts[id]+' click'+(counts[id]>1?'s':'')+'</span></div>';
+    }).join("");
+  } catch(e){ box.innerHTML = '<h4>Most-Clicked Products</h4><div class="dash-empty">— couldn\'t load</div>'; }
+}
+
+async function loadRecentEnquiries(){
+  const box = $("dashEnquiries");
+  try {
+    const { data, error } = await sb.from("enquiries").select("note, items, created_at").order("created_at",{ascending:false}).limit(10);
+    if (error) throw error;
+    const rows = data || [];
+    if (!rows.length){ box.innerHTML = '<h4>Recent Enquiries</h4><div class="dash-empty">No enquiries yet.</div>'; return; }
+    const fmt = d => d ? new Date(d).toLocaleDateString("en-IN",{day:"2-digit",month:"short"}) : "—";
+    box.innerHTML = '<h4>Recent Enquiries</h4>' + rows.map(r => {
+      const n = Array.isArray(r.items) ? r.items.length : 0;
+      const summary = n ? (n+" item"+(n>1?"s":"")) : "";
+      const note = r.note ? escapeHtml(r.note) : '<span style="color:var(--muted)">(no note)</span>';
+      return '<div class="mini"><span class="nm">'+note+(summary?' · '+summary:'')+'</span><span class="ct" style="color:var(--muted)">'+fmt(r.created_at)+'</span></div>';
+    }).join("");
+  } catch(e){ box.innerHTML = '<h4>Recent Enquiries</h4><div class="dash-empty">— couldn\'t load</div>'; }
 }
 </script>
 </body>
