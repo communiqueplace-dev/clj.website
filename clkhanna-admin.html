@@ -147,6 +147,8 @@
       </div>
       <label>Description</label>
       <textarea id="f_desc" placeholder="One or two lines describing the piece."></textarea>
+      <label>Styling Note</label>
+      <textarea id="f_style" placeholder="Shown as &quot;How to Style It&quot; on the product page. Leave blank and an automatic tip is used (based on category &amp; occasion)."></textarea>
       <div class="row2">
         <div><label>Metal</label><input id="f_metal" placeholder="e.g. 22k Gold"></div>
         <div><label>Craftsmanship</label><input id="f_work" placeholder="e.g. Hand-set uncut polki"></div>
@@ -329,6 +331,7 @@ function openForm(p){
   $("f_sub").value      = p ? (p.sub||"") : "";
   $("f_occasion").value = p ? (p.occasion||"") : "";
   $("f_desc").value     = p ? (p.description||"") : "";
+  $("f_style").value    = p ? (p.style_note||"") : "";
   $("f_metal").value    = p ? (p.metal||"") : "";
   $("f_work").value     = p ? (p.work||"") : "";
   $("f_price").value    = p && p.price_from != null ? p.price_from : "";
@@ -365,6 +368,7 @@ async function saveProduct(){
       sub:         $("f_sub").value,
       name,
       description: $("f_desc").value.trim(),
+      style_note:  $("f_style").value.trim() || null,
       metal:       $("f_metal").value.trim(),
       work:        $("f_work").value.trim(),
       occasion:    $("f_occasion").value.trim(),

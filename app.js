@@ -549,6 +549,8 @@ async function submitReview(e){
 function renderStyleNote(p){
   const el = document.getElementById('pd-style-txt');
   if (!el) return;
+  /* admin-written note wins; otherwise build a relatable one automatically */
+  if (p.style_note && p.style_note.trim()){ el.textContent = p.style_note.trim(); return; }
   const safeCat = ['gold','diamond','polki'].includes(p.cat) ? p.cat : 'gold';
   const occ = (p.occasion || '').trim().replace(/\.$/, '');
   const lead = occ
