@@ -515,7 +515,7 @@ function _renderReviews(rows){
   const stars = n => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
   if (!rows.length){
     if (summary) summary.innerHTML = '';
-    list.innerHTML = '<p class="rv-empty">Be the first to review this item.</p>';
+    list.innerHTML = '';
     skelLoaded(list);
     return;
   }
