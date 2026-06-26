@@ -447,16 +447,14 @@ function refreshHearts(){
 function shareProduct(name){
   const url = location.href;
   const data = { title: name + ' — C.L Khanna Jewellers', url };
+  /* native share sheet on mobile; otherwise copy the link with a quiet toast */
   if (navigator.share && navigator.canShare && navigator.canShare(data)){
     navigator.share(data).catch(()=>{});
-  } else {
-    const btn = document.querySelector('.pd-share-btn');
-    if (navigator.clipboard){
-      navigator.clipboard.writeText(url).then(() => {
-        if (btn){ const t = btn.textContent; btn.textContent = 'Link Copied!'; setTimeout(()=>{ btn.textContent = t; }, 2000); }
-      }).catch(() => prompt('Copy this link:', url));
-    } else { prompt('Copy this link:', url); }
-  }
+  } else if (navigator.clipboard){
+    navigator.clipboard.writeText(url).then(() => {
+      if (typeof toast === 'function') toast('Link copied');
+    }).catch(() => prompt('Copy this link:', url));
+  } else { prompt('Copy this link:', url); }
 }
 
 /* ---- Ask → WhatsApp ---- */
@@ -464,9 +462,13 @@ function submitAskWA(e, productName){
   e.preventDefault();
   const f = e.target;
   const name = f.querySelector('[name=ask-name]').value.trim();
+  const emailEl = f.querySelector('[name=ask-email]');
+  const email = emailEl ? emailEl.value.trim() : '';
   const phone = f.querySelector('[name=ask-phone]').value.trim();
   const query = f.querySelector('[name=ask-query]').value.trim();
-  const text = 'Hello C.L Khanna Jewellers,\n\nProduct: ' + productName + '\nName: ' + name + '\nPhone: ' + phone + '\nQuery: ' + query;
+  let text = 'Hello C.L Khanna Jewellers,\n\nProduct: ' + productName + '\nName: ' + name;
+  if (email) text += '\nEmail: ' + email;
+  text += '\nPhone: ' + phone + '\nQuery: ' + query;
   window.open('https://wa.me/919815605373?text=' + encodeURIComponent(text), '_blank', 'noopener');
 }
 
@@ -640,9 +642,6 @@ function renderProduct(){
     <div class="pd-left">
       <div class="pd-photo" id="zoomBox">
         <img id="zoomImg" src="${imgURL(p)}" alt="${esc(p.name)}">
-        <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="${wled?'var(--gold)':'none'}" stroke="${wled?'var(--gold)':'currentColor'}" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </button>
       </div>
       <div class="pd-style" id="pd-style">
         <p class="pd-style-h">How to Style It</p>
@@ -651,7 +650,17 @@ function renderProduct(){
     </div>
     <div class="pd-info">
       <p class="eyebrow">${esc(CAT_TITLES[safeCat])} · ${esc(subLabel)}</p>
-      <h1>${esc(p.name)}</h1>
+      <div class="pd-name-row">
+        <h1>${esc(p.name)}</h1>
+        <div class="pd-name-acts">
+          <button class="pd-share-icon" data-action="share" data-name="${esc(p.name)}" aria-label="Share this piece" title="Share">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>
+          </button>
+          <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="${wled?'var(--gold)':'none'}" stroke="${wled?'var(--gold)':'currentColor'}" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+      </div>
 
       <p class="pd-desc" id="pd-desc-txt">${esc(needRM ? _pdDescShort : _pdDescFull)}</p>
       ${needRM ? '<button class="pd-readmore" id="pd-rm-btn">Read More</button>' : ''}
@@ -665,6 +674,8 @@ function renderProduct(){
 
       <div class="pd-stock-line">
         ${stockHtml}
+        <span class="pd-stock-sep" aria-hidden="true"></span>
+        <span class="pd-tax">Taxes Inclusive</span>
         <span class="pd-stock-sep" aria-hidden="true"></span>
         <a class="pd-view-details" href="#pd-information">View Details</a>
       </div>
@@ -680,47 +691,47 @@ function renderProduct(){
       <div class="cta-row">
         <a class="btn solid" href="#" data-action="cart" data-prod="${esc(p.img)}">Add to Cart</a>
         <a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/${WA}?text=${encodeURIComponent('Hello C.L Khanna Jewellers, I would like to enquire about the "' + p.name + '" (' + CAT_TITLES[safeCat] + ') from your website.')}">Enquire on WhatsApp</a>
-        <button class="btn ghost pd-share-btn" data-action="share" data-name="${esc(p.name)}">Share</button>
-        <a class="btn ghost" href="#" data-action="appt">See It In Store</a>
       </div>
-      <p class="pd-note">Every piece can be customised — sizes, stones and finish. <a href="custom.html">Learn about custom orders →</a></p>
     </div>
   </div>
-
-  <section class="pd-information" id="pd-information">
-    <h3 class="pd-sec-h">Product Information</h3>
-    <div class="pd-specs">${infoHtml}</div>
-  </section>
 
   <div class="pd-cols">
     <div class="pd-ask">
       <h3 class="pd-sec-h">Have a Question?</h3>
       <form data-action="ask-wa" data-name="${esc(p.name)}">
         <div class="pd-form-group"><label>Name</label><input type="text" name="ask-name" placeholder="Your name" required></div>
+        <div class="pd-form-group"><label>Email</label><input type="email" name="ask-email" placeholder="you@example.com"></div>
         <div class="pd-form-group"><label>Phone</label><input type="tel" name="ask-phone" placeholder="+91 98765 43210" required></div>
         <div class="pd-form-group"><label>Your Question</label><textarea name="ask-query" rows="4" placeholder="e.g. Is this available in 22k gold?" required></textarea></div>
         <button type="submit" class="btn solid">Send on WhatsApp</button>
       </form>
-    </div>
-    <div class="pd-revs">
-      <h3 class="pd-sec-h">Ratings &amp; Reviews</h3>
-      <div id="pd-rv-summary"></div>
-      <div id="pd-rv-list"><p class="rv-empty">Loading…</p></div>
-      <div class="pd-rv-write">
-        <h4>Write a Review</h4>
-        <form data-pid="${esc(p.img)}" data-action="review">
-          <div class="pd-form-group"><label>Your Name</label><input type="text" name="rv-name" placeholder="e.g. Priya S." required></div>
-          <div class="pd-form-group"><label>Rating</label>
-            <div class="star-pick">
-              <span class="sps" data-v="1">★</span><span class="sps" data-v="2">★</span><span class="sps" data-v="3">★</span><span class="sps" data-v="4">★</span><span class="sps" data-v="5">★</span>
-              <input type="hidden" name="rv-rating">
-            </div>
+
+      <details class="pd-rev-collapse">
+        <summary class="pd-rev-summary-h"><span>Ratings &amp; Reviews</span><span class="pd-rev-chev" aria-hidden="true">⌄</span></summary>
+        <div class="pd-rev-body pd-revs">
+          <div id="pd-rv-summary"></div>
+          <div id="pd-rv-list"><p class="rv-empty">Loading…</p></div>
+          <div class="pd-rv-write">
+            <h4>Write a Review</h4>
+            <form data-pid="${esc(p.img)}" data-action="review">
+              <div class="pd-form-group"><label>Your Name</label><input type="text" name="rv-name" placeholder="e.g. Priya S." required></div>
+              <div class="pd-form-group"><label>Rating</label>
+                <div class="star-pick">
+                  <span class="sps" data-v="1">★</span><span class="sps" data-v="2">★</span><span class="sps" data-v="3">★</span><span class="sps" data-v="4">★</span><span class="sps" data-v="5">★</span>
+                  <input type="hidden" name="rv-rating">
+                </div>
+              </div>
+              <div class="pd-form-group"><label>Comment <span style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:.82rem;color:var(--muted)">(optional)</span></label><textarea name="rv-comment" rows="3" placeholder="Share your experience…"></textarea></div>
+              <button type="submit" class="btn solid">Submit Review</button>
+            </form>
           </div>
-          <div class="pd-form-group"><label>Comment <span style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:.82rem;color:var(--muted)">(optional)</span></label><textarea name="rv-comment" rows="3" placeholder="Share your experience…"></textarea></div>
-          <button type="submit" class="btn solid">Submit Review</button>
-        </form>
-      </div>
+        </div>
+      </details>
     </div>
+    <aside class="pd-information" id="pd-information">
+      <h3 class="pd-sec-h">Product Information</h3>
+      <div class="pd-specs">${infoHtml}</div>
+    </aside>
   </div>
 
   <div class="pd-ymal">

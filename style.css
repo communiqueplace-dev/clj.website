@@ -834,12 +834,31 @@ html{overflow-x:hidden}
 .pd-stock.out{color:#a9762a}
 .pd-stock.out .pd-dot{background:#c9952f}
 .pd-stock-sep{width:1px;height:14px;background:var(--line);flex:none}
+.pd-tax{color:var(--muted);letter-spacing:.03em}
+/* name + wishlist/share actions row */
+.pd-name-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.pd-name-row h1{margin:10px 0 12px}
+.pd-name-acts{display:flex;align-items:center;gap:4px;flex:none;margin-top:14px}
+.pd-name-acts button{position:static;width:auto;height:auto;background:none;border:none;box-shadow:none;border-radius:50%;padding:7px;line-height:0;color:var(--muted);cursor:pointer;transition:color .18s,transform .18s}
+.pd-name-acts button:hover{transform:scale(1.1)}
+.pd-share-icon:hover{color:var(--gold-deep)}
+.pd-name-acts .wl-btn:hover{color:var(--gold)}
+.pd-name-acts .wl-btn.wl-on svg path{fill:var(--gold);stroke:var(--gold)}
+/* collapsible Ratings & Reviews */
+.pd-rev-collapse{margin-top:34px;padding-top:26px;border-top:1px solid var(--line)}
+.pd-rev-summary-h{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;list-style:none;font-family:var(--disp);font-weight:400;font-size:1.25rem;color:var(--ink);letter-spacing:.02em}
+.pd-rev-summary-h::-webkit-details-marker{display:none}
+.pd-rev-summary-h::marker{content:""}
+.pd-rev-chev{font-size:1rem;color:var(--muted);transition:transform .25s ease}
+.pd-rev-collapse[open] .pd-rev-chev{transform:rotate(180deg)}
+.pd-rev-body{margin-top:22px}
 .pd-view-details{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);border-bottom:1px solid var(--gold-soft);padding-bottom:1px}
 .pd-view-details:hover{color:var(--gold)}
 /* Product Information panel */
-.pd-information{margin:40px 0 0;border:1px solid var(--line);background:#fdfbf7;padding:26px 30px;scroll-margin-top:90px}
+.pd-information{margin:0;border:1px solid var(--line);background:#fdfbf7;padding:26px 30px;scroll-margin-top:90px;align-self:start}
 .pd-information .pd-sec-h{margin-top:0}
 .pd-information .pd-specs{margin:16px 0 0}
+.pd-information .pd-specs div{grid-template-columns:130px 1fr}
 
 .trust-strip{display:flex;flex-wrap:wrap;justify-content:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:32px 0 0;padding:13px 0}
 .ts-item{display:flex;align-items:center;gap:6px;padding:5px 18px;font-family:var(--sans);font-size:.61rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);border-right:1px solid var(--line)}
