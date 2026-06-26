@@ -186,7 +186,7 @@ section{padding:88px 0}
 .pd-photo{border:1px solid var(--line);overflow:hidden;cursor:crosshair;background:#fff}
 .pd-photo img{width:100%;aspect-ratio:1/1;object-fit:contain;transition:transform .25s ease}
 .pd-info h1{font-size:clamp(1.7rem,3vw,2.4rem);margin:10px 0 12px}
-.pd-desc{font-family:var(--serif);font-size:1.22rem;color:#56503f}
+.pd-desc{font-family:var(--serif);font-size:1.34rem;line-height:1.6;color:#56503f;max-width:60ch;margin-top:6px}
 .pd-specs{margin:32px 0;border-top:1px solid var(--line)}
 .pd-specs div{display:grid;grid-template-columns:185px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
 .pd-specs b{font-size:.64rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-deep);font-weight:500;align-self:center}
@@ -826,6 +826,20 @@ html{overflow-x:hidden}
 .pd-pin-btn{background:none;border:1px solid var(--gold);padding:9px 18px;font-family:var(--sans);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);cursor:pointer;transition:.2s;white-space:nowrap}
 .pd-pin-btn:hover{background:var(--gold);color:#fff}
 .pd-pin-result{font-family:var(--sans);font-size:.8rem;margin:8px 0 0;min-height:1.2em}
+/* stock + view-details line */
+.pd-stock-line{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:22px 0 4px;font-family:var(--sans);font-size:.8rem}
+.pd-stock{display:inline-flex;align-items:center;gap:7px;letter-spacing:.03em}
+.pd-stock.in{color:#3d7a4e}
+.pd-stock.in .pd-dot{background:#3d9c5a}
+.pd-stock.out{color:#a9762a}
+.pd-stock.out .pd-dot{background:#c9952f}
+.pd-stock-sep{width:1px;height:14px;background:var(--line);flex:none}
+.pd-view-details{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);border-bottom:1px solid var(--gold-soft);padding-bottom:1px}
+.pd-view-details:hover{color:var(--gold)}
+/* Product Information panel */
+.pd-information{margin:40px 0 0;border:1px solid var(--line);background:#fdfbf7;padding:26px 30px;scroll-margin-top:90px}
+.pd-information .pd-sec-h{margin-top:0}
+.pd-information .pd-specs{margin:16px 0 0}
 
 .trust-strip{display:flex;flex-wrap:wrap;justify-content:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:32px 0 0;padding:13px 0}
 .ts-item{display:flex;align-items:center;gap:6px;padding:5px 18px;font-family:var(--sans);font-size:.61rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);border-right:1px solid var(--line)}

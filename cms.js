@@ -17,7 +17,7 @@
       window.PRODUCTS = rows.map(function(r){ return {
         id:r.id, img:r.img, cat:r.cat, sub:r.sub, name:r.name, desc:r.description||"",
         metal:r.metal||"", work:r.work||"", occasion:r.occasion||"", image_url:r.image_url||"",
-        style_note:r.style_note||"", price_from: r.price_from ?? null
+        style_note:r.style_note||"", in_stock:r.in_stock, price_from: r.price_from ?? null
       };});
       if (typeof window.__cmsRender === "function"){ try{ window.__cmsRender(); }catch(e){} }
     }

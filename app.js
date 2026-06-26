@@ -384,7 +384,7 @@ function renderCatalog(cat){
 }
 
 /* ---------- product detail ---------- */
-let _pdDescFull = "", _pdDescShort = "";
+let _pdDescFull = "", _pdDescShort = "", _pdName = "";
 
 function toggleReadMore(){
   const el = document.getElementById("pd-desc-txt");
@@ -396,12 +396,16 @@ function toggleReadMore(){
 }
 
 function checkPinCode(){
-  const val = (document.getElementById("pd-pin-val") || {}).value || "";
+  const val = ((document.getElementById("pd-pin-val") || {}).value || "").trim();
   const res = document.getElementById("pd-pin-result");
   if (!res) return;
-  if (!val.trim()) { res.textContent = "Please enter a pin code."; res.style.color = "#b87c2a"; return; }
-  res.textContent = "We deliver across India — free insured shipping.";
-  res.style.color = "#3d9c5a";
+  if (!/^\d{6}$/.test(val)) { res.textContent = "Please enter a valid 6-digit pin code."; res.style.color = "#b87c2a"; return; }
+  /* No external API — confirm delivery personally over WhatsApp, pre-filled with the pin + piece. */
+  const msg = 'Hello C.L Khanna Jewellers, do you deliver to pincode ' + val +
+    '? I am interested in the "' + (_pdName || 'piece') + '" from your website.';
+  res.textContent = "Opening WhatsApp to confirm delivery to " + val + "…";
+  res.style.color = "var(--gold-deep)";
+  window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(msg), "_blank", "noopener");
 }
 
 /* ---- Wishlist (localStorage) ---- */
@@ -607,11 +611,29 @@ function renderProduct(){
   if (p.price_from) _schema.offers.price = p.price_from;
   _pdSchemaEl.textContent = JSON.stringify(_schema);
   document.head.appendChild(_pdSchemaEl);
-  const TRUNC = 130;
+  const TRUNC = 190;
+  _pdName = p.name;
   _pdDescFull = p.desc;
   _pdDescShort = p.desc.length > TRUNC ? p.desc.slice(0, TRUNC).replace(/\s+\S*$/, '') + '…' : p.desc;
   const needRM = p.desc.length > TRUNC;
   const wled = isWishlisted(p.img);
+  /* stock pill — green when in stock, "Made to Order" otherwise (undefined = treat as in stock) */
+  const inStock = p.in_stock !== false;
+  const stockHtml = inStock
+    ? '<span class="pd-stock in"><span class="pd-dot" aria-hidden="true"></span>Item In Stock</span>'
+    : '<span class="pd-stock out"><span class="pd-dot" aria-hidden="true"></span>Made to Order</span>';
+  /* Product Information rows, built only from fields that already exist + static brand facts */
+  const infoRows = [
+    ['Brand', 'C.L Khanna Jewellers'],
+    ['Category', CAT_TITLES[safeCat]],
+    subLabel ? ['Type', subLabel] : null,
+    p.metal ? ['Metal', p.metal] : null,
+    p.work ? ['Craftsmanship', p.work] : null,
+    p.occasion ? ['Occasion', p.occasion] : null,
+    ['Starting Price', p.price_from ? '₹' + Number(p.price_from).toLocaleString('en-IN') + ' · varies with the daily rate' : 'Price on request'],
+    ['Certification', 'BIS Hallmarked']
+  ].filter(Boolean);
+  const infoHtml = infoRows.map(r => '<div><b>' + esc(r[0]) + '</b><span>' + esc(r[1]) + '</span></div>').join('');
   document.getElementById("pd").innerHTML =
   `<nav class="crumbs"><a href="./">Home</a> / <a href="${safeCat}.html">${esc(CAT_TITLES[safeCat])}</a> / <a href="${safeCat}.html?sub=${esc(p.sub)}">${esc(subLabel)}</a> / <span>${esc(p.name)}</span></nav>
   <div class="pd-grid">
@@ -630,38 +652,45 @@ function renderProduct(){
     <div class="pd-info">
       <p class="eyebrow">${esc(CAT_TITLES[safeCat])} · ${esc(subLabel)}</p>
       <h1>${esc(p.name)}</h1>
-      <p class="pd-instock"><span class="pd-dot" aria-hidden="true"></span>In Stock</p>
+
       <p class="pd-desc" id="pd-desc-txt">${esc(needRM ? _pdDescShort : _pdDescFull)}</p>
       ${needRM ? '<button class="pd-readmore" id="pd-rm-btn">Read More</button>' : ''}
-      <div class="pd-specs">
-        <div><b>Metal</b><span>${esc(p.metal)}</span></div>
-        <div><b>Craftsmanship</b><span>${esc(p.work)}</span></div>
-        <div><b>Price</b><span>${p.price_from ? 'from ₹' + Number(p.price_from).toLocaleString('en-IN') + ' · varies with the daily rate' : 'Price on request'}</span></div>
-        <div><b>Certification</b><span>BIS hallmarked</span></div>
-      </div>
+
       <div class="trust-badges">
         <div class="tb-item"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.56 14.29L7 22l5-3 5 3-1.56-7.72"/></svg><span>100% Certified Jewellery</span></div>
         <div class="tb-item"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 4v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><span>Free Shipping Across India</span></div>
         <div class="tb-item"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg><span>Purity Guaranteed</span></div>
         <div class="tb-item"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg><span>Lifetime Buyback &amp; Exchange</span></div>
       </div>
+
+      <div class="pd-stock-line">
+        ${stockHtml}
+        <span class="pd-stock-sep" aria-hidden="true"></span>
+        <a class="pd-view-details" href="#pd-information">View Details</a>
+      </div>
+
       <div class="pd-pincode" id="pd-delivery">
-        <p class="pd-pin-label">Enter your pin code to check delivery availability</p>
+        <p class="pd-pin-label">Check delivery — enter your pin code and we'll confirm on WhatsApp.</p>
         <div class="pd-pin-row">
           <input class="pd-pin-input" type="text" inputmode="numeric" maxlength="6" placeholder="e.g. 143001" id="pd-pin-val">
-          <button class="pd-pin-btn">Check</button>
+          <button class="pd-pin-btn">Check Delivery</button>
         </div>
         <p class="pd-pin-result" id="pd-pin-result"></p>
       </div>
       <div class="cta-row">
         <a class="btn solid" href="#" data-action="cart" data-prod="${esc(p.img)}">Add to Cart</a>
-        <a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/${WA}?text=${encodeURIComponent('Hello C.L Khanna Jewellers, I would like to request the price of the "' + p.name + '" (' + CAT_TITLES[safeCat] + ') from your website.')}">Request Price on WhatsApp</a>
+        <a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/${WA}?text=${encodeURIComponent('Hello C.L Khanna Jewellers, I would like to enquire about the "' + p.name + '" (' + CAT_TITLES[safeCat] + ') from your website.')}">Enquire on WhatsApp</a>
         <button class="btn ghost pd-share-btn" data-action="share" data-name="${esc(p.name)}">Share</button>
         <a class="btn ghost" href="#" data-action="appt">See It In Store</a>
       </div>
       <p class="pd-note">Every piece can be customised — sizes, stones and finish. <a href="custom.html">Learn about custom orders →</a></p>
     </div>
   </div>
+
+  <section class="pd-information" id="pd-information">
+    <h3 class="pd-sec-h">Product Information</h3>
+    <div class="pd-specs">${infoHtml}</div>
+  </section>
 
   <div class="pd-cols">
     <div class="pd-ask">
