@@ -50,6 +50,23 @@ if ($sw -match "const CACHE = 'clj-v(\d+)';") {
 
 # --- 3) Optional git push ---
 if ($Push) {
+    # --- SAFETY LATCH ---------------------------------------------------------
+    # Refuse to deploy if the working folder appears to have lost files (e.g. it
+    # was sitting in a temp dir that got cleaned). Prevents accidentally
+    # committing mass deletions that would break the live site.
+    $critical = @('CNAME','robots.txt','bundle.js','style.css','index.html','sw.js','assets/logo-main.png')
+    $missing  = $critical | Where-Object { -not (Test-Path (Join-Path $PSScriptRoot $_)) }
+    if ($missing) {
+        throw "DEPLOY ABORTED: critical files missing from the working folder -> $($missing -join ', '). Nothing was committed or pushed. (Did the folder get cleaned or moved? Restore the files first.)"
+    }
+    $deleted = @(git diff --name-only --diff-filter=D HEAD)
+    if ($deleted.Count -gt 3) {
+        Write-Host "Files that would be DELETED ($($deleted.Count)):"
+        $deleted | ForEach-Object { Write-Host "  - $_" }
+        throw "DEPLOY ABORTED: $($deleted.Count) files would be deleted (safety limit is 3). This usually means the working folder lost files. Nothing was committed or pushed."
+    }
+    # --------------------------------------------------------------------------
+
     git add -A
     git commit -m "Deploy: rebuild bundle + bump SW cache"
     git push
