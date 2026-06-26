@@ -628,7 +628,10 @@ function renderProduct(){
   const dash = v => (v != null && String(v).trim() !== '') ? String(v) : '-';
   const accInfo = [
     ['Product Name', p.name],
-    ['Brand', 'C.L Khanna Jewellers · BIS Hallmarked']
+    ['Brand', 'C.L Khanna Jewellers'],
+    ['Certification', dash(p.certification)],
+    ['Craftsmanship', dash(p.work)],
+    ['Category', CAT_TITLES[safeCat]]
   ];
   const accMetal = [
     ['Metal Purity', dash(p.metal)],
@@ -636,9 +639,8 @@ function renderProduct(){
     ['Net Weight', '-']
   ];
   const accDelivery = [
-    ['Delivery Time', '-'],
-    ['Shipping Terms', '-'],
-    ['Shipping Charges', 'Free across India']
+    ['Delivery Time', '7-14 days'],
+    ['Shipping Terms', 'Excluded']
   ];
   const rowsHtml = rows => rows.map(r => '<div><b>' + esc(r[0]) + '</b><span>' + esc(dash(r[1])) + '</span></div>').join('');
   const accHtml = (title, rows, open) =>
@@ -670,15 +672,13 @@ function renderProduct(){
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>
           </button>
           <button class="wl-btn" aria-label="${wled?'Remove from wishlist':'Add to wishlist'}" data-wid="${esc(p.img)}">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="${wled?'var(--gold)':'none'}" stroke="${wled?'var(--gold)':'currentColor'}" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="${wled?'var(--gold)':'none'}" stroke="${wled?'var(--gold)':'currentColor'}" stroke-width="1.7"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           </button>
         </div>
       </div>
 
       <p class="pd-desc" id="pd-desc-txt">${esc(needRM ? _pdDescShort : _pdDescFull)}</p>
       ${needRM ? '<button class="pd-readmore" id="pd-rm-btn">Read More</button>' : ''}
-
-      <a class="btn solid pd-reqprice" target="_blank" rel="noopener" href="https://wa.me/${WA}?text=${encodeURIComponent('Hello C.L Khanna Jewellers, I would like to request the price of the "' + p.name + '" (' + CAT_TITLES[safeCat] + ') at today\'s rate. Please share a quote.')}">Request for Price</a>
 
       <div class="trust-badges">
         <div class="tb-item"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.56 14.29L7 22l5-3 5 3-1.56-7.72"/></svg><span>100% Certified Jewellery</span></div>
@@ -727,14 +727,12 @@ function renderProduct(){
   </div>
 
   <section class="pd-reviews pd-revs" id="pd-reviews">
-    <h3 class="pd-sec-h">Ratings and Reviews</h3>
+    <h3 class="pd-sec-h pd-rev-head">Ratings and Reviews</h3>
+    <p class="pd-rev-sub">Review this product — share your thoughts with other customers.</p>
     <div id="pd-rv-summary"></div>
     <div id="pd-rv-list"><p class="rv-empty">Loading…</p></div>
     <details class="pd-rv-writebox">
-      <summary class="pd-rv-cta">
-        <span class="pd-rv-cta-txt"><b>Review this product</b><small>Share your thoughts with other customers</small></span>
-        <span class="btn ghost pd-rv-cta-btn">Write a product review</span>
-      </summary>
+      <summary class="pd-rv-writebtn"><span class="btn ghost">Write a product review</span></summary>
       <div class="pd-rv-write">
         <h4>Write a Review</h4>
         <form data-pid="${esc(p.img)}" data-action="review">
