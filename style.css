@@ -859,6 +859,31 @@ html{overflow-x:hidden}
 .pd-information .pd-sec-h{margin-top:0}
 .pd-information .pd-specs{margin:16px 0 0}
 .pd-information .pd-specs div{grid-template-columns:130px 1fr}
+/* Request for Price (after description) */
+.pd-reqprice{display:inline-block;margin:18px 0 4px}
+/* spec accordions (left column of secondary area) */
+.pd-accordions{scroll-margin-top:90px}
+.pd-acc{border:1px solid var(--line);background:#fdfbf7;margin-bottom:12px}
+.pd-acc:last-child{margin-bottom:0}
+.pd-acc-h{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--disp);font-weight:400;font-size:1.05rem;color:var(--ink);letter-spacing:.02em}
+.pd-acc-h::-webkit-details-marker{display:none}
+.pd-acc-h::marker{content:""}
+.pd-acc-ic{font-family:var(--sans);font-size:1.15rem;color:var(--gold-deep);flex:none;line-height:1}
+.pd-acc-ic::after{content:"+"}
+.pd-acc[open] .pd-acc-ic::after{content:"\2212"}
+.pd-acc-body{padding:0 20px 18px}
+.pd-acc-body .pd-specs{margin:0;border-top:1px solid var(--line)}
+.pd-acc-body .pd-specs div{grid-template-columns:140px 1fr}
+/* full-width Ratings and Reviews */
+.pd-reviews{margin-top:56px;padding-top:48px;border-top:1px solid var(--line)}
+.pd-rv-writebox{margin-top:22px}
+.pd-rv-cta{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;cursor:pointer;list-style:none;border:1px solid var(--line);background:#fdfbf7;padding:18px 22px}
+.pd-rv-cta::-webkit-details-marker{display:none}
+.pd-rv-cta::marker{content:""}
+.pd-rv-cta-txt b{display:block;font-family:var(--disp);font-weight:400;font-size:1.1rem;color:var(--ink)}
+.pd-rv-cta-txt small{font-family:var(--serif);font-size:.95rem;color:var(--muted)}
+.pd-rv-cta-btn{flex:none;pointer-events:none}
+.pd-rv-writebox .pd-rv-write{margin-top:0;border:1px solid var(--line);border-top:none;padding:22px}
 
 .trust-strip{display:flex;flex-wrap:wrap;justify-content:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:32px 0 0;padding:13px 0}
 .ts-item{display:flex;align-items:center;gap:6px;padding:5px 18px;font-family:var(--sans);font-size:.61rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);border-right:1px solid var(--line)}
@@ -885,7 +910,7 @@ html{overflow-x:hidden}
 .wl-btn.wl-on svg path{fill:var(--gold);stroke:var(--gold)}
 
 /* Two-column section (Ask + Reviews) */
-.pd-cols{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:56px;padding-top:48px;border-top:1px solid var(--line)}
+.pd-cols{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:56px;padding-top:48px;border-top:1px solid var(--line);align-items:start}
 .pd-sec-h{font-family:var(--disp);font-weight:400;font-size:1.25rem;color:var(--ink);margin:0 0 22px;letter-spacing:.02em}
 
 /* Shared form styles */

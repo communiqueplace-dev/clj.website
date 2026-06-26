@@ -624,18 +624,31 @@ function renderProduct(){
   const stockHtml = inStock
     ? '<span class="pd-stock in"><span class="pd-dot" aria-hidden="true"></span>Item In Stock</span>'
     : '<span class="pd-stock out"><span class="pd-dot" aria-hidden="true"></span>Made to Order</span>';
-  /* Product Information rows, built only from fields that already exist + static brand facts */
-  const infoRows = [
-    ['Brand', 'C.L Khanna Jewellers'],
-    ['Category', CAT_TITLES[safeCat]],
-    subLabel ? ['Type', subLabel] : null,
-    p.metal ? ['Metal', p.metal] : null,
-    p.work ? ['Craftsmanship', p.work] : null,
-    p.occasion ? ['Occasion', p.occasion] : null,
-    ['Starting Price', p.price_from ? '₹' + Number(p.price_from).toLocaleString('en-IN') + ' · varies with the daily rate' : 'Price on request'],
-    ['Certification', 'BIS Hallmarked']
-  ].filter(Boolean);
-  const infoHtml = infoRows.map(r => '<div><b>' + esc(r[0]) + '</b><span>' + esc(r[1]) + '</span></div>').join('');
+  /* Spec accordions — only from fields that already exist; "-" where we have no data. */
+  const dash = v => (v != null && String(v).trim() !== '') ? String(v) : '-';
+  const accInfo = [
+    ['Product Name', p.name],
+    ['Brand', 'C.L Khanna Jewellers · BIS Hallmarked']
+  ];
+  const accMetal = [
+    ['Metal Purity', dash(p.metal)],
+    ['Gross Weight', '-'],
+    ['Net Weight', '-']
+  ];
+  const accDelivery = [
+    ['Delivery Time', '-'],
+    ['Shipping Terms', '-'],
+    ['Shipping Charges', 'Free across India']
+  ];
+  const rowsHtml = rows => rows.map(r => '<div><b>' + esc(r[0]) + '</b><span>' + esc(dash(r[1])) + '</span></div>').join('');
+  const accHtml = (title, rows, open) =>
+    '<details class="pd-acc"' + (open ? ' open' : '') + '>' +
+      '<summary class="pd-acc-h">' + esc(title) + '<span class="pd-acc-ic" aria-hidden="true"></span></summary>' +
+      '<div class="pd-acc-body"><div class="pd-specs">' + rowsHtml(rows) + '</div></div>' +
+    '</details>';
+  const accordionsHtml = accHtml('Product Information', accInfo, true) +
+                         accHtml('Metal Details', accMetal, false) +
+                         accHtml('Delivery', accDelivery, false);
   document.getElementById("pd").innerHTML =
   `<nav class="crumbs"><a href="./">Home</a> / <a href="${safeCat}.html">${esc(CAT_TITLES[safeCat])}</a> / <a href="${safeCat}.html?sub=${esc(p.sub)}">${esc(subLabel)}</a> / <span>${esc(p.name)}</span></nav>
   <div class="pd-grid">
@@ -664,6 +677,8 @@ function renderProduct(){
 
       <p class="pd-desc" id="pd-desc-txt">${esc(needRM ? _pdDescShort : _pdDescFull)}</p>
       ${needRM ? '<button class="pd-readmore" id="pd-rm-btn">Read More</button>' : ''}
+
+      <a class="btn solid pd-reqprice" target="_blank" rel="noopener" href="https://wa.me/${WA}?text=${encodeURIComponent('Hello C.L Khanna Jewellers, I would like to request the price of the "' + p.name + '" (' + CAT_TITLES[safeCat] + ') at today\'s rate. Please share a quote.')}">Request for Price</a>
 
       <div class="trust-badges">
         <div class="tb-item"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.56 14.29L7 22l5-3 5 3-1.56-7.72"/></svg><span>100% Certified Jewellery</span></div>
@@ -696,6 +711,9 @@ function renderProduct(){
   </div>
 
   <div class="pd-cols">
+    <div class="pd-accordions" id="pd-information">
+      ${accordionsHtml}
+    </div>
     <div class="pd-ask">
       <h3 class="pd-sec-h">Have a Question?</h3>
       <form data-action="ask-wa" data-name="${esc(p.name)}">
@@ -705,34 +723,34 @@ function renderProduct(){
         <div class="pd-form-group"><label>Your Question</label><textarea name="ask-query" rows="4" placeholder="e.g. Is this available in 22k gold?" required></textarea></div>
         <button type="submit" class="btn solid">Send on WhatsApp</button>
       </form>
-
-      <details class="pd-rev-collapse">
-        <summary class="pd-rev-summary-h"><span>Ratings &amp; Reviews</span><span class="pd-rev-chev" aria-hidden="true">⌄</span></summary>
-        <div class="pd-rev-body pd-revs">
-          <div id="pd-rv-summary"></div>
-          <div id="pd-rv-list"><p class="rv-empty">Loading…</p></div>
-          <div class="pd-rv-write">
-            <h4>Write a Review</h4>
-            <form data-pid="${esc(p.img)}" data-action="review">
-              <div class="pd-form-group"><label>Your Name</label><input type="text" name="rv-name" placeholder="e.g. Priya S." required></div>
-              <div class="pd-form-group"><label>Rating</label>
-                <div class="star-pick">
-                  <span class="sps" data-v="1">★</span><span class="sps" data-v="2">★</span><span class="sps" data-v="3">★</span><span class="sps" data-v="4">★</span><span class="sps" data-v="5">★</span>
-                  <input type="hidden" name="rv-rating">
-                </div>
-              </div>
-              <div class="pd-form-group"><label>Comment <span style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:.82rem;color:var(--muted)">(optional)</span></label><textarea name="rv-comment" rows="3" placeholder="Share your experience…"></textarea></div>
-              <button type="submit" class="btn solid">Submit Review</button>
-            </form>
-          </div>
-        </div>
-      </details>
     </div>
-    <aside class="pd-information" id="pd-information">
-      <h3 class="pd-sec-h">Product Information</h3>
-      <div class="pd-specs">${infoHtml}</div>
-    </aside>
   </div>
+
+  <section class="pd-reviews pd-revs" id="pd-reviews">
+    <h3 class="pd-sec-h">Ratings and Reviews</h3>
+    <div id="pd-rv-summary"></div>
+    <div id="pd-rv-list"><p class="rv-empty">Loading…</p></div>
+    <details class="pd-rv-writebox">
+      <summary class="pd-rv-cta">
+        <span class="pd-rv-cta-txt"><b>Review this product</b><small>Share your thoughts with other customers</small></span>
+        <span class="btn ghost pd-rv-cta-btn">Write a product review</span>
+      </summary>
+      <div class="pd-rv-write">
+        <h4>Write a Review</h4>
+        <form data-pid="${esc(p.img)}" data-action="review">
+          <div class="pd-form-group"><label>Your Name</label><input type="text" name="rv-name" placeholder="e.g. Priya S." required></div>
+          <div class="pd-form-group"><label>Rating</label>
+            <div class="star-pick">
+              <span class="sps" data-v="1">★</span><span class="sps" data-v="2">★</span><span class="sps" data-v="3">★</span><span class="sps" data-v="4">★</span><span class="sps" data-v="5">★</span>
+              <input type="hidden" name="rv-rating">
+            </div>
+          </div>
+          <div class="pd-form-group"><label>Comment <span style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:.82rem;color:var(--muted)">(optional)</span></label><textarea name="rv-comment" rows="3" placeholder="Share your experience…"></textarea></div>
+          <button type="submit" class="btn solid">Submit Review</button>
+        </form>
+      </div>
+    </details>
+  </section>
 
   <div class="pd-ymal">
     <h3 class="pd-ymal-h">You May Also Like</h3>
