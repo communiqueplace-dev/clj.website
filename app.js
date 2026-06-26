@@ -635,12 +635,12 @@ function renderProduct(){
   ];
   const accMetal = [
     ['Metal Purity', dash(p.metal)],
-    ['Gross Weight', '-'],
-    ['Net Weight', '-']
+    ['Gross Weight', dash(p.gross_weight)],
+    ['Net Weight', dash(p.net_weight)]
   ];
   const accDelivery = [
-    ['Delivery Time', '7-14 days'],
-    ['Shipping Terms', 'Excluded']
+    ['Delivery Time', (p.delivery_time && p.delivery_time.trim()) ? p.delivery_time : '7-14 days'],
+    ['Shipping Terms', (p.shipping_terms && p.shipping_terms.trim()) ? p.shipping_terms : 'Excluded']
   ];
   const rowsHtml = rows => rows.map(r => '<div><b>' + esc(r[0]) + '</b><span>' + esc(dash(r[1])) + '</span></div>').join('');
   const accHtml = (title, rows, open) =>

@@ -17,7 +17,10 @@
       window.PRODUCTS = rows.map(function(r){ return {
         id:r.id, img:r.img, cat:r.cat, sub:r.sub, name:r.name, desc:r.description||"",
         metal:r.metal||"", work:r.work||"", occasion:r.occasion||"", image_url:r.image_url||"",
-        style_note:r.style_note||"", in_stock:r.in_stock, price_from: r.price_from ?? null
+        style_note:r.style_note||"", in_stock:r.in_stock,
+        certification:r.certification||"", gross_weight:r.gross_weight||"", net_weight:r.net_weight||"",
+        delivery_time:r.delivery_time||"", shipping_terms:r.shipping_terms||"",
+        price_from: r.price_from ?? null
       };});
       if (typeof window.__cmsRender === "function"){ try{ window.__cmsRender(); }catch(e){} }
     }

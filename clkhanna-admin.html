@@ -154,6 +154,18 @@
         <div><label>Craftsmanship</label><input id="f_work" placeholder="e.g. Hand-set uncut polki"></div>
       </div>
       <div class="row2">
+        <div><label>Gross Weight</label><input id="f_gross" placeholder="e.g. 12.4 g"></div>
+        <div><label>Net Weight</label><input id="f_net" placeholder="e.g. 10.1 g"></div>
+      </div>
+      <div class="row2">
+        <div><label>Certification</label><input id="f_cert" placeholder="e.g. BIS Hallmarked"></div>
+        <div><label>Delivery Time</label><input id="f_delivery" placeholder="7-14 days"></div>
+      </div>
+      <div class="row2">
+        <div><label>Shipping Terms</label><input id="f_shipterms" placeholder="Excluded"></div>
+        <div></div>
+      </div>
+      <div class="row2">
         <div><label>Starting Price (₹)</label><input id="f_price" type="number" min="0" step="1" placeholder="e.g. 45000"></div>
         <div class="chk-row">
           <input id="f_instock" type="checkbox" checked>
@@ -334,6 +346,11 @@ function openForm(p){
   $("f_style").value    = p ? (p.style_note||"") : "";
   $("f_metal").value    = p ? (p.metal||"") : "";
   $("f_work").value     = p ? (p.work||"") : "";
+  $("f_gross").value     = p ? (p.gross_weight||"") : "";
+  $("f_net").value       = p ? (p.net_weight||"") : "";
+  $("f_cert").value      = p ? (p.certification||"") : "";
+  $("f_delivery").value  = p ? (p.delivery_time||"") : "";
+  $("f_shipterms").value = p ? (p.shipping_terms||"") : "";
   $("f_price").value    = p && p.price_from != null ? p.price_from : "";
   $("f_instock").checked = p ? (p.in_stock !== false) : true;
   $("f_file").value = "";
@@ -372,6 +389,11 @@ async function saveProduct(){
       metal:       $("f_metal").value.trim(),
       work:        $("f_work").value.trim(),
       occasion:    $("f_occasion").value.trim(),
+      gross_weight:   $("f_gross").value.trim() || null,
+      net_weight:     $("f_net").value.trim() || null,
+      certification:  $("f_cert").value.trim() || null,
+      delivery_time:  $("f_delivery").value.trim() || null,
+      shipping_terms: $("f_shipterms").value.trim() || null,
       price_from:  priceVal !== "" ? Number(priceVal) : null,
       in_stock:    $("f_instock").checked
     };
