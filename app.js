@@ -73,7 +73,7 @@ function buildHeader(active){
         <a class="d-sub d-strong" href="${c}.html">${CAT_TITLES[c]}</a>
       `).join("")}
     </div>
-    <a class="d-cat" href="./#collections">Categories</a>
+    <a class="d-cat" href="collections.html">Collection</a>
     <a class="d-cat" href="polki.html?sub=sets">Bridal</a>
     <a class="d-cat" href="custom.html">Custom Jewellery</a>
     <a class="d-cat" href="media.html">Media</a>
@@ -367,7 +367,7 @@ function toggleFilterPanel(open){
 
 function renderCatalog(cat){
   const grid = document.getElementById("grid");
-  const catProducts = PRODUCTS.filter(p => p.cat === cat);
+  const catProducts = cat === "all" ? PRODUCTS.slice() : PRODUCTS.filter(p => p.cat === cat);
   grid.innerHTML = catProducts.map(cardHTML).join("");
   skelLoaded(grid);
   buildFilterSidebar(cat, catProducts);

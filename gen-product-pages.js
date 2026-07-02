@@ -114,7 +114,7 @@ PRODUCTS.forEach(p => { fs.writeFileSync(`${slugify(p.name)}.html`, page(p), "ut
 
 /* Rebuild sitemap.xml: keep the static pages, append every product */
 const staticUrls = [
-  ["/", "1.0", "weekly"], ["/diamond.html", "0.9", "weekly"], ["/gold.html", "0.9", "weekly"],
+  ["/", "1.0", "weekly"], ["/collections.html", "0.9", "weekly"], ["/diamond.html", "0.9", "weekly"], ["/gold.html", "0.9", "weekly"],
   ["/polki.html", "0.9", "weekly"], ["/custom.html", "0.8", "monthly"], ["/about.html", "0.7", "monthly"],
   ["/media.html", "0.6", "weekly"], ["/location.html", "0.7", "monthly"], ["/cart.html", "0.3", null],
   ["/privacy.html", "0.2", null], ["/returns.html", "0.2", null], ["/shipping.html", "0.2", null],
