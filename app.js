@@ -629,7 +629,7 @@ function renderProduct(){
   const accInfo = [
     ['Product Name', p.name],
     ['Brand', 'C.L Khanna Jewellers'],
-    ['Certification', dash(p.certification)],
+    ['Certification', (p.certification && p.certification.trim()) ? p.certification : 'BIS Hallmarked'],
     ['Craftsmanship', dash(p.work)],
     ['Category', CAT_TITLES[safeCat]]
   ];

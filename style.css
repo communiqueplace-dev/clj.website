@@ -913,6 +913,8 @@ html{overflow-x:hidden}
 
 /* Shared form styles */
 .pd-form-group{margin-bottom:14px}
+.pd-ask{border:1px solid var(--line);background:#fdfbf7;padding:26px 30px;align-self:start}
+.pd-ask .pd-sec-h{margin-top:0}
 .pd-ask label,.pd-revs label{display:block;font-family:var(--sans);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 .pd-ask input,.pd-ask textarea,.pd-revs input,.pd-revs textarea{width:100%;border:1px solid var(--line);padding:10px 13px;font-family:var(--sans);font-size:.88rem;background:#fff;outline:none;resize:vertical;box-sizing:border-box;transition:border-color .18s}
 .pd-ask input:focus,.pd-ask textarea:focus,.pd-revs input:focus,.pd-revs textarea:focus{border-color:var(--gold)}
