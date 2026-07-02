@@ -50,37 +50,45 @@
     }
   }
 
-  /* Verify the reset token from the URL hash */
+  /* Verify the reset token from the URL hash.
+     Supabase's own client already resolves the recovery link into a real
+     session in the background as soon as it loads (it's injected from a CDN,
+     so timing varies) — we must wait for that outcome rather than judging
+     validity from whether the hash is still present when this script runs,
+     or a page that Supabase already logged in gets shown "Link Expired". */
   (function(){
     var hash = location.hash ? location.hash.slice(1) : '';
-    if (!hash){ showRPState('rp-invalid'); return; }
     var params = {};
     hash.split('&').forEach(function(pair){
       var kv = pair.split('=');
+      if (!kv[0]) return;
       try { params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || ''); } catch(e){}
     });
-    if (params.type !== 'recovery' && !params.access_token){ showRPState('rp-invalid'); return; }
+
+    var handled = false;
+    function finish(id){
+      if (handled) return;
+      handled = true;
+      showRPState(id);
+    }
 
     var attempts = 0;
     var poll = setInterval(function(){
       attempts++;
       if (typeof sb !== 'undefined' && sb !== null){
         clearInterval(poll);
-        var handled = false;
         sb.auth.onAuthStateChange(function(event, session){
-          if (handled) return;
-          if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && params.type === 'recovery')){
-            handled = true;
-            showRPState('rp-form');
+          if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session && params.type === 'recovery')){
+            finish('rp-form');
           }
         });
         sb.auth.getSession().then(function(res){
-          if (!handled && res.data && res.data.session){ handled = true; showRPState('rp-form'); }
+          if (res.data && res.data.session){ finish('rp-form'); }
         });
-        setTimeout(function(){ if (!handled){ handled = true; showRPState('rp-invalid'); } }, 6000);
-      } else if (attempts > 60){
+        setTimeout(function(){ finish('rp-invalid'); }, 8000);
+      } else if (attempts > 100){
         clearInterval(poll);
-        showRPState('rp-invalid');
+        finish('rp-invalid');
       }
     }, 100);
   })();
