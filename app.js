@@ -501,7 +501,7 @@ async function loadReviews(productImg){
   if (typeof SUPABASE_URL === 'undefined' || !SUPABASE_URL){ _renderReviews([]); return; }
   const safeTimer = setTimeout(function(){ _renderReviews([]); }, 6000);
   try {
-    const r = await fetch(SUPABASE_URL + '/rest/v1/reviews?product_img=eq.' + encodeURIComponent(productImg) + '&order=created_at.desc', {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/reviews?select=name,rating,comment,created_at&product_img=eq.' + encodeURIComponent(productImg) + '&order=created_at.desc', {
       headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY }
     });
     clearTimeout(safeTimer);
