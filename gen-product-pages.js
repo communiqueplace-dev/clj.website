@@ -51,6 +51,8 @@ function page(p) {
   };
   if (p.price_from) schema.offers.price = String(p.price_from);
   const T = htmlEsc(title), D = htmlEsc(desc);
+  const priceText = p.price_from ? `from ₹${Number(p.price_from).toLocaleString("en-IN")}` : "Price on request";
+  const subLabel  = { sets: "Chokers, Malas & Sets", bangles: "Bangles & Kadas", bracelets: "Bracelets", earrings: "Earrings & Studs", rings: "Rings" }[p.sub] || "";
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,7 +95,20 @@ ${CSP}
 <nav class="nojs-nav"><a href="gold.html">Gold</a><a href="diamond.html">Diamond</a><a href="polki.html">Polki</a><a href="custom.html">Custom</a><a href="about.html">About</a><a href="location.html">Contact</a><a href="cart.html">Cart</a></nav>
 </div></header><div class="hairline"></div></div>
 <section style="padding-top:48px">
-  <div class="wrap" id="pd"></div>
+  <div class="wrap" id="pd">
+    <nav class="crumbs"><a href="./">Home</a> / <a href="${cat}.html">${htmlEsc(catT)}</a> / <a href="${cat}.html?sub=${htmlEsc(p.sub)}">${htmlEsc(subLabel)}</a> / <span>${htmlEsc(p.name)}</span></nav>
+    <div class="pd-grid">
+      <div class="pd-left">
+        <div class="pd-photo"><img src="${img}" alt="${htmlEsc(p.name)}, ${htmlEsc(catT)} by C.L Khanna Jewellers Amritsar"></div>
+      </div>
+      <div class="pd-info">
+        <p class="eyebrow">${htmlEsc(catT)} &middot; ${htmlEsc(subLabel)}</p>
+        <h1>${htmlEsc(p.name)}</h1>
+        <p class="pd-desc">${D}</p>
+        <p class="card-price">${priceText}</p>
+      </div>
+    </div>
+  </div>
 </section>
 <footer id="site-footer"><div class="topline"></div><div class="wrap"><div class="cols">
 <div><h4>Information</h4><a href="about.html">About Us</a><a href="location.html">Contact Us</a><a href="custom.html">Customized Jewellery</a></div>
