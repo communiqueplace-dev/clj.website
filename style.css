@@ -59,7 +59,7 @@ header.site{background:var(--paper)}
 .drawer .d-appt:hover{background:var(--gold);color:#fff}
 
 /* search overlay */
-.search-veil{position:fixed;inset:0;background:rgba(252,250,245,.98);z-index:125;display:none;justify-content:center;padding:14vh 6vw 6vh}
+.search-veil{position:fixed;inset:0;background:var(--paper);z-index:125;display:none;justify-content:center;padding:14vh 6vw 6vh}
 .search-veil.open{display:flex}
 .search-box{width:100%;max-width:680px;position:relative}
 .search-box .dx{position:absolute;top:-56px;right:0;background:none;border:none;font-size:2rem;color:var(--muted);cursor:pointer}
