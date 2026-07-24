@@ -136,9 +136,15 @@ function runSearch(){
     });
   });
 
-  const hits = PRODUCTS.filter(p =>
-    (p.name + " " + p.desc + " " + p.cat + " " + p.work + " " + p.occasion).toLowerCase().includes(q)
-  ).slice(0, 5);
+  /* If the query names a whole category, show pieces actually IN that category —
+     not just any product whose description happens to mention the word
+     (e.g. a diamond choker described as "polished gold" shouldn't surface for "gold"). */
+  const catNameMatch = ["gold","diamond","polki"].find(c => CAT_TITLES[c].toLowerCase().includes(q));
+  const hits = catNameMatch
+    ? PRODUCTS.filter(p => p.cat === catNameMatch).slice(0, 5)
+    : PRODUCTS.filter(p =>
+        (p.name + " " + p.desc + " " + p.work + " " + p.occasion).toLowerCase().includes(q)
+      ).slice(0, 5);
 
   const catHtml = catHits.slice(0, 3).map(h => `
       <a class="sres-cat" href="${esc(h.href)}"><b>${esc(h.label)}</b></a>`).join("");
