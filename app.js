@@ -81,12 +81,13 @@ function buildHeader(active){
     <a class="d-cat" href="location.html">Contact</a>
     <a class="d-appt" href="https://wa.me/919815605373?text=Hello%20C.L%20Khanna%20Jewellers%2C%20I%20would%20like%20to%20book%20an%20appointment%20to%20visit%20the%20store.">Book an Appointment</a>
   </aside>
-  <div class="search-veil" id="sveil">
-    <div class="search-box">
-      <button class="dx">×</button>
-      <input id="sq" type="text" placeholder="Search the collection — e.g. choker, ruby, kada…">
-      <div id="sres" class="sres"></div>
+  <div class="search-drop" id="sveil">
+    <div class="sdrop-head">
+      <input id="sq" type="text" placeholder="Search Jewellery">
+      <button class="dx" aria-label="Close search">×</button>
     </div>
+    <div id="sres" class="sres"></div>
+    <a id="sview" class="sview" href="collections.html" style="display:none">View All</a>
   </div>`;
 }
 function toggleDrawer(open){
@@ -99,6 +100,15 @@ function soon(what){
 
 /* ---------- search ---------- */
 function openSearch(){
+  const line = document.querySelector(".hairline");
+  const actions = document.querySelector(".actions");
+  const box = document.getElementById("sveil");
+  if (line && actions && box){
+    const lr = line.getBoundingClientRect();
+    const ar = actions.getBoundingClientRect();
+    box.style.top = (lr.bottom + 10) + "px";
+    box.style.right = Math.max(16, window.innerWidth - ar.right) + "px";
+  }
   document.getElementById("sveil").classList.add("open");
   setTimeout(() => document.getElementById("sq").focus(), 50);
 }
@@ -106,17 +116,41 @@ function closeSearch(){ document.getElementById("sveil").classList.remove("open"
 function runSearch(){
   const q = document.getElementById("sq").value.trim().toLowerCase();
   const box = document.getElementById("sres");
-  if (q.length < 2){ box.innerHTML = ""; return; }
+  const viewAll = document.getElementById("sview");
+  if (q.length < 2){ box.innerHTML = ""; if (viewAll) viewAll.style.display = "none"; return; }
+
+  /* Category / subcategory shortcuts — e.g. "gold" or "bangles" jumps to that section. */
+  const catSeen = new Set();
+  const catHits = [];
+  ["gold","diamond","polki"].forEach(c => {
+    if (CAT_TITLES[c].toLowerCase().includes(q) && !catSeen.has(c + ".html")){
+      catSeen.add(c + ".html");
+      catHits.push({ href: c + ".html", label: "All " + CAT_TITLES[c] });
+    }
+    (SUBS[c] || []).forEach(([key, label]) => {
+      const href = c + ".html?sub=" + key;
+      if (label.toLowerCase().includes(q) && !catSeen.has(href)){
+        catSeen.add(href);
+        catHits.push({ href: href, label: CAT_TITLES[c] + " — " + label });
+      }
+    });
+  });
+
   const hits = PRODUCTS.filter(p =>
     (p.name + " " + p.desc + " " + p.cat + " " + p.work + " " + p.occasion).toLowerCase().includes(q)
-  ).slice(0, 8);
-  box.innerHTML = hits.length
-    ? hits.map(p => `
+  ).slice(0, 5);
+
+  const catHtml = catHits.slice(0, 3).map(h => `
+      <a class="sres-cat" href="${esc(h.href)}"><b>${esc(h.label)}</b></a>`).join("");
+  const hitHtml = hits.map(p => `
       <a href="${esc(productHref(p))}">
         <img src="${imgURL(p)}" alt="${esc(p.name)}, C.L Khanna Jewellers Amritsar">
         <span><b>${esc(p.name)}</b><small>${esc(CAT_TITLES[p.cat]||'')}</small></span>
-      </a>`).join("")
-    : `<p class="nores">No pieces found — try "choker", "ring", "polki"…</p>`;
+      </a>`).join("");
+
+  const any = catHits.length || hits.length;
+  box.innerHTML = any ? (catHtml + hitHtml) : `<p class="nores">No pieces found — try "choker", "ring", "polki"…</p>`;
+  if (viewAll) viewAll.style.display = any ? "" : "none";
 }
 
 /* ---------- footer: Company · Services · Policies · Social + newsletter ---------- */

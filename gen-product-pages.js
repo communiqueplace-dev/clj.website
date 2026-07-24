@@ -127,6 +127,45 @@ ${CSP}
 let n = 0;
 PRODUCTS.forEach(p => { fs.writeFileSync(`${slugify(p.name)}.html`, page(p), "utf8"); n++; });
 
+/* Pre-render each category listing page's product grid into static HTML too —
+   otherwise Googlebot's first pass only ever sees an empty <div id="grid">
+   (identical across gold.html/diamond.html/polki.html/collections.html),
+   the same "looks like duplicate shells" problem the product pages had.
+   The client JS (renderCatalog) still fully overwrites this on load, so
+   visitors and the wishlist/filter behaviour are completely unaffected. */
+function fmtPriceStatic(v) {
+  return v ? `from &#8377;${Number(v).toLocaleString("en-IN")}` : "Price on request";
+}
+function cardHTML(p) {
+  const cat = ["gold", "diamond", "polki"].includes(p.cat) ? p.cat : "gold";
+  const img = `assets/catalog/${cat}/${p.img}.jpg`;
+  return `<a class="card rv in" data-s="${htmlEsc(p.sub)}" data-g="${htmlEsc(p.gender || "women")}" href="${slugify(p.name)}.html">
+    <div class="ph">
+      <img loading="lazy" decoding="async" src="${img}" alt="${htmlEsc(p.name)}, ${htmlEsc(CAT_TITLES[cat] || "")} — C.L Khanna Jewellers Amritsar">
+      <button class="wl-btn" aria-label="Add to wishlist" data-wid="${htmlEsc(p.img)}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+    </div>
+    <div class="info">
+      <h3>${htmlEsc(p.name)}</h3>
+      <p>${htmlEsc(p.desc)}</p>
+      <span class="card-price">${fmtPriceStatic(p.price_from)}</span>
+    </div>
+  </a>`;
+}
+function injectGrid(file, cat) {
+  const products = cat === "all" ? PRODUCTS : PRODUCTS.filter(p => p.cat === cat);
+  const count = `${products.length} piece${products.length === 1 ? "" : "s"}`;
+  const cards = products.map(cardHTML).join("\n");
+  let html = fs.readFileSync(file, "utf8");
+  html = html.replace(/<!--COUNT_START-->[\s\S]*?<!--COUNT_END-->/, `<!--COUNT_START-->${count}<!--COUNT_END-->`);
+  html = html.replace(/<!--GRID_START-->[\s\S]*?<!--GRID_END-->/, `<!--GRID_START-->${cards}<!--GRID_END-->`);
+  fs.writeFileSync(file, html, "utf8");
+}
+[["gold.html", "gold"], ["diamond.html", "diamond"], ["polki.html", "polki"], ["collections.html", "all"]].forEach(([file, cat]) => {
+  if (fs.existsSync(file)) injectGrid(file, cat);
+});
+
 /* Rebuild sitemap.xml: keep the static pages, append every product */
 const staticUrls = [
   ["/", "1.0", "weekly"], ["/collections.html", "0.9", "weekly"], ["/diamond.html", "0.9", "weekly"], ["/gold.html", "0.9", "weekly"],
