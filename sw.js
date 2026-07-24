@@ -1,4 +1,4 @@
-﻿const CACHE = 'clj-v36';
+﻿const CACHE = 'clj-v38';
 const STATIC = [
   '/',
   '/bundle.js',
