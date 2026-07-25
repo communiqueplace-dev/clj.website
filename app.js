@@ -127,21 +127,34 @@ function runSearch(){
       catSeen.add(c + ".html");
       catHits.push({ href: c + ".html", label: "All " + CAT_TITLES[c] });
     }
-    (SUBS[c] || []).forEach(([key, label]) => {
-      const href = c + ".html?sub=" + key;
-      if (label.toLowerCase().includes(q) && !catSeen.has(href)){
+    const subs = SUBS[c] || [];
+    /* Exact key match first, so "rings" can't be shadowed by "earRINGS & Studs". */
+    const subMatch = subs.find(([key]) => key === q) || subs.find(([, label]) => label.toLowerCase().includes(q));
+    if (subMatch){
+      const href = c + ".html?sub=" + subMatch[0];
+      if (!catSeen.has(href)){
         catSeen.add(href);
-        catHits.push({ href: href, label: CAT_TITLES[c] + " — " + label });
+        catHits.push({ href: href, label: CAT_TITLES[c] + " — " + subMatch[1] });
       }
-    });
+    }
   });
 
-  /* If the query names a whole category, show pieces actually IN that category —
-     not just any product whose description happens to mention the word
-     (e.g. a diamond choker described as "polished gold" shouldn't surface for "gold"). */
+  /* If the query names a whole category or a subcategory (earrings, rings,
+     bangles, bracelets, sets — same keys across gold/diamond/polki), show
+     pieces actually IN that group — not just any product whose description
+     happens to mention the word (e.g. a necklace set described as having
+     "matching earrings" shouldn't surface for a search on "earrings"). */
   const catNameMatch = ["gold","diamond","polki"].find(c => CAT_TITLES[c].toLowerCase().includes(q));
+  /* Exact key match first ("rings") so it can't be shadowed by a substring
+     collision in another label (e.g. "rings" is literally inside "earRINGS & Studs"). */
+  const subNameMatch = !catNameMatch && (
+    (SUBS.gold || []).find(([key]) => key === q) ||
+    (SUBS.gold || []).find(([key, label]) => label.toLowerCase().includes(q))
+  );
   const hits = catNameMatch
     ? PRODUCTS.filter(p => p.cat === catNameMatch).slice(0, 5)
+    : subNameMatch
+    ? PRODUCTS.filter(p => p.sub === subNameMatch[0]).slice(0, 5)
     : PRODUCTS.filter(p =>
         (p.name + " " + p.desc + " " + p.work + " " + p.occasion).toLowerCase().includes(q)
       ).slice(0, 5);
