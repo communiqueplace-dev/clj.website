@@ -604,30 +604,6 @@ async function submitReview(e){
   } catch(err){ btn.disabled = false; btn.textContent = 'Submit Review'; alert('Could not save your review. Please try again.'); }
 }
 
-/* ---- How to Style It (relatable styling / occasion note) ---- */
-function renderStyleNote(p){
-  const el = document.getElementById('pd-style-txt');
-  if (!el) return;
-  /* admin-written note wins; otherwise build a relatable one automatically */
-  if (p.style_note && p.style_note.trim()){ el.textContent = p.style_note.trim(); return; }
-  const safeCat = ['gold','diamond','polki'].includes(p.cat) ? p.cat : 'gold';
-  const occ = (p.occasion || '').trim().replace(/\.$/, '');
-  const lead = occ
-    ? 'Perfect for ' + occ.charAt(0).toLowerCase() + occ.slice(1) + '.'
-    : ({ gold:'An effortless everyday-to-festive piece.', diamond:'Made for celebrations and milestone moments.', polki:'A true bridal heirloom.' })[safeCat];
-  const pair = ({
-    sets:      'Let it take centre stage — finish the look with matching jhumkas and a few fine bangles.',
-    necklaces: 'Let it take centre stage — finish the look with matching jhumkas and a few fine bangles.',
-    chokers:   'Let it sit high on the neckline and pair it with statement jhumkas for a complete bridal look.',
-    harams:    'Layer it over a choker for a full bridal neckline, and echo it with matching jhumkas.',
-    earrings:  'Pair with a sleek choker or a layered haram so the earrings frame the face.',
-    rings:     'Stack it with a slim band, or wear it solo for a clean, modern statement.',
-    bangles:   'Wear it stacked with other kadas, or balance it with a delicate bracelet on the other wrist.',
-    bracelets: 'Pair with statement studs and a cocktail ring for a polished evening look.'
-  })[p.sub] || 'Pair it with complementary pieces from the collection to complete your look.';
-  el.textContent = lead + ' ' + pair;
-}
-
 /* ---- You May Also Like ---- */
 function renderYMAL(cat, currentId){
   const grid = document.getElementById('pd-ymal-grid');
@@ -709,10 +685,6 @@ function renderProduct(){
     <div class="pd-left">
       <div class="pd-photo" id="zoomBox">
         <img id="zoomImg" src="${imgURL(p)}" alt="${esc(p.name)}">
-      </div>
-      <div class="pd-style" id="pd-style">
-        <p class="pd-style-h">How to Style It</p>
-        <p class="pd-style-txt" id="pd-style-txt"></p>
       </div>
     </div>
     <div class="pd-info">
@@ -817,7 +789,6 @@ function renderProduct(){
   box.addEventListener("mouseleave", () => { img.style.transform = "scale(1)"; });
   loadReviews(p.img);
   renderYMAL(p.cat, p.img);
-  renderStyleNote(p);
 }
 
 /* ---------- hero slider ---------- */
