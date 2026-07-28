@@ -595,7 +595,7 @@ footer .cols{grid-template-columns:1.1fr 1fr 1.6fr .8fr;gap:32px;text-align:left
 @media(max-width:760px){.about-grid .img{padding:0}.about-grid .img img{height:380px}}
 
 /* custom — horizontal step timeline */
-.timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;max-width:1000px;margin:0 auto}
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:34px;max-width:1200px;margin:0 auto}
 .timeline .tl-step{position:relative;text-align:center;padding-top:74px}
 .timeline .tl-step:before{content:"";position:absolute;top:27px;left:-50%;width:100%;height:1px;background:rgba(168,134,47,.45)}
 .timeline .tl-step:first-child:before{display:none}
