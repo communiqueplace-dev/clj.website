@@ -249,23 +249,29 @@ function joinNews(e){
   const email = ((document.getElementById("nl-email") || {}).value || "").trim();
   if (!email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return false;
   if (typeof SUPABASE_URL !== "undefined" && SUPABASE_URL){
-    fetch(SUPABASE_URL + "/rest/v1/subscribers", {
+    /* Insert via RPC (SECURITY DEFINER) rather than a direct table POST — PostgREST's
+       insert path needs a SELECT policy to read the row back, and subscribers has none
+       on purpose (anon must never be able to list/scrape the subscriber list). The RPC
+       does the validated insert server-side without exposing that. Wait for it to finish
+       before firing the welcome email, since that email is only sent for a subscription
+       row that already exists. */
+    fetch(SUPABASE_URL + "/rest/v1/rpc/subscribe_to_newsletter", {
       method: "POST",
       headers: {
         "apikey": SUPABASE_ANON_KEY,
         "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-        "Content-Type": "application/json",
-        "Prefer": "resolution=ignore-duplicates,return=minimal"
-      },
-      body: JSON.stringify({ email: email })
-    }).catch(function(){});
-    fetch(SUPABASE_URL + "/functions/v1/send-welcome", {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ email: email })
+      body: JSON.stringify({ p_email: email })
+    }).then(function(){
+      fetch(SUPABASE_URL + "/functions/v1/send-welcome", {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email: email })
+      }).catch(function(){});
     }).catch(function(){});
   }
   e.target.innerHTML = '<p class="nl-thanks">Thank you — you are on the list.</p>';
