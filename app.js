@@ -348,7 +348,7 @@ function cardHTML(p){
   </a>`;
 }
 const FILTER_CATS = [
-  {keys:"sets",              label:"Chokers & Sets"},
+  {keys:"sets,chokers,necklaces", label:"Chokers & Sets"},
   {keys:"bangles,bracelets", label:"Bracelets & Bangles"},
   {keys:"earrings",          label:"Earrings & Studs"},
   {keys:"rings",             label:"Rings"},
