@@ -295,7 +295,10 @@ function pcardHTML(p){
 }
 
 async function loadProducts(){
-  const { data, error } = await sb.from("products").select("*").order("sort",{ascending:true});
+  /* Website Service: listProducts (public.list_products RPC) instead of a raw
+     table select — same shape/ordering, but this is now the single business
+     operation both Manual Admin and AI CL Khanna Admin call. */
+  const { data, error } = await sb.rpc("list_products");
   if (error){ $("plist").innerHTML = '<p class="msg err">'+error.message+'</p>'; return; }
   PRODUCTS = data || [];
   $("countLbl").textContent = PRODUCTS.length + " products";
@@ -362,6 +365,33 @@ function openForm(p){
 function closeForm(){ $("formBox").classList.add("hidden"); }
 function editProduct(img){ openForm(PRODUCTS.find(p => p.img === img)); }
 
+function fileToBase64(file){
+  return new Promise(function(resolve, reject){
+    const reader = new FileReader();
+    reader.onload = function(){ resolve(String(reader.result).split(",")[1]); };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* Website Service: uploadProductImage (upload-product-image Edge Function).
+   Uses the admin's own already-authenticated session token — the same one
+   Storage RLS already checks — rather than uploading to Storage directly. */
+async function uploadProductImageViaService(img, file){
+  const { data: sessionData } = await sb.auth.getSession();
+  const token = sessionData && sessionData.session && sessionData.session.access_token;
+  if (!token) throw new Error("You must be signed in to upload photos.");
+  const fileBase64 = await fileToBase64(file);
+  const res = await fetch(SUPABASE_URL + "/functions/v1/upload-product-image", {
+    method: "POST",
+    headers: { "Authorization": "Bearer " + token, "Content-Type": "application/json" },
+    body: JSON.stringify({ img: img, filename: file.name, contentType: file.type, fileBase64: fileBase64 })
+  });
+  const out = await res.json().catch(function(){ return {}; });
+  if (!res.ok) throw new Error(out.error || "Image upload failed.");
+  return out.image_url;
+}
+
 async function saveProduct(){
   const msg = $("formMsg"); msg.className = "msg"; msg.textContent = "";
   const name = $("f_name").value.trim();
@@ -369,38 +399,53 @@ async function saveProduct(){
   let img = $("f_img").value;
   const isNew = !img;
   const cat = $("f_cat").value;
-  if (isNew) img = cat.charAt(0) + Date.now().toString(36);
   $("saveBtn").classList.add("uploading"); $("saveBtn").textContent = "Saving…";
-  let image_url = null;
   try {
     const file = $("f_file").files[0];
-    if (file){
-      const path = img + "-" + Date.now() + "." + (file.name.split(".").pop() || "jpg");
-      const up = await sb.storage.from("product-images").upload(path, file, { upsert:true, cacheControl:"3600" });
-      if (up.error) throw up.error;
-      image_url = sb.storage.from("product-images").getPublicUrl(path).data.publicUrl;
-    }
     const priceVal = $("f_price").value;
-    const rec = { img, cat,
-      sub:         $("f_sub").value,
-      name,
-      description: $("f_desc").value.trim(),
-      style_note:  $("f_style").value.trim() || null,
-      metal:       $("f_metal").value.trim(),
-      work:        $("f_work").value.trim(),
-      occasion:    $("f_occasion").value.trim(),
-      gross_weight:   $("f_gross").value.trim() || null,
-      net_weight:     $("f_net").value.trim() || null,
-      certification:  $("f_cert").value.trim() || null,
-      delivery_time:  $("f_delivery").value.trim() || null,
-      shipping_terms: $("f_shipterms").value.trim() || null,
-      price_from:  priceVal !== "" ? Number(priceVal) : null,
-      in_stock:    $("f_instock").checked
+    const fields = {
+      p_cat: cat,
+      p_sub:            $("f_sub").value,
+      p_name:           name,
+      p_description:    $("f_desc").value.trim(),
+      p_style_note:     $("f_style").value.trim() || null,
+      p_metal:          $("f_metal").value.trim(),
+      p_work:           $("f_work").value.trim(),
+      p_occasion:       $("f_occasion").value.trim(),
+      p_gross_weight:   $("f_gross").value.trim() || null,
+      p_net_weight:     $("f_net").value.trim() || null,
+      p_certification:  $("f_cert").value.trim() || null,
+      p_delivery_time:  $("f_delivery").value.trim() || null,
+      p_shipping_terms: $("f_shipterms").value.trim() || null
     };
-    if (isNew) rec.sort = (PRODUCTS.reduce((m,p)=>Math.max(m,p.sort||0),0)) + 1;
-    if (image_url) rec.image_url = image_url;
-    const { error } = await sb.from("products").upsert(rec, { onConflict:"img" });
-    if (error) throw error;
+
+    /* Website Service: createProduct / updateProduct (create_product / update_product
+       RPCs) replace the previous single raw upsert. createProduct generates the img
+       slug server-side, so for a brand-new product with a photo we create the row
+       first, then upload using the generated img, then attach the resulting URL. */
+    if (isNew){
+      const { data, error } = await sb.rpc("create_product", Object.assign({}, fields, {
+        p_price_from: priceVal !== "" ? Number(priceVal) : null,
+        p_in_stock:   $("f_instock").checked
+      }));
+      if (error) throw error;
+      img = data.img;
+    } else {
+      const { error } = await sb.rpc("update_product", Object.assign({ p_img: img }, fields, {
+        p_set_price:    true,
+        p_price_from:   priceVal !== "" ? Number(priceVal) : null,
+        p_set_in_stock: true,
+        p_in_stock:     $("f_instock").checked
+      }));
+      if (error) throw error;
+    }
+
+    if (file){
+      const image_url = await uploadProductImageViaService(img, file);
+      const { error: imgErr } = await sb.rpc("update_product", { p_img: img, p_image_url: image_url });
+      if (imgErr) throw imgErr;
+    }
+
     msg.className="msg ok"; msg.textContent="Saved.";
     closeForm(); loadProducts();
   } catch(e){
@@ -412,7 +457,8 @@ async function saveProduct(){
 
 async function deleteProduct(img){
   if (!confirm("Delete this product? This cannot be undone.")) return;
-  const { error } = await sb.from("products").delete().eq("img", img);
+  /* Website Service: deleteProduct (delete_product RPC) */
+  const { error } = await sb.rpc("delete_product", { p_img: img });
   if (error){ alert(error.message); return; }
   loadProducts();
 }
