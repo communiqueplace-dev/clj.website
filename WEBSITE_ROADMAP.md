@@ -259,6 +259,23 @@ report below.
 `carts`, `wishlists`, `analytics_events` reads/writes, `admin_signup_stats`, both
 `send-welcome` Edge Function calls.
 
+### Customer-facing bug fix — new-product 404 (surfaced by W3A, not a Website Service change)
+
+Migrating admin product creation onto the live database (Product Service) made the
+long-flagged `catalog.js`/live-database sync gap visible: `productHref()` in `app.js`
+always linked to a static per-product page (`<slug>.html`), generated only by
+`gen-product-pages.js` from `catalog.js`'s static snapshot during `deploy.ps1`. A
+product created through the now-working admin had no such page yet → 404 on click.
+
+Fixed at the customer-facing layer only, not Website Service: `app.js` now snapshots
+which `img` values exist in `catalog.js`'s own array at load time (before `cms.js`'s
+live fetch can overwrite it), and `productHref()` falls back to the existing dynamic
+`product.html?id=<img>` page for any product not in that snapshot. Existing products
+keep their exact current static URLs, unchanged. No change to Website Service,
+Product Service, `deploy.ps1`, or the SEO page generation process. Verified live: a
+newly created test product opened correctly via the fallback with no 404 and no
+console errors; an existing product's link was confirmed unchanged.
+
 Replace remaining direct DB writes with Website Service calls across the other
 modules; standardize validation, error handling, logging, and audit trails site-wide.
 

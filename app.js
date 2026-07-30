@@ -9,7 +9,15 @@ const CAT_TITLES = {gold:"Gold Jewellery", diamond:"Diamond Jewellery", polki:"P
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 /* Pretty product URL — MUST match gen-product-pages.js slugify exactly. */
 function slugify(s){ return String(s).toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
-function productHref(p){ return slugify(p.name) + '.html'; }
+/* Snapshot of products that have a generated static SEO page, taken from
+   catalog.js's own array before cms.js's live fetch can overwrite it. Products
+   created after the last deploy.ps1 run won't be in this set — they don't have a
+   static page yet, so they fall back to the dynamic product.html?id= page instead
+   of 404ing. Existing products keep their exact current URLs unchanged. */
+var STATIC_PRODUCT_IMGS = new Set((typeof PRODUCTS !== 'undefined' ? PRODUCTS : []).map(function(p){ return p.img; }));
+function productHref(p){
+  return STATIC_PRODUCT_IMGS.has(p.img) ? (slugify(p.name) + '.html') : ('product.html?id=' + encodeURIComponent(p.img));
+}
 function fmtPrice(v){ return v ? 'from ₹' + Number(v).toLocaleString('en-IN') : 'Price on request'; }
 
 function showSkeletons(container, n){
