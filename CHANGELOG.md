@@ -11,6 +11,14 @@ correct `app_role` claim for the admin, `null` for an unknown user. Hook is **no
 yet enabled** — that requires manual action in the Supabase dashboard
 (Authentication → Hooks), which no available tool can perform.
 
+### Fixed — mutable search_path on custom_access_token_hook
+
+Investigated why the function didn't appear in the Auth Hooks dropdown: existence,
+schema, signature, return type, argument list, ownership, and grants all matched
+Supabase's documented contract exactly. One real issue found via the security
+advisor: missing `SET search_path = ''`. Fixed and re-verified working. Dashboard
+discoverability itself couldn't be directly confirmed without dashboard access.
+
 ## 2026-07-30 (W3.5-A — website_admins table)
 
 Added `public.website_admins`, locked to `service_role` only, seeded with the real

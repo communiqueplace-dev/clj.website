@@ -308,6 +308,16 @@ unknown `user_id` → `app_role: null`.
 manual action with dashboard access. W3.5-C (verify real JWT issuance) cannot proceed
 until the hook is enabled there.
 
+**Investigated (dropdown showed no functions):** checked function existence, schema,
+signature (`event jsonb`), return type (`jsonb`), argument list, ownership
+(`postgres`), and grants (`supabase_auth_admin` execute granted;
+`authenticated`/`anon`/`public` revoked) — all matched Supabase's documented contract
+exactly. One real issue found and fixed: the function had a mutable `search_path`
+(missing `SET search_path = ''`, unlike every other function in this project) —
+corrected, re-verified working. Dashboard discoverability (item 7) can't be verified
+directly without dashboard access; a refresh of the Auth Hooks page is the next
+step.
+
 ## Phase W4 — AI CL Khanna Admin Integration (not started)
 
 Connect each service to KHANNA AI OS one at a time, gated by WriteActionGate for
