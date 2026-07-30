@@ -141,11 +141,21 @@ moving into the service layer.
 reviews directly; migrating it onto these RPCs is a separate, not-yet-approved
 follow-up. Customer-facing review submission and display are untouched.
 
+### Collection Service — ❌ Not required (removed from roadmap)
+
+Investigated and found superseded by Product Service. "Collection management is
+already fully represented by Product Service through product categories. No separate
+business entity or admin capability exists." `collections.html` and the category
+pages are filtered views over the same `products` table Product Service already owns
+(`cat` field) — there is no `collections` table, no distinct admin feature, and no
+data concept separate from what Product Service already handles. Building a wrapper
+service around it would duplicate existing capability with nothing new.
+
 ### Remaining Phase W2 modules (not started)
 
-Collection, Subscriber, Enquiry, SEO, Settings Service — each with its own operation
-checklist, scoped the same way the completed modules were (investigate → spec →
-approve → implement → verify).
+Subscriber, Enquiry, SEO, Settings Service — each with its own operation checklist,
+scoped the same way the completed modules were (investigate → spec → approve →
+implement → verify).
 
 ## Phase W3 — Website Integration Readiness (not started)
 

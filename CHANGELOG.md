@@ -3,6 +3,16 @@
 Tracks notable changes to the live site and its backend. Started 2026-07-30 alongside
 the Website Service work — earlier history lives in git log, not reconstructed here.
 
+## 2026-07-30 (Roadmap correction)
+
+### Removed — Collection Service (Website Roadmap Phase W2)
+
+Investigated and found unnecessary: "Collection management is already fully
+represented by Product Service through product categories. No separate business
+entity or admin capability exists." No database table, admin feature, or code path
+treats collections as anything other than a category-filtered view over `products`,
+which Product Service already owns. Removed from the roadmap rather than implemented.
+
 ## 2026-07-30 (Review Service)
 
 ### Added — Review Service (Website Roadmap Phase W2)
