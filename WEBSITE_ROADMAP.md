@@ -279,6 +279,19 @@ console errors; an existing product's link was confirmed unchanged.
 Replace remaining direct DB writes with Website Service calls across the other
 modules; standardize validation, error handling, logging, and audit trails site-wide.
 
+## Phase W3.5 — Authorization Hardening 🚧 In Progress
+
+Infrastructure-layer phase inserted before W4: replaces the hardcoded-email
+authorization check (13 RPCs, 14 RLS policies, 2 Edge Functions) with claim-based
+authorization, via additive dual-check → burn-in → separately-approved cutover.
+
+### W3.5-A — ✅ `website_admins` table
+
+`public.website_admins` (`user_id` pk → `auth.users`, `role` default `'website_admin'`,
+`created_at`), locked to `service_role` only — no anon/authenticated policy exists.
+Seeded with the real admin's `user_id`. Verified: row matches admin account; anon
+`SELECT` returns zero rows (RLS with no matching policy).
+
 ## Phase W4 — AI CL Khanna Admin Integration (not started)
 
 Connect each service to KHANNA AI OS one at a time, gated by WriteActionGate for

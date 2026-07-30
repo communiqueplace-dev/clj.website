@@ -3,6 +3,12 @@
 Tracks notable changes to the live site and its backend. Started 2026-07-30 alongside
 the Website Service work — earlier history lives in git log, not reconstructed here.
 
+## 2026-07-30 (W3.5-A — website_admins table)
+
+Added `public.website_admins`, locked to `service_role` only, seeded with the real
+admin's `user_id`. Foundation for Phase W3.5 (Authorization Hardening) — no
+authorization logic changed yet.
+
 ## 2026-07-30 (Fix — new products 404 before a static page is generated)
 
 ### Fixed
