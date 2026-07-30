@@ -292,6 +292,22 @@ authorization, via additive dual-check → burn-in → separately-approved cutov
 Seeded with the real admin's `user_id`. Verified: row matches admin account; anon
 `SELECT` returns zero rows (RLS with no matching policy).
 
+### W3.5-B — 🚧 Custom Access Token Hook (SQL done, hook not yet enabled)
+
+`public.custom_access_token_hook(event jsonb)` implemented per Supabase's Auth Hook
+contract — looks up the caller's `user_id` in `website_admins`, sets `app_role` claim
+to `'website_admin'` if found, `null` otherwise. Grants: `supabase_auth_admin` can
+execute the function and `SELECT` on `website_admins` (via a dedicated RLS policy for
+that role only); `authenticated`/`anon`/`public` explicitly revoked from executing it.
+
+Verified by direct invocation: admin `user_id` → `app_role: "website_admin"`;
+unknown `user_id` → `app_role: null`.
+
+**Blocked:** enabling the hook itself is a Supabase dashboard setting
+(Authentication → Hooks), not something any available tool can configure — needs
+manual action with dashboard access. W3.5-C (verify real JWT issuance) cannot proceed
+until the hook is enabled there.
+
 ## Phase W4 — AI CL Khanna Admin Integration (not started)
 
 Connect each service to KHANNA AI OS one at a time, gated by WriteActionGate for

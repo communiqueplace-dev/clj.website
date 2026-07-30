@@ -3,6 +3,14 @@
 Tracks notable changes to the live site and its backend. Started 2026-07-30 alongside
 the Website Service work — earlier history lives in git log, not reconstructed here.
 
+## 2026-07-30 (W3.5-B — Custom Access Token Hook, SQL side)
+
+Added `public.custom_access_token_hook`, granted correctly to `supabase_auth_admin`
+only, revoked from `authenticated`/`anon`/`public`. Verified by direct invocation:
+correct `app_role` claim for the admin, `null` for an unknown user. Hook is **not
+yet enabled** — that requires manual action in the Supabase dashboard
+(Authentication → Hooks), which no available tool can perform.
+
 ## 2026-07-30 (W3.5-A — website_admins table)
 
 Added `public.website_admins`, locked to `service_role` only, seeded with the real
