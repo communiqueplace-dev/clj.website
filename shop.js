@@ -94,13 +94,14 @@ function sendCartEnquiry(){
   });
   if (note.trim()) msg += "\n\nNote: " + note.trim();
   /* fire-and-forget enquiry log (reuses shared `sb`); must NOT block the redirect */
+  /* Website Service: logEnquiry (log_enquiry RPC) */
   try {
     if (typeof sb !== 'undefined' && sb){
-      sb.from('enquiries').insert({
-        note: note.trim() || null,
-        items: items,
-        user_id: (typeof sbUser !== 'undefined' && sbUser) ? sbUser.id : null,
-        visitor_id: (typeof window.clkVid === 'function') ? window.clkVid() : null
+      sb.rpc('log_enquiry', {
+        p_note: note.trim() || null,
+        p_items: items,
+        p_user_id: (typeof sbUser !== 'undefined' && sbUser) ? sbUser.id : null,
+        p_visitor_id: (typeof window.clkVid === 'function') ? window.clkVid() : null
       }).then(function(){}, function(){});
     }
     if (typeof window.clkLog === 'function') window.clkLog('enquiry_click');

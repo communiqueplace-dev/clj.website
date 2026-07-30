@@ -560,8 +560,11 @@ async function loadReviews(productImg){
   if (typeof SUPABASE_URL === 'undefined' || !SUPABASE_URL){ _renderReviews([]); return; }
   const safeTimer = setTimeout(function(){ _renderReviews([]); }, 6000);
   try {
-    const r = await fetch(SUPABASE_URL + '/rest/v1/reviews?select=name,rating,comment,created_at&product_img=eq.' + encodeURIComponent(productImg) + '&order=created_at.desc', {
-      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY }
+    /* Website Service: listReviews (list_reviews RPC) */
+    const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/list_reviews', {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_product_img: productImg })
     });
     clearTimeout(safeTimer);
     _renderReviews(r.ok ? (await r.json()) : []);
@@ -596,10 +599,11 @@ async function submitReview(e){
   const btn = form.querySelector('[type=submit]');
   btn.disabled = true; btn.textContent = 'Saving…';
   try {
-    const r = await fetch(SUPABASE_URL + '/rest/v1/reviews', {
+    /* Website Service: submitReview (submit_review RPC) */
+    const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/submit_review', {
       method: 'POST',
-      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-      body: JSON.stringify({ product_img: productImg, name: name||'Anonymous', rating, comment })
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_product_img: productImg, p_name: name||'Anonymous', p_rating: rating, p_comment: comment })
     });
     btn.disabled = false; btn.textContent = 'Submit Review';
     if (r.ok || r.status === 201){

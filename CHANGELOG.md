@@ -3,6 +3,27 @@
 Tracks notable changes to the live site and its backend. Started 2026-07-30 alongside
 the Website Service work — earlier history lives in git log, not reconstructed here.
 
+## 2026-07-30 (Phase W3B — customer-facing migration)
+
+### Changed — Review display/submission, enquiry logging
+
+- `app.js`'s product-page review display now calls `list_reviews` via RPC instead of
+  a raw filtered `select`. `submitReview`'s form now calls `submit_review` via RPC
+  instead of a raw insert.
+- `shop.js`'s WhatsApp-checkout enquiry log now calls `log_enquiry` via `sb.rpc()`
+  instead of `sb.from('enquiries').insert(...)`.
+- Data shapes confirmed compatible before implementation, per the Customer
+  Regression Rule: the review list renders named fields only, so `list_reviews`'s
+  extra columns are harmless; `reviews` (unlike `enquiries`) has a public SELECT
+  policy, so `submit_review`'s `RETURNING` works for anon callers without issue; the
+  enquiry log was already fire-and-forget.
+- Verified against the live database with the exact parameters now in the code
+  (success and cleanup confirmed), plus a live browser check on a real product page:
+  identical rendering for a zero-review product, no new console errors, and a direct
+  in-page RPC call confirmed working.
+- `subscribe_to_newsletter`'s raw-`fetch`-vs-`sb.rpc()` normalization intentionally
+  left as-is — see roadmap for the "worth doing?" assessment.
+
 ## 2026-07-30 (Phase W3A — clkhanna-admin.html migration)
 
 ### Changed — Editorial, Subscriber, Review (admin), Enquiry dashboard migrations

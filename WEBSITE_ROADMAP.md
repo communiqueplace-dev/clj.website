@@ -236,12 +236,24 @@ shapes now in the code — real test rows inserted, called, confirmed, and clean
 production data (1 real review, 0 editorial images, 0 enquiries, 5 real subscribers)
 confirmed unchanged afterward.
 
-### Phase W3B — not started
+### Phase W3B — ✅ Complete (customer-facing: review display/submission, enquiry logging)
 
-`app.js`/`shop.js` migrations: product-page review display + submission
-(`listReviews(productImg)`, `submitReview`), enquiry logging (`logEnquiry`), and the
-optional cosmetic `subscribe_to_newsletter` fetch→`sb.rpc()` normalization.
-Customer-facing — requires explicit approval before implementation.
+| Call | Before | After |
+|---|---|---|
+| `app.js` product-page review display | raw `fetch` to `/rest/v1/reviews?select=...` | `fetch` to `/rest/v1/rpc/list_reviews` |
+| `app.js` review submission form | raw `fetch` POST to `/rest/v1/reviews` | `fetch` POST to `/rest/v1/rpc/submit_review` |
+| `shop.js` WhatsApp-checkout enquiry log | `sb.from('enquiries').insert(...)` | `sb.rpc('log_enquiry', ...)` |
+
+Data shapes were confirmed compatible before implementation (Customer Regression
+Rule): the review-display rendering code reads named fields only, so `list_reviews`'s
+superset of columns needed no adaptation; `reviews` has a public SELECT policy (unlike
+`enquiries`), so `submit_review`'s `RETURNING` works fine for anon callers; the
+enquiry log call was already fully fire-and-forget. All three verified against the
+live database with the exact parameters now in the code (test rows inserted, called,
+confirmed, cleaned up), plus a live browser check on a real product page confirming
+identical rendering, no new console errors, and a direct in-page RPC call succeeding.
+`subscribe_to_newsletter` fetch→`sb.rpc()` normalization deliberately left as-is — see
+report below.
 
 **Explicitly out of scope for Phase W3** (no owning Website Service module):
 `carts`, `wishlists`, `analytics_events` reads/writes, `admin_signup_stats`, both
