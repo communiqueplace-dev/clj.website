@@ -89,11 +89,35 @@ homepage to actually consume Homepage Service (fixing `__siteConfigReady`, or
 finishing `#hp-admin`) is a separate, not-yet-approved follow-up — this phase only
 built the service.
 
+### Editorial Service — ✅ Implemented, verified (not yet migrated into Manual Admin)
+
+Scoped to existing business capabilities only — `reorderEditorialImages` intentionally
+not built, since neither the current admin nor the customer-facing site expose
+reordering today.
+
+| Operation | Implementation | Status |
+|---|---|---|
+| `listEditorialImages` | SQL RPC `list_editorial_images` (public read) | ✅ built, verified |
+| `deleteEditorialImage` | SQL RPC `delete_editorial_image` (admin-gated) | ✅ built, verified |
+| `uploadEditorialImage` | Edge Function `upload-editorial-image` (admin-gated) | ✅ built; unauthorized paths verified; genuine authorized-upload test still pending a real admin login, same as `uploadProductImage` |
+
+**Architecture:** `uploadEditorialImage` performs the Storage write and the
+`editorial_images` insert together in one operation, since (unlike products) there is
+no separate "create" step for an editorial photo to attach a URL to afterward —
+mirrors the existing `addEditorial()` admin logic exactly.
+
+**Known state, unchanged by this work:** `editorial_images` has 0 rows in production —
+this feature has never actually been used; the homepage's "Moments from the Maison"
+section has always rendered its static fallback content. `clkhanna-admin.html` still
+writes directly (`sb.storage`, `sb.from("editorial_images")`); migrating it onto these
+RPCs/Edge Function is a separate, not-yet-approved follow-up, same sequencing as
+Product Service.
+
 ### Remaining Phase W2 modules (not started)
 
-Collection, Editorial, Review, Subscriber, Enquiry, SEO, Settings Service — each with
-its own operation checklist, scoped the same way Product Service and Homepage Service
-were (investigate → spec → approve → implement → verify).
+Collection, Review, Subscriber, Enquiry, SEO, Settings Service — each with its own
+operation checklist, scoped the same way the completed modules were (investigate →
+spec → approve → implement → verify).
 
 ## Phase W3 — Website Integration Readiness (not started)
 

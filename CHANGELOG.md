@@ -3,6 +3,22 @@
 Tracks notable changes to the live site and its backend. Started 2026-07-30 alongside
 the Website Service work — earlier history lives in git log, not reconstructed here.
 
+## 2026-07-30 (Editorial Service)
+
+### Added — Editorial Service (Website Roadmap Phase W2)
+
+- New Supabase RPCs: `list_editorial_images` (public read), `delete_editorial_image`
+  (admin-gated). New Edge Function `upload-editorial-image` (admin-gated), which
+  performs the Storage upload and the `editorial_images` row insert together in one
+  operation.
+- `reorderEditorialImages` intentionally not built — neither the current admin nor the
+  customer-facing site expose reordering today, and this phase migrates existing
+  capabilities only.
+- No schema change — `editorial_images` already had the right shape and RLS.
+- `clkhanna-admin.html` not yet migrated — still writes directly. `editorial_images`
+  has 0 rows in production; the homepage's editorial section has always rendered its
+  static fallback.
+
 ## 2026-07-30 (Homepage Service)
 
 ### Added — Homepage Service (Website Roadmap Phase W2)
