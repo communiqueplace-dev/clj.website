@@ -1,4 +1,4 @@
-﻿const CACHE = 'clj-v57';
+﻿const CACHE = 'clj-v58';
 const STATIC = [
   '/',
   '/bundle.js',
@@ -17,7 +17,16 @@ const STATIC = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(STATIC)).then(() => self.skipWaiting()));
+  /* Force a genuine network fetch for every file cached on install, bypassing
+     the browser's own HTTP cache. caches.addAll() uses default fetch caching,
+     so a file that was HTTP-cached moments earlier (GitHub Pages sends
+     Cache-Control: max-age=600) could get baked into a brand-new SW cache
+     version as stale content, defeating the whole point of bumping CACHE. */
+  e.waitUntil(
+    caches.open(CACHE)
+      .then(c => Promise.all(STATIC.map(url => fetch(url, { cache: 'reload' }).then(res => c.put(url, res)))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', e => {
