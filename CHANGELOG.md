@@ -3,7 +3,24 @@
 Tracks notable changes to the live site and its backend. Started 2026-07-30 alongside
 the Website Service work — earlier history lives in git log, not reconstructed here.
 
-## 2026-07-30
+## 2026-07-30 (Homepage Service)
+
+### Added — Homepage Service (Website Roadmap Phase W2)
+
+- New Supabase RPCs: `get_homepage_config` (public read), `update_category_order` and
+  `update_featured_products` (both admin-gated). Scoped to homepage business
+  configuration only — editorial images are explicitly excluded, deferred to a future
+  Editorial Service.
+- Both write operations return the result of `get_homepage_config()` rather than raw
+  `site_config` rows, so the storage mechanism stays invisible to every caller.
+- `update_category_order` validates the input is exactly `{gold, diamond, polki}`,
+  each once. `update_featured_products` validates every `img` against real products,
+  rejects duplicates, and caps the list at 12 items.
+- No schema change — `site_config` already had the right shape and RLS.
+- Not yet consumed by the homepage: `home-page.js`/`index.html` still render from
+  hardcoded values. Wiring the homepage to this service is a separate future step.
+
+## 2026-07-30 (Product Service)
 
 ### Added — Product Service (Website Roadmap Phase W2)
 

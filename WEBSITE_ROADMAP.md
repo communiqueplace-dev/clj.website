@@ -63,11 +63,37 @@ passed for Load/Create/Edit/Delete/Upload. Login flow, UI, and every non-product
 section (editorial images, subscribers, reviews, dashboard) are untouched — those
 still write directly, pending their own future services.
 
+### Homepage Service — ✅ Implemented, verified (not yet consumed by the homepage)
+
+Scoped to business configuration only — editorial images stay out of this module and
+will belong to a future Editorial Service instead.
+
+| Operation | Implementation | Status |
+|---|---|---|
+| `getHomepageConfig` | SQL RPC `get_homepage_config` (public read) | ✅ built, verified |
+| `updateCategoryOrder` | SQL RPC `update_category_order` (admin-gated) | ✅ built, verified |
+| `updateFeaturedProducts` | SQL RPC `update_featured_products` (admin-gated) | ✅ built, verified |
+
+**Architecture:** both write operations return the result of `get_homepage_config()`
+internally, so the underlying storage (`site_config`, key/value/jsonb) never surfaces
+past the function body — callers only ever see the business shape
+`{category_order, featured_products}`.
+
+**Known state, unchanged by this work:** the homepage still renders `category_order`
+and `featured_products` from hardcoded values (`home-page.js`'s `FEATURED` const,
+`index.html`'s static tile order), not from this service. `cms.js` already fetches
+`site_config` and looks for a `window.__siteConfigReady` callback that has never been
+defined — dead code. There is also an already-scaffolded but fully unwired homepage
+admin panel (`#hp-admin` in `index.html`) with no JavaScript behind it. Wiring the
+homepage to actually consume Homepage Service (fixing `__siteConfigReady`, or
+finishing `#hp-admin`) is a separate, not-yet-approved follow-up — this phase only
+built the service.
+
 ### Remaining Phase W2 modules (not started)
 
-Collection, Homepage, Editorial, Review, Subscriber, Enquiry, SEO, Settings Service —
-each with its own operation checklist, scoped the same way Product Service was
-(investigate → spec → approve → implement → verify).
+Collection, Editorial, Review, Subscriber, Enquiry, SEO, Settings Service — each with
+its own operation checklist, scoped the same way Product Service and Homepage Service
+were (investigate → spec → approve → implement → verify).
 
 ## Phase W3 — Website Integration Readiness (not started)
 
