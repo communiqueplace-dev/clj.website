@@ -201,10 +201,19 @@ database, so a product edit doesn't automatically regenerate its SEO page today.
 is a real gap, but it's a build/engineering-automation concern, not a Website Service
 responsibility, and is explicitly out of scope for this roadmap.
 
-### Remaining Phase W2 modules (not started)
+### Settings Service — ❌ Not required (removed from roadmap)
 
-Settings Service — scoped the same way the completed modules were (investigate →
-spec → approve → implement → verify).
+"No independent Settings business entity exists. Homepage Service already owns the
+only site_config values, and all remaining settings are static content with no
+administrative capability to migrate." Contact information and social links are
+hardcoded across all ~90 HTML pages with no database table or admin UI.
+
+### Phase W2 status: ✅ Complete
+
+Every planned module has either been implemented (Product, Homepage, Editorial,
+Review, Subscriber, Enquiry) or investigated and found unnecessary (Collection, SEO,
+Settings — each superseded by an already-implemented module or found to have no
+distinct data entity/admin capability to migrate). No further modules remain.
 
 ## Phase W3 — Website Integration Readiness (not started)
 

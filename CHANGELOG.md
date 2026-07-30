@@ -3,6 +3,20 @@
 Tracks notable changes to the live site and its backend. Started 2026-07-30 alongside
 the Website Service work — earlier history lives in git log, not reconstructed here.
 
+## 2026-07-30 (Roadmap correction — Settings Service; Phase W2 complete)
+
+### Removed — Settings Service (Website Roadmap Phase W2)
+
+Investigated and found unnecessary: "No independent Settings business entity exists.
+Homepage Service already owns the only site_config values, and all remaining settings
+are static content with no administrative capability to migrate." Contact information
+and social links are hardcoded across all ~90 HTML pages with no database table or
+admin UI. Removed from the roadmap rather than implemented.
+
+With this, every planned Phase W2 module is resolved — six implemented (Product,
+Homepage, Editorial, Review, Subscriber, Enquiry), three removed as unnecessary
+(Collection, SEO, Settings).
+
 ## 2026-07-30 (Roadmap correction — SEO Service)
 
 ### Removed — SEO Service (Website Roadmap Phase W2)
