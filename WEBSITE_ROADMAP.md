@@ -151,11 +151,24 @@ pages are filtered views over the same `products` table Product Service already 
 data concept separate from what Product Service already handles. Building a wrapper
 service around it would duplicate existing capability with nothing new.
 
+### Subscriber Service — ✅ Implemented, verified (not yet migrated into Manual Admin)
+
+| Operation | Implementation | Status |
+|---|---|---|
+| `subscribeToNewsletter` | Existing RPC `subscribe_to_newsletter` (public, not `SECURITY DEFINER` in the privilege-elevating sense — built earlier this session, predates the formal Website Service phase but already follows the same architecture) | Treated as already-implemented, not rebuilt |
+| `listSubscribers` | New SQL RPC `list_subscribers` (admin-gated `SECURITY DEFINER`) | ✅ built, verified |
+
+**No `unsubscribe`/`deleteSubscriber` operation** — no such capability exists in the
+current admin or schema; not built, per the migrate-existing-only rule.
+
+**Known state, unchanged by this work:** `clkhanna-admin.html`'s two raw reads
+(`loadSubscribers`, `exportSubsCSV`) not yet migrated onto `listSubscribers`.
+
 ### Remaining Phase W2 modules (not started)
 
-Subscriber, Enquiry, SEO, Settings Service — each with its own operation checklist,
-scoped the same way the completed modules were (investigate → spec → approve →
-implement → verify).
+Enquiry, SEO, Settings Service — each with its own operation checklist, scoped the
+same way the completed modules were (investigate → spec → approve → implement →
+verify).
 
 ## Phase W3 — Website Integration Readiness (not started)
 

@@ -3,6 +3,20 @@
 Tracks notable changes to the live site and its backend. Started 2026-07-30 alongside
 the Website Service work — earlier history lives in git log, not reconstructed here.
 
+## 2026-07-30 (Subscriber Service)
+
+### Added — Subscriber Service (Website Roadmap Phase W2)
+
+- New Supabase RPC: `list_subscribers` (admin-gated, `SECURITY DEFINER`). Verified to
+  return output identical to the raw query `clkhanna-admin.html` currently uses.
+- `subscribeToNewsletter` (`subscribe_to_newsletter`) recognized as this service's
+  existing operation rather than rebuilt — it was already implemented earlier this
+  session, before the formal Website Service roadmap began, and already follows the
+  same public/unprivileged pattern later formalized as the Public Business Operations
+  rule.
+- No `unsubscribe`/`deleteSubscriber` operation — doesn't exist today, not built.
+- No schema change. `clkhanna-admin.html` not yet migrated.
+
 ## 2026-07-30 (Roadmap correction)
 
 ### Removed — Collection Service (Website Roadmap Phase W2)
