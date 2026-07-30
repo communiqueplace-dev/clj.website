@@ -362,6 +362,51 @@ verification and left in place — harmless (no site code references them, they
 require no input to do anything sensitive), but worth removing during W3.5-H
 cleanup.
 
+### W3.5-E — ✅ Extended Burn-in Verification
+
+**🔴 Critical regression found and fixed during this stage:** all 13 dual-check RPCs
+had a NULL-propagation bug — `IF NOT (app_role_check OR email_check) THEN raise`
+silently skipped the exception whenever `app_role` was absent (true for every
+non-admin caller), because `NULL OR FALSE` evaluates to SQL `NULL`, and plpgsql's
+`IF` treats `NULL` as "don't execute," not "execute." Confirmed live: an anonymous
+caller (valid anon-role JWT, no special claims) successfully read the **full
+subscriber list** via `list_subscribers` and passed authorization on `delete_review`
+and `create_product`. This affected all 13 RPCs from W3.5-D; RLS policies were
+**not** affected (Postgres RLS treats `NULL` as deny by default — the bug was
+specific to the hand-written plpgsql checks). Fixed by wrapping both sides of every
+check in `coalesce(..., '')`, guaranteeing real booleans that can never collapse the
+`OR` to `NULL`. Given live exposure of real subscriber emails, this was patched
+immediately rather than held for approval — re-verified anon-rejection across all 13
+RPCs and direct anon table access before continuing.
+
+**Full regression verified after the fix**, covering every item requested:
+
+- **Product Service:** create (claim), update (claim), delete (email), duplicate
+  (email), set_stock (claim), reorder (claim, no-op on the real polki order —
+  confirmed restored), preview (public, unaffected), list/get (public, unaffected),
+  uploadProductImage (real end-to-end with a disposable admin, verified in W3.5-D).
+- **Homepage Service:** read (public), update_category_order (claim + email, both
+  restored), update_featured_products (claim + email, both restored).
+- **Editorial Service:** list (public), full upload→delete round trip verified
+  end-to-end with a real disposable-admin sign-in (`200`/`200`), storage + DB both
+  cleaned up.
+- **Review Service:** list (public), submit (public/unprivileged, unaffected —
+  never part of the vulnerable set), delete (claim + email).
+- **Subscriber Service:** subscribe (public/unprivileged, unaffected), list (claim +
+  email, both tested across this stage).
+- **Enquiry Service:** log (public/unprivileged, unaffected), list (claim + email).
+- Anonymous callers confirmed blocked on every one of the 13 RPCs and on direct
+  table-level RLS access, post-fix.
+- Manual Admin's existing email-based path re-confirmed working throughout (every
+  claim-path test was paired with an equivalent email-path test).
+
+**Final state confirmed identical to pre-burn-in baseline:** 70 products, 0
+editorial images, 1 review, 5 subscribers, 0 enquiries, 1 `website_admins` row, 0
+leftover test users, 0 leftover storage files. Zero remaining SQL objects reference
+the hardcoded email without also referencing `app_role` (re-confirmed after the
+hotfix). One more temporary diagnostic Edge Function (`w35e-editorial-verify`) added
+to the W3.5-H cleanup list.
+
 ## Phase W4 — AI CL Khanna Admin Integration (not started)
 
 Connect each service to KHANNA AI OS one at a time, gated by WriteActionGate for

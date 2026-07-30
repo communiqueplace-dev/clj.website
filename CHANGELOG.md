@@ -19,6 +19,29 @@ Supabase's documented contract exactly. One real issue found via the security
 advisor: missing `SET search_path = ''`. Fixed and re-verified working. Hook
 subsequently enabled successfully in the dashboard.
 
+## 2026-07-30 (W3.5-E — Extended Burn-in Verification; critical hotfix)
+
+### Fixed — CRITICAL: authorization bypass in all 13 dual-check RPCs
+
+`IF NOT (app_role_check OR email_check) THEN raise exception` silently skipped the
+exception for every non-admin caller, because a missing `app_role` claim makes the
+OR'd condition evaluate to SQL `NULL`, and plpgsql's `IF` does not execute on `NULL`.
+Confirmed live: an anonymous caller successfully read the full subscriber list and
+passed authorization on `delete_review`/`create_product`. Affected all 13 RPCs from
+W3.5-D; RLS policies were unaffected (Postgres treats `NULL` as deny in RLS).
+Patched immediately (real subscriber PII was exposed) by wrapping both sides of
+every check in `coalesce(...,'')`. Re-verified anon rejection across all 13 RPCs and
+direct anon table access.
+
+### Verified — full regression across every Website Service
+
+Product, Homepage, Editorial, Review, Subscriber, and Enquiry Service operations all
+re-tested via claim path, email path, and anon-rejection as applicable, including a
+real end-to-end editorial upload→delete round trip via a disposable admin sign-in.
+Final state matches pre-burn-in baseline exactly (70/0/1/5/0/1 across
+products/editorial/reviews/subscribers/enquiries/website_admins); zero leftover test
+users or storage files; zero remaining hardcoded-email-only objects.
+
 ## 2026-07-30 (W3.5-D — dual-check authorization, SQL + Edge Functions)
 
 All 27 SQL objects (13 RPCs, 14 RLS policies) and both Edge Functions
