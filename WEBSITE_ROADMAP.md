@@ -113,11 +113,39 @@ writes directly (`sb.storage`, `sb.from("editorial_images")`); migrating it onto
 RPCs/Edge Function is a separate, not-yet-approved follow-up, same sequencing as
 Product Service.
 
+### Review Service — ✅ Implemented, verified (not yet migrated into Manual Admin)
+
+Scoped to existing business capabilities only — `approveReview`, `rejectReview`,
+`updateReviewStatus` intentionally not built, since no moderation-queue concept exists
+in the current schema or admin UI (a submitted review is public the instant it's
+inserted; the only moderation tool today is after-the-fact deletion).
+
+| Operation | Implementation | Status |
+|---|---|---|
+| `listReviews` | SQL RPC `list_reviews` (public read) | ✅ built, verified |
+| `submitReview` | SQL RPC `submit_review` — **not** `SECURITY DEFINER`, runs as caller | ✅ built, verified |
+| `deleteReview` | SQL RPC `delete_review` (admin-gated) | ✅ built, verified |
+
+**Architecture — Public Business Operations rule (new permanent rule, see
+[[clj-public-business-operations-rule]] in project memory):** `submitReview` is
+intentionally *not* privilege-elevated. It executes as the calling `anon` role, so the
+existing `anon_insert_reviews` RLS policy (rate limit + product-must-exist check)
+still governs it exactly as the raw insert does today. Verified at runtime as a
+genuine unauthenticated call: an invalid product and an out-of-range rating were both
+rejected with the same error codes the raw insert produces. This is the pattern for
+any future Website Service operation that wraps something intentionally public —
+same privilege, same RLS, no operation automatically becomes privileged just by
+moving into the service layer.
+
+**Known state, unchanged by this work:** `clkhanna-admin.html` still writes/reads
+reviews directly; migrating it onto these RPCs is a separate, not-yet-approved
+follow-up. Customer-facing review submission and display are untouched.
+
 ### Remaining Phase W2 modules (not started)
 
-Collection, Review, Subscriber, Enquiry, SEO, Settings Service — each with its own
-operation checklist, scoped the same way the completed modules were (investigate →
-spec → approve → implement → verify).
+Collection, Subscriber, Enquiry, SEO, Settings Service — each with its own operation
+checklist, scoped the same way the completed modules were (investigate → spec →
+approve → implement → verify).
 
 ## Phase W3 — Website Integration Readiness (not started)
 

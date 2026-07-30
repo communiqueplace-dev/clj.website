@@ -3,6 +3,22 @@
 Tracks notable changes to the live site and its backend. Started 2026-07-30 alongside
 the Website Service work — earlier history lives in git log, not reconstructed here.
 
+## 2026-07-30 (Review Service)
+
+### Added — Review Service (Website Roadmap Phase W2)
+
+- New Supabase RPCs: `list_reviews` (public read), `submit_review` (public write,
+  deliberately **not** `SECURITY DEFINER`), `delete_review` (admin-gated).
+- New permanent architecture rule: an intentionally-public operation like
+  `submitReview` must not be upgraded to a privileged one just by moving into the
+  Website Service layer. It runs as the calling role, subject to the same RLS policy
+  (`anon_insert_reviews`) that governs the raw insert today — verified live as a
+  genuine unauthenticated call, with invalid input rejected via the same error codes
+  the raw insert already produces.
+- `approveReview`/`rejectReview`/`updateReviewStatus` intentionally not built — no
+  moderation-queue concept exists today; a submitted review is public immediately.
+- No schema change. `clkhanna-admin.html` not yet migrated.
+
 ## 2026-07-30 (Editorial Service)
 
 ### Added — Editorial Service (Website Roadmap Phase W2)
