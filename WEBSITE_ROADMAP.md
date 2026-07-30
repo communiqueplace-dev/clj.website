@@ -314,9 +314,24 @@ signature (`event jsonb`), return type (`jsonb`), argument list, ownership
 `authenticated`/`anon`/`public` revoked) — all matched Supabase's documented contract
 exactly. One real issue found and fixed: the function had a mutable `search_path`
 (missing `SET search_path = ''`, unlike every other function in this project) —
-corrected, re-verified working. Dashboard discoverability (item 7) can't be verified
-directly without dashboard access; a refresh of the Auth Hooks page is the next
-step.
+corrected, re-verified working.
+
+**Hook enabled** in the Supabase dashboard — confirmed working (W3.5-C below).
+
+### W3.5-C — ✅ Verified real JWT claim issuance
+
+Verified against the actual token-issuance pipeline using a disposable test account
+(created and deleted via the Auth Admin API — not the real admin's account, not any
+real customer's): before having a `website_admins` row, sign-in produces no `app_role`
+claim; after adding one, sign-in produces `app_role: "website_admin"`. Confirmed
+unauthorized calls still rejected and the real admin's email-based path still works
+identically (nothing yet consumes the new claim, so nothing could have regressed).
+
+**Real finding, not a blocker:** the claim lands as a **top-level `app_role`** claim,
+not nested under `app_metadata.role`. `app_metadata` only ever contains Supabase's
+standard `provider`/`providers` fields — the hook never writes there. W3.5-D's
+dual-check design already correctly targets `auth.jwt()->>'app_role'`, so this is
+noted for accuracy, not a change in plan.
 
 ## Phase W4 — AI CL Khanna Admin Integration (not started)
 

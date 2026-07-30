@@ -16,8 +16,17 @@ yet enabled** — that requires manual action in the Supabase dashboard
 Investigated why the function didn't appear in the Auth Hooks dropdown: existence,
 schema, signature, return type, argument list, ownership, and grants all matched
 Supabase's documented contract exactly. One real issue found via the security
-advisor: missing `SET search_path = ''`. Fixed and re-verified working. Dashboard
-discoverability itself couldn't be directly confirmed without dashboard access.
+advisor: missing `SET search_path = ''`. Fixed and re-verified working. Hook
+subsequently enabled successfully in the dashboard.
+
+## 2026-07-30 (W3.5-C — verified real JWT claim issuance)
+
+Verified against the real token-issuance pipeline with a disposable, self-created
+test account (not the real admin, not a real customer): no `app_role` claim before a
+`website_admins` row exists, `app_role: "website_admin"` after. Confirmed
+unauthorized RPC calls still rejected and the admin's existing email-based path is
+unaffected. Real finding: the claim is a top-level `app_role` claim, not nested
+under `app_metadata.role` — W3.5-D's design already targets `app_role` correctly.
 
 ## 2026-07-30 (W3.5-A — website_admins table)
 
