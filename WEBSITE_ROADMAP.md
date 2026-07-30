@@ -164,11 +164,32 @@ current admin or schema; not built, per the migrate-existing-only rule.
 **Known state, unchanged by this work:** `clkhanna-admin.html`'s two raw reads
 (`loadSubscribers`, `exportSubsCSV`) not yet migrated onto `listSubscribers`.
 
+### Enquiry Service — ✅ Implemented, verified (not yet migrated into Manual Admin)
+
+| Operation | Implementation | Status |
+|---|---|---|
+| `listEnquiries(options?)` | SQL RPC `list_enquiries(p_options jsonb)` (admin-gated) | ✅ built, verified |
+| `logEnquiry` | SQL RPC `log_enquiry` — **not** `SECURITY DEFINER`, runs as caller | ✅ built, verified after one fix |
+
+`options` is a jsonb parameter (currently reads only `limit`, default 10) so the
+contract can grow without a signature change.
+
+**Real issue caught during verification:** `log_enquiry`'s first version used
+`INSERT ... RETURNING`, which requires the calling role to also pass a SELECT check on
+the new row — `enquiries` has no anon SELECT policy, only an admin-only one, so every
+valid call failed. Same root constraint that shaped `subscribe_to_newsletter`
+(also `void`-returning) months earlier, not connected until this failed loudly.
+Fixed by making `log_enquiry` `returns void` with no `RETURNING`, matching both the
+established precedent and `shop.js`'s actual fire-and-forget behavior exactly.
+
+**Known state, unchanged by this work:** `shop.js`'s raw insert and
+`clkhanna-admin.html`'s dashboard widget not yet migrated. `enquiries` has 0 rows in
+production.
+
 ### Remaining Phase W2 modules (not started)
 
-Enquiry, SEO, Settings Service — each with its own operation checklist, scoped the
-same way the completed modules were (investigate → spec → approve → implement →
-verify).
+SEO, Settings Service — each with its own operation checklist, scoped the same way
+the completed modules were (investigate → spec → approve → implement → verify).
 
 ## Phase W3 — Website Integration Readiness (not started)
 

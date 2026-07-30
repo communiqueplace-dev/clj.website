@@ -3,6 +3,21 @@
 Tracks notable changes to the live site and its backend. Started 2026-07-30 alongside
 the Website Service work — earlier history lives in git log, not reconstructed here.
 
+## 2026-07-30 (Enquiry Service)
+
+### Added — Enquiry Service (Website Roadmap Phase W2)
+
+- New Supabase RPCs: `list_enquiries(options?)` (admin-gated; `options` is jsonb,
+  currently reads only `limit`, default 10, for future-proof extensibility without a
+  signature change) and `log_enquiry` (public, not `SECURITY DEFINER`).
+- Caught and fixed a real bug during verification: `log_enquiry`'s first version used
+  `INSERT ... RETURNING`, which silently requires the calling role to pass a SELECT
+  check on the new row too — `enquiries` has no anon SELECT policy, so every valid
+  call failed with an RLS error. Fixed by returning `void` instead, matching
+  `subscribe_to_newsletter`'s established precedent and `shop.js`'s actual
+  fire-and-forget insert behavior exactly.
+- No schema change. `shop.js` and `clkhanna-admin.html` not yet migrated.
+
 ## 2026-07-30 (Subscriber Service)
 
 ### Added — Subscriber Service (Website Roadmap Phase W2)
