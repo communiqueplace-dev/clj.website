@@ -465,7 +465,8 @@ async function deleteProduct(img){
 
 /* ---- Editorial ---- */
 async function loadEditorial(){
-  const { data, error } = await sb.from("editorial_images").select("*").order("sort",{ascending:true});
+  /* Website Service: listEditorialImages (list_editorial_images RPC) */
+  const { data, error } = await sb.rpc("list_editorial_images");
   const box = $("ed_list");
   if (error){ box.innerHTML = '<p class="msg err">'+error.message+'</p>'; return; }
   const rows = data || [];
@@ -480,14 +481,20 @@ async function addEditorial(){
   if(!file){ msg.className="msg err"; msg.textContent="Choose a photo first."; return; }
   const btn=$("edBtn"); btn.classList.add("uploading"); btn.textContent="Uploading…";
   try{
-    const path="editorial/"+Date.now()+"-"+file.name.replace(/[^a-zA-Z0-9.]/g,"_");
-    const up=await sb.storage.from("product-images").upload(path,file,{upsert:true,cacheControl:"3600"});
-    if(up.error) throw up.error;
-    const url=sb.storage.from("product-images").getPublicUrl(path).data.publicUrl;
-    const top=await sb.from("editorial_images").select("sort").order("sort",{ascending:false}).limit(1);
-    const sort=((top.data && top.data[0]) ? top.data[0].sort : 0)+1;
-    const { error } = await sb.from("editorial_images").insert({ image_url:url, sort });
-    if(error) throw error;
+    /* Website Service: uploadEditorialImage (upload-editorial-image Edge Function) —
+       uploads the file and inserts the editorial_images row in one atomic operation,
+       using the admin's own already-authenticated session token. */
+    const { data: sessionData } = await sb.auth.getSession();
+    const token = sessionData && sessionData.session && sessionData.session.access_token;
+    if (!token) throw new Error("You must be signed in to upload photos.");
+    const fileBase64 = await fileToBase64(file);
+    const res = await fetch(SUPABASE_URL + "/functions/v1/upload-editorial-image", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + token, "Content-Type": "application/json" },
+      body: JSON.stringify({ filename: file.name, contentType: file.type, fileBase64: fileBase64 })
+    });
+    const out = await res.json().catch(function(){ return {}; });
+    if (!res.ok) throw new Error(out.error || "Upload failed");
     msg.className="msg ok"; msg.textContent="Added to your homepage slider.";
     $("ed_file").value=""; loadEditorial();
   }catch(e){ msg.className="msg err"; msg.textContent=(e.message||"Upload failed"); }
@@ -495,14 +502,16 @@ async function addEditorial(){
 }
 async function deleteEditorial(id){
   if(!confirm("Remove this photo from the homepage slider?")) return;
-  const { error } = await sb.from("editorial_images").delete().eq("id",id);
+  /* Website Service: deleteEditorialImage (delete_editorial_image RPC) */
+  const { error } = await sb.rpc("delete_editorial_image", { p_id: id });
   if(error){ alert(error.message); return; }
   loadEditorial();
 }
 
 /* ---- Newsletter Subscribers ---- */
 async function loadSubscribers(){
-  const { data, error } = await sb.from("subscribers").select("email, created_at").order("created_at",{ascending:false});
+  /* Website Service: listSubscribers (list_subscribers RPC) */
+  const { data, error } = await sb.rpc("list_subscribers");
   const box = $("subsList");
   if (error){ box.innerHTML='<p class="msg err">'+error.message+'</p>'; $("subsCount").textContent=""; return; }
   const rows = data || [];
@@ -515,7 +524,8 @@ async function loadSubscribers(){
 }
 
 function exportSubsCSV(){
-  sb.from("subscribers").select("email, created_at").order("created_at",{ascending:false}).then(({data,error}) => {
+  /* Website Service: listSubscribers (list_subscribers RPC) */
+  sb.rpc("list_subscribers").then(({data,error}) => {
     if (error || !data || !data.length){ alert("No subscribers to export."); return; }
     const csv = "Email,Signed Up\n" + data.map(r => '"'+r.email.replace(/"/g,'""')+'","'+(r.created_at||"")+'"').join("\n");
     const a = document.createElement("a");
@@ -527,7 +537,8 @@ function exportSubsCSV(){
 
 /* ---- Customer Reviews ---- */
 async function loadReviews(){
-  const { data, error } = await sb.from("reviews").select("*").order("created_at",{ascending:false});
+  /* Website Service: listReviews (list_reviews RPC) */
+  const { data, error } = await sb.rpc("list_reviews");
   const box = $("revList");
   if (error){ box.innerHTML='<p class="msg err">'+error.message+'</p>'; $("revCount").textContent=""; return; }
   const rows = data || [];
@@ -550,7 +561,8 @@ async function loadReviews(){
 
 async function deleteReview(id){
   if (!confirm("Delete this review? This cannot be undone.")) return;
-  const { error } = await sb.from("reviews").delete().eq("id",id);
+  /* Website Service: deleteReview (delete_review RPC) */
+  const { error } = await sb.rpc("delete_review", { p_id: id });
   if (error){ alert(error.message); return; }
   loadReviews();
 }
@@ -628,7 +640,8 @@ async function loadTopProducts(){
 async function loadRecentEnquiries(){
   const box = $("dashEnquiries");
   try {
-    const { data, error } = await sb.from("enquiries").select("note, items, created_at").order("created_at",{ascending:false}).limit(10);
+    /* Website Service: listEnquiries (list_enquiries RPC) */
+    const { data, error } = await sb.rpc("list_enquiries", { p_options: { limit: 10 } });
     if (error) throw error;
     const rows = data || [];
     if (!rows.length){ box.innerHTML = '<h4>Recent Enquiries</h4><div class="dash-empty">No enquiries yet.</div>'; return; }

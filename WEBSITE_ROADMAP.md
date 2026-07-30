@@ -215,7 +215,37 @@ Review, Subscriber, Enquiry) or investigated and found unnecessary (Collection, 
 Settings — each superseded by an already-implemented module or found to have no
 distinct data entity/admin capability to migrate). No further modules remain.
 
-## Phase W3 — Website Integration Readiness (not started)
+## Phase W3 — Website Integration Readiness 🚧 In Progress
+
+### Phase W3A — ✅ Complete (clkhanna-admin.html only)
+
+Migrated 4 of `clkhanna-admin.html`'s remaining direct Supabase calls onto their
+Website Service operations. `app.js`/`shop.js` untouched — reserved for W3B.
+
+| Section | Before | After |
+|---|---|---|
+| Editorial | raw `sb.from`/`sb.storage` (3 calls) | `listEditorialImages`, `uploadEditorialImage`, `deleteEditorialImage` |
+| Subscribers | raw `sb.from` (2 calls, list + CSV export) | `listSubscribers` (both) |
+| Reviews (admin) | raw `sb.from` (2 calls) | `listReviews`, `deleteReview` |
+| Enquiry dashboard widget | raw `sb.from` (1 call) | `listEnquiries({limit:10})` |
+
+Every migrated call's data shape was verified identical to what the caller already
+expected before any code was changed (new standing rule). All six migrated
+operations were then verified against the live database with the exact parameter
+shapes now in the code — real test rows inserted, called, confirmed, and cleaned up;
+production data (1 real review, 0 editorial images, 0 enquiries, 5 real subscribers)
+confirmed unchanged afterward.
+
+### Phase W3B — not started
+
+`app.js`/`shop.js` migrations: product-page review display + submission
+(`listReviews(productImg)`, `submitReview`), enquiry logging (`logEnquiry`), and the
+optional cosmetic `subscribe_to_newsletter` fetch→`sb.rpc()` normalization.
+Customer-facing — requires explicit approval before implementation.
+
+**Explicitly out of scope for Phase W3** (no owning Website Service module):
+`carts`, `wishlists`, `analytics_events` reads/writes, `admin_signup_stats`, both
+`send-welcome` Edge Function calls.
 
 Replace remaining direct DB writes with Website Service calls across the other
 modules; standardize validation, error handling, logging, and audit trails site-wide.

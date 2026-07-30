@@ -3,6 +3,24 @@
 Tracks notable changes to the live site and its backend. Started 2026-07-30 alongside
 the Website Service work — earlier history lives in git log, not reconstructed here.
 
+## 2026-07-30 (Phase W3A — clkhanna-admin.html migration)
+
+### Changed — Editorial, Subscriber, Review (admin), Enquiry dashboard migrations
+
+- `clkhanna-admin.html`'s Editorial section now uses `listEditorialImages`,
+  `uploadEditorialImage`, `deleteEditorialImage` instead of raw
+  `sb.from`/`sb.storage` calls. The manual sort-lookup query is eliminated —
+  `uploadEditorialImage` computes it internally.
+- Subscribers (list view + CSV export) now both use `listSubscribers`.
+- Reviews admin table now uses `listReviews`/`deleteReview`.
+- Dashboard's "Recent Enquiries" widget now uses `listEnquiries({limit:10})`.
+- `app.js`/`shop.js` untouched — reserved for Phase W3B, customer-facing, pending
+  separate approval.
+- Every migrated call's data shape was verified identical to the caller's existing
+  expectations before implementation (new standing rule), then re-verified against
+  the live database with the exact parameters now in the code. No UI, login flow, or
+  admin workflow changed.
+
 ## 2026-07-30 (Roadmap correction — Settings Service; Phase W2 complete)
 
 ### Removed — Settings Service (Website Roadmap Phase W2)
