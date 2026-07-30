@@ -3,6 +3,20 @@
 Tracks notable changes to the live site and its backend. Started 2026-07-30 alongside
 the Website Service work — earlier history lives in git log, not reconstructed here.
 
+## 2026-07-30 (Roadmap correction — SEO Service)
+
+### Removed — SEO Service (Website Roadmap Phase W2)
+
+Investigated and found unnecessary: "SEO metadata is derived automatically from
+Product Service data during the static build process. No independent SEO business
+entity or administrative capability exists." `gen-product-pages.js` generates every
+product page's title/description/schema directly from Product Service's own fields —
+no separate table, column, or admin UI exists for SEO. The related fact that
+`gen-product-pages.js` reads from a static `catalog.js` snapshot rather than the live
+database (so edits don't auto-regenerate SEO pages) is a build-process/engineering
+automation concern, explicitly out of scope here, not a Website Service
+responsibility. Removed from the roadmap rather than implemented.
+
 ## 2026-07-30 (Enquiry Service)
 
 ### Added — Enquiry Service (Website Roadmap Phase W2)
