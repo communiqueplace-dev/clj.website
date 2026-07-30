@@ -19,6 +19,30 @@ Supabase's documented contract exactly. One real issue found via the security
 advisor: missing `SET search_path = ''`. Fixed and re-verified working. Hook
 subsequently enabled successfully in the dashboard.
 
+## 2026-07-30 (W3.5-F/G/H — Final cutover; Phase W3.5 complete)
+
+### Changed — final authorization cutover
+
+Removed the hardcoded-email fallback entirely from all 27 SQL objects and both
+Edge Functions. Authorization is now `website_admin` claim only. Verified:
+email-only auth now correctly rejected (proves removal, not just disuse);
+claim-only still works; anon rejected everywhere, re-swept post-cutover.
+
+### Removed — temporary W3.5 diagnostic Edge Functions
+
+`w35c-hook-verify`, `w35d-edgefn-verify`, `w35d-cleanup`, `w35e-editorial-verify`
+neutralized (replaced with inert `410 Gone` stubs — no tool exists to fully delete
+an Edge Function; manual dashboard removal optional).
+
+### Verified — production-ready
+
+Zero hardcoded-email references anywhere in SQL. Production data unchanged (70
+products, 0 editorial, 1 review, 5 subscribers, 0 enquiries, 1 admin row, stock and
+homepage config restored to real values). Zero leftover test artifacts. Working
+tree clean.
+
+**Phase W3.5 (Authorization Hardening) is now complete and frozen.**
+
 ## 2026-07-30 (W3.5-E — Extended Burn-in Verification; critical hotfix)
 
 ### Fixed — CRITICAL: authorization bypass in all 13 dual-check RPCs

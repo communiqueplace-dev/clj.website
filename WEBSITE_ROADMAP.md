@@ -279,7 +279,7 @@ console errors; an existing product's link was confirmed unchanged.
 Replace remaining direct DB writes with Website Service calls across the other
 modules; standardize validation, error handling, logging, and audit trails site-wide.
 
-## Phase W3.5 — Authorization Hardening 🚧 In Progress
+## Phase W3.5 — Authorization Hardening ✅ Complete (frozen)
 
 Infrastructure-layer phase inserted before W4: replaces the hardcoded-email
 authorization check (13 RPCs, 14 RLS policies, 2 Edge Functions) with claim-based
@@ -356,12 +356,6 @@ yet removed. Covers all 27 SQL objects (13 RPCs, 14 RLS policies across `product
   `upload-product-image` — got a real `200`, not `401`) — then fully cleaned up
   (test file deleted from storage, test user deleted, `website_admins` back to 1 row).
 
-**Housekeeping note:** three temporary diagnostic Edge Functions
-(`w35c-hook-verify`, `w35d-edgefn-verify`, `w35d-cleanup`) were deployed for this
-verification and left in place — harmless (no site code references them, they
-require no input to do anything sensitive), but worth removing during W3.5-H
-cleanup.
-
 ### W3.5-E — ✅ Extended Burn-in Verification
 
 **🔴 Critical regression found and fixed during this stage:** all 13 dual-check RPCs
@@ -404,8 +398,51 @@ RPCs and direct anon table access before continuing.
 editorial images, 1 review, 5 subscribers, 0 enquiries, 1 `website_admins` row, 0
 leftover test users, 0 leftover storage files. Zero remaining SQL objects reference
 the hardcoded email without also referencing `app_role` (re-confirmed after the
-hotfix). One more temporary diagnostic Edge Function (`w35e-editorial-verify`) added
-to the W3.5-H cleanup list.
+hotfix).
+
+### W3.5-F — ✅ Final Stability Verification: PASSED
+
+Full re-verification immediately before cutover: zero stale hardcoded-only objects,
+all 13 RPCs confirmed `coalesce`-wrapped, live anon-rejection sweep across all 13
+RPCs + direct table RLS + both Edge Functions (all correctly rejected), both claim
+and email paths spot-verified still working (`set_stock` on `d01`, restored to
+original `true`), public reads confirmed unchanged. No issues found — proceeded to
+cutover per the approved plan.
+
+### W3.5-G — ✅ Final Authorization Cutover
+
+Email fallback removed entirely from all 27 SQL objects and both Edge Functions.
+Authorization is now **`website_admin` claim only**. Verified: email-only auth now
+correctly **rejected** (proves the fallback is genuinely gone, not just unused);
+claim-only auth still succeeds; anon rejected across all 13 RPCs, direct table
+access, and both Edge Functions (re-swept post-cutover).
+
+**Operational note:** the real admin's *existing* browser session, if it predates
+the Custom Access Token Hook being enabled (W3.5-C), will not carry the `app_role`
+claim and will need to sign in again once for a fresh token. Any session obtained
+after the hook was enabled already carries it correctly (proven in W3.5-C/D/E).
+
+### W3.5-H — ✅ Cleanup
+
+Four temporary diagnostic Edge Functions (`w35c-hook-verify`, `w35d-edgefn-verify`,
+`w35d-cleanup`, `w35e-editorial-verify`) neutralized — no tool exists to fully
+delete an Edge Function, so each was replaced with an inert stub returning `410
+Gone`. Confirmed via live request. Full removal from the project requires manual
+action in the Supabase dashboard (Edge Functions page) if desired — noted, not
+blocking.
+
+### Final Verification — ✅ Website Service is production-ready
+
+- Zero remaining hardcoded-email references anywhere in SQL (functions or
+  policies) — confirmed by direct query, not inference.
+- Role-based (`website_admin` claim) authorization fully in effect; no legacy
+  authorization path remains reachable.
+- Production data confirmed unchanged: 70 products, 0 editorial, 1 review, 5
+  subscribers, 0 enquiries, 1 `website_admins` row, `d01` stock and homepage
+  category order both back to their real values.
+- Zero leftover test users or storage files.
+- Working tree clean (Stages F–H were pure database/Edge Function work, nothing to
+  commit until this documentation update).
 
 ## Phase W4 — AI CL Khanna Admin Integration (not started)
 
