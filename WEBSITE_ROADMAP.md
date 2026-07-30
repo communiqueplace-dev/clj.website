@@ -333,6 +333,35 @@ standard `provider`/`providers` fields — the hook never writes there. W3.5-D's
 dual-check design already correctly targets `auth.jwt()->>'app_role'`, so this is
 noted for accuracy, not a change in plan.
 
+### W3.5-D — ✅ Dual-check authorization (SQL + Edge Functions merged, per approved adjustment)
+
+Every hardcoded-email check migrated to `(auth.jwt()->>'app_role' = 'website_admin')
+OR (email = 'clkhannajewellers@gmail.com')` — email fallback intentionally kept, not
+yet removed. Covers all 27 SQL objects (13 RPCs, 14 RLS policies across `products`,
+`editorial_images`, `reviews`, `subscribers`, `enquiries`, `site_config`,
+`analytics_events`, `wishlists`, `storage.objects`) plus both Edge Functions
+(`upload-product-image`, `upload-editorial-image`, each now checking a
+`website_admins` lookup as an alternative to the verified email).
+
+**Verified:**
+- Live re-query confirms zero remaining SQL objects reference the hardcoded email
+  without also referencing `app_role` — full migration, no stragglers.
+- Product Service spot-check: claim-only `create_product` succeeded, email-only
+  `delete_product` succeeded on the same row (both paths work independently).
+- Homepage Service spot-check: claim-only `update_category_order` succeeded and was
+  restored via the email path — production `site_config` unchanged afterward.
+- Both Edge Functions: unauthorized (no token) still rejected. Claim-only path
+  verified genuinely end-to-end using a disposable test admin (created via the Auth
+  Admin API, added to `website_admins`, signed in for a real token, called
+  `upload-product-image` — got a real `200`, not `401`) — then fully cleaned up
+  (test file deleted from storage, test user deleted, `website_admins` back to 1 row).
+
+**Housekeeping note:** three temporary diagnostic Edge Functions
+(`w35c-hook-verify`, `w35d-edgefn-verify`, `w35d-cleanup`) were deployed for this
+verification and left in place — harmless (no site code references them, they
+require no input to do anything sensitive), but worth removing during W3.5-H
+cleanup.
+
 ## Phase W4 — AI CL Khanna Admin Integration (not started)
 
 Connect each service to KHANNA AI OS one at a time, gated by WriteActionGate for

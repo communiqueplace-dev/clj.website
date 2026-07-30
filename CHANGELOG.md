@@ -19,6 +19,19 @@ Supabase's documented contract exactly. One real issue found via the security
 advisor: missing `SET search_path = ''`. Fixed and re-verified working. Hook
 subsequently enabled successfully in the dashboard.
 
+## 2026-07-30 (W3.5-D — dual-check authorization, SQL + Edge Functions)
+
+All 27 SQL objects (13 RPCs, 14 RLS policies) and both Edge Functions
+(`upload-product-image`, `upload-editorial-image`) migrated to
+`app_role = 'website_admin' OR email = 'clkhannajewellers@gmail.com'`. Email
+fallback intentionally kept — not removed until final cutover (W3.5-G).
+
+Verified: zero remaining objects missing `app_role`; Product Service and Homepage
+Service spot-checked via both paths independently; both Edge Functions' claim path
+verified genuinely end-to-end with a disposable test admin (real sign-in, real
+`200` response), then fully cleaned up. Three temporary diagnostic Edge Functions
+left deployed (harmless) — flagged for removal in W3.5-H.
+
 ## 2026-07-30 (W3.5-C — verified real JWT claim issuance)
 
 Verified against the real token-issuance pipeline with a disposable, self-created
