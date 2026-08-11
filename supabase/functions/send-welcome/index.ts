@@ -25,7 +25,10 @@ const HTML_BODY = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
 <style>
+  :root{color-scheme:light;supported-color-schemes:light}
   body{margin:0;padding:0;background:#f8f4ec;font-family:Georgia,serif;color:#15130e}
   .wrap{max-width:540px;margin:40px auto;background:#fff;border:1px solid #e6dec9;padding:48px 40px}
   h1{font-size:1.4rem;font-weight:400;letter-spacing:.05em;margin:0 0 20px;color:#9a7740}
@@ -37,7 +40,7 @@ const HTML_BODY = `<!DOCTYPE html>
 </head>
 <body>
 <div class="wrap">
-  <div style="text-align:center;margin-bottom:28px"><img src="https://raw.githubusercontent.com/communiqueplace-dev/clj.website/main/assets/logo-main.png" alt="C.L Khanna Jewellers" style="height:60px;width:auto"></div>
+  <div style="text-align:center;margin-bottom:28px"><img src="https://raw.githubusercontent.com/communiqueplace-dev/clj.website/main/assets/logo-email.png" alt="C.L Khanna Jewellers" style="width:230px;max-width:72%;height:auto;display:inline-block"></div>
   <h1>Welcome to C.L Khanna Jewellers</h1>
   <p>Thank you for joining us — we are delighted to have you.</p>
   <p>At C.L Khanna, every piece is crafted with intention: hand-set polki chokers, BIS hallmarked gold, and diamond jewellery made for real celebrations. Whether you are shopping for a wedding, a gift, or simply yourself, we look forward to helping you find something beautiful.</p>
@@ -46,7 +49,7 @@ const HTML_BODY = `<!DOCTYPE html>
   <div class="foot">
     C.L Khanna Jewellers &nbsp;·&nbsp; 8 Dilawari Street, Lawrence Road, Amritsar<br>
     <a href="tel:+919815605373">+91 98156 05373</a> &nbsp;·&nbsp;
-    <a href="https://www.instagram.com/clkhanna_jewellers/">@clkhanna_jewellers</a>
+    <a href="https://www.instagram.com/clkhannajewellers/">@clkhannajewellers</a>
   </div>
 </div>
 </body>
