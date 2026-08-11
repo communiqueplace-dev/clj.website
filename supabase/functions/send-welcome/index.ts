@@ -40,7 +40,7 @@ const HTML_BODY = `<!DOCTYPE html>
 </head>
 <body>
 <div class="wrap">
-  <div style="text-align:center;margin-bottom:28px"><img src="https://raw.githubusercontent.com/communiqueplace-dev/clj.website/main/assets/logo-mail.png" alt="C.L Khanna Jewellers" style="width:230px;max-width:72%;height:auto;display:inline-block"></div>
+  <div style="text-align:center;margin-bottom:28px"><img src="https://raw.githubusercontent.com/communiqueplace-dev/clj.website/main/assets/logo-main.png" alt="C.L Khanna Jewellers" style="height:60px;width:auto"></div>
   <h1>Welcome to C.L Khanna Jewellers</h1>
   <p>Thank you for joining us — we are delighted to have you.</p>
   <p>At C.L Khanna, every piece is crafted with intention: hand-set polki chokers, BIS hallmarked gold, and diamond jewellery made for real celebrations. Whether you are shopping for a wedding, a gift, or simply yourself, we look forward to helping you find something beautiful.</p>
