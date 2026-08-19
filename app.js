@@ -9,14 +9,16 @@ const CAT_TITLES = {gold:"Gold Jewellery", diamond:"Diamond Jewellery", polki:"P
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 /* Pretty product URL — MUST match gen-product-pages.js slugify exactly. */
 function slugify(s){ return String(s).toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
-/* Snapshot of products that have a generated static SEO page, taken from
-   catalog.js's own array before cms.js's live fetch can overwrite it. Products
-   created after the last deploy.ps1 run won't be in this set — they don't have a
-   static page yet, so they fall back to the dynamic product.html?id= page instead
-   of 404ing. Existing products keep their exact current URLs unchanged. */
-var STATIC_PRODUCT_IMGS = new Set((typeof PRODUCTS !== 'undefined' ? PRODUCTS : []).map(function(p){ return p.img; }));
+/* Slugs that have a generated static SEO page — snapshotted from catalog.js's own
+   array before cms.js's live fetch can overwrite it. A product falls back to the
+   dynamic product.html?id= page (instead of 404ing) whenever its current name has
+   no matching static page — i.e. it was added after the last deploy, OR it was
+   renamed in the admin so its slug no longer matches the page that was generated.
+   Products whose name still matches keep their exact current pretty URL. */
+var STATIC_PRODUCT_SLUGS = new Set((typeof PRODUCTS !== 'undefined' ? PRODUCTS : []).map(function(p){ return slugify(p.name); }));
 function productHref(p){
-  return STATIC_PRODUCT_IMGS.has(p.img) ? (slugify(p.name) + '.html') : ('product.html?id=' + encodeURIComponent(p.img));
+  var slug = slugify(p.name);
+  return STATIC_PRODUCT_SLUGS.has(slug) ? (slug + '.html') : ('product.html?id=' + encodeURIComponent(p.img));
 }
 function fmtPrice(v){ return v ? 'from ₹' + Number(v).toLocaleString('en-IN') : 'Price on request'; }
 

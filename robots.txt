@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /clkhanna-admin.html
+Disallow: /clkhanna-studio.html
 
 Sitemap: https://clkhannajewellers.in/sitemap.xml

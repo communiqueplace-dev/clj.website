@@ -11,21 +11,30 @@ if (IG_FEED_URL) {
   const igGrid = document.querySelector(".ig-grid");
   const igStatic = igGrid ? igGrid.innerHTML : "";
   if (igGrid) showSkeletons(igGrid, 6);
-  const igTimer = igGrid ? setTimeout(function(){ igGrid.innerHTML = igStatic; }, 6000) : null;
-  const igImg = p => p.mediaUrl || p.thumbnailUrl ||
+  /* Prefer Behold's own cached image (stable) over Instagram's CDN link (expires / 403s). */
+  const igImg = p =>
     (p.sizes && ((p.sizes.medium && p.sizes.medium.mediaUrl) || (p.sizes.large && p.sizes.large.mediaUrl) ||
-                 (p.sizes.small && p.sizes.small.mediaUrl) || (p.sizes.full && p.sizes.full.mediaUrl))) || "";
+                 (p.sizes.small && p.sizes.small.mediaUrl) || (p.sizes.full && p.sizes.full.mediaUrl))) ||
+    p.thumbnailUrl || p.mediaUrl || "";
+  const igRevert = () => { if (igGrid) { igGrid.innerHTML = igStatic; skelLoaded(igGrid); } };
+  const igTimer = igGrid ? setTimeout(igRevert, 6000) : null;
   fetch(IG_FEED_URL).then(r => r.json()).then(d => {
-    clearTimeout(igTimer);
-    const posts = (d.posts || d).slice(0, 6);
-    if (!posts.length) { if (igGrid) { igGrid.innerHTML = igStatic; skelLoaded(igGrid); } return; }
-    const g = document.querySelector(".ig-grid");
-    g.innerHTML = posts.map(p => `
+    const posts = (d.posts || d).slice(0, 6).filter(p => igImg(p));
+    if (!posts.length || !igGrid) { clearTimeout(igTimer); igRevert(); return; }
+    /* Only swap in the live feed once we've confirmed the images actually load;
+       if Instagram/Behold block them, keep the curated campaign photos instead. */
+    const probe = new Image();
+    probe.onload = () => {
+      clearTimeout(igTimer);
+      igGrid.innerHTML = posts.map(p => `
       <a href="${p.permalink}" target="_blank" rel="noopener">
         <img loading="lazy" src="${igImg(p)}" alt="Instagram post">
       </a>`).join("");
-    skelLoaded(g);
-  }).catch(() => { clearTimeout(igTimer); if (igGrid) { igGrid.innerHTML = igStatic; skelLoaded(igGrid); } });
+      skelLoaded(igGrid);
+    };
+    probe.onerror = () => { clearTimeout(igTimer); igRevert(); };
+    probe.src = igImg(posts[0]);
+  }).catch(() => { clearTimeout(igTimer); igRevert(); });
 }
 const FEATURED = ["p06","d22","g03","d16","g11","p03","d20","g12"];
 function renderFeatured(){
