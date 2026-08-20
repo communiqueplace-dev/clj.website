@@ -374,10 +374,36 @@ function fileToBase64(file){
   });
 }
 
+/* Auto-compress large photos before upload — cap the long edge at 1280px and
+   re-encode as WebP so uploads match the light catalogue images (~100KB) instead
+   of multi-MB originals. Falls back to the original file if anything fails. */
+async function compressImage(file){
+  try{
+    if(!file || !/^image\//.test(file.type) || file.type==="image/gif") return file;
+    if(file.size <= 400*1024) return file;
+    let w, h, src;
+    const bmp = await createImageBitmap(file).catch(function(){ return null; });
+    if(bmp){ w=bmp.width; h=bmp.height; src=bmp; }
+    else {
+      src = await new Promise(function(res,rej){ var i=new Image(); i.onload=function(){res(i);}; i.onerror=rej; i.src=URL.createObjectURL(file); });
+      w=src.naturalWidth; h=src.naturalHeight;
+    }
+    var MAX=1280;
+    if(w>MAX){ h=Math.round(h*MAX/w); w=MAX; }
+    var c=document.createElement("canvas"); c.width=w; c.height=h;
+    c.getContext("2d").drawImage(src,0,0,w,h);
+    var blob = await new Promise(function(r){ c.toBlob(r,"image/webp",0.82); });
+    if(!blob || blob.size >= file.size) return file;
+    var base = file.name.replace(/\.[^.]+$/,"") || "photo";
+    return new File([blob], base+".webp", { type:"image/webp" });
+  }catch(_){ return file; }
+}
+
 /* Website Service: uploadProductImage (upload-product-image Edge Function).
    Uses the admin's own already-authenticated session token — the same one
    Storage RLS already checks — rather than uploading to Storage directly. */
 async function uploadProductImageViaService(img, file){
+  file = await compressImage(file);
   const { data: sessionData } = await sb.auth.getSession();
   const token = sessionData && sessionData.session && sessionData.session.access_token;
   if (!token) throw new Error("You must be signed in to upload photos.");
@@ -487,11 +513,12 @@ async function addEditorial(){
     const { data: sessionData } = await sb.auth.getSession();
     const token = sessionData && sessionData.session && sessionData.session.access_token;
     if (!token) throw new Error("You must be signed in to upload photos.");
-    const fileBase64 = await fileToBase64(file);
+    const upFile = await compressImage(file);
+    const fileBase64 = await fileToBase64(upFile);
     const res = await fetch(SUPABASE_URL + "/functions/v1/upload-editorial-image", {
       method: "POST",
       headers: { "Authorization": "Bearer " + token, "Content-Type": "application/json" },
-      body: JSON.stringify({ filename: file.name, contentType: file.type, fileBase64: fileBase64 })
+      body: JSON.stringify({ filename: upFile.name, contentType: upFile.type, fileBase64: fileBase64 })
     });
     const out = await res.json().catch(function(){ return {}; });
     if (!res.ok) throw new Error(out.error || "Upload failed");

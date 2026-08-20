@@ -211,8 +211,9 @@ async function saveProduct(){
   $("saveBtn").classList.add("uploading"); $("saveBtn").textContent = "Saving…";
   let image_url = null;
   try {
-    const file = $("f_file").files[0];
+    let file = $("f_file").files[0];
     if (file){
+      file = await compressImage(file);
       const path = img + "-" + Date.now() + "." + (file.name.split(".").pop() || "jpg");
       const up = await sb.storage.from("product-images").upload(path, file, { upsert:true, cacheControl:"3600" });
       if (up.error) throw up.error;
@@ -237,6 +238,31 @@ async function saveProduct(){
 }
 
 
+/* Auto-compress large photos before upload — cap the long edge at 1280px and
+   re-encode as WebP so uploads match the light catalogue images (~100KB) instead
+   of multi-MB originals. Falls back to the original file if anything fails. */
+async function compressImage(file){
+  try{
+    if(!file || !/^image\//.test(file.type) || file.type==="image/gif") return file;
+    if(file.size <= 400*1024) return file;
+    let w, h, src;
+    const bmp = await createImageBitmap(file).catch(function(){ return null; });
+    if(bmp){ w=bmp.width; h=bmp.height; src=bmp; }
+    else {
+      src = await new Promise(function(res,rej){ var i=new Image(); i.onload=function(){res(i);}; i.onerror=rej; i.src=URL.createObjectURL(file); });
+      w=src.naturalWidth; h=src.naturalHeight;
+    }
+    var MAX=1280;
+    if(w>MAX){ h=Math.round(h*MAX/w); w=MAX; }
+    var c=document.createElement("canvas"); c.width=w; c.height=h;
+    c.getContext("2d").drawImage(src,0,0,w,h);
+    var blob = await new Promise(function(r){ c.toBlob(r,"image/webp",0.82); });
+    if(!blob || blob.size >= file.size) return file;
+    var base = file.name.replace(/\.[^.]+$/,"") || "photo";
+    return new File([blob], base+".webp", { type:"image/webp" });
+  }catch(_){ return file; }
+}
+
 async function loadEditorial(){
   const { data, error } = await sb.from("editorial_images").select("*").order("sort",{ascending:true});
   const box = document.getElementById("ed_list");
@@ -249,10 +275,11 @@ async function loadEditorial(){
 }
 async function addEditorial(){
   const msg=document.getElementById("ed_msg"); msg.className="msg"; msg.textContent="";
-  const file=document.getElementById("ed_file").files[0];
+  let file=document.getElementById("ed_file").files[0];
   if(!file){ msg.className="msg err"; msg.textContent="Choose a photo first."; return; }
   const btn=document.getElementById("edBtn"); btn.classList.add("uploading"); btn.textContent="Uploading…";
   try{
+    file = await compressImage(file);
     const path="editorial/"+Date.now()+"-"+file.name.replace(/[^a-zA-Z0-9.]/g,"_");
     const up=await sb.storage.from("product-images").upload(path,file,{upsert:true,cacheControl:"3600"});
     if(up.error) throw up.error;
